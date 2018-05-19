@@ -26,7 +26,9 @@ Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
   server.use(express.urlencoded({ extended: true }));
 
   // Pages
-  server.get("/admin/post/:id", (req, res) => next.render(req, res, "/admin/post", req.query));
+  server.get("/admin/post/:id", (req, res) => next.render(req, res, "/admin/post", req.params));
+  server.get("/post", (req, res) => next.render(req, res, "/", req.params));
+  server.get("/post/:id", (req, res) => next.render(req, res, "/post", req.params));
 
   api.post.install({ ...dbResolved, server, send });
 
