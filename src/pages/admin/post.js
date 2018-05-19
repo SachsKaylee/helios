@@ -35,7 +35,7 @@ export default class extends React.PureComponent {
     const data = {
       author: "You", // todo: author
       date,
-      title: title.toJSON(),
+      title: Plain.serialize(title),
       content: content.toJSON()
     };
     isNew

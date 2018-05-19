@@ -38,7 +38,7 @@ export default class extends React.Component {
       <SidebarLayout size={3} sidebar={<Card compactX compactY>{lorem({ count: 5 })}</Card>}>
         <Posts posts={posts.map(p => ({
           ...p,
-          title: Value.fromJSON(p.title),
+          title: Plain.deserialize(p.title),
           content: Value.fromJSON(p.content),
           date: new Date(p.date)
         }))} />

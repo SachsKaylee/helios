@@ -5,6 +5,7 @@ import lorem from "lorem-ipsum";
 import Card from "../components/Card"
 import React from "react"
 import axios from "axios"
+import Plain from 'slate-plain-serializer';
 import { Value } from 'slate'
 
 export default class extends React.Component {
@@ -21,7 +22,7 @@ export default class extends React.Component {
         id={post._id}
         date={new Date(post.date)}
         author={post.author}
-        title={Value.fromJSON(post.title)}
+        title={Plain.deserialize(post.title)}
         content={Value.fromJSON(post.content)} />
     </Layout>);
   }
