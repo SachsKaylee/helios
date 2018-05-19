@@ -49,10 +49,11 @@ export default class extends React.PureComponent {
     return (
       <Layout title={`Post: ${isNew ? id : `Composing...`}`}>
         <SidebarLayout size={3} sidebar={<Card compactX>
-          {lastChanged === "content" && <EditorToolbar
+          <EditorToolbar
+            stylesChooser={lastChanged === "content"}
             value={content}
             onChange={this.onChange(false)("content")}
-            onSave={this.onSave} />}
+            onSave={this.onSave} />
         </Card>}>
           <DynamicPost
             allowEdit

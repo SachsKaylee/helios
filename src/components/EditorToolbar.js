@@ -95,23 +95,24 @@ export default class extends React.Component {
   }
 
   render() {
+    const { stylesChooser } = this.props;
     return (<div>
       <ReactTooltip id="editor-toolbar" effect="solid" />
-      <div className="style-chooser">
+      {stylesChooser && (<div className="style-chooser">
         <p className="style-chooser-text"><span className="tag is-info">Format Selection</span></p>
         {this.renderMarkButton('bold', 'bold', "Bold")}
         {this.renderMarkButton('italic', 'italic', "Italic")}
         {this.renderMarkButton('underlined', 'underline', "Underlined")}
         {this.renderMarkButton('code', 'code', "Inline Code")}
-      </div>
-      <div className="style-chooser">
+      </div>)}
+      {stylesChooser && (<div className="style-chooser">
         <p className="style-chooser-text"><span className="tag is-info">Format Paragraph</span></p>
         {this.renderBlockButton('heading-one', 'heading', "Headline 1", "H1")}
         {this.renderBlockButton('heading-two', 'heading', "Headline 2", "H2")}
         {this.renderBlockButton('block-quote', 'quote-right', "Quote")}
         {this.renderBlockButton('numbered-list', 'list-ol', "Numbered List")}
         {this.renderBlockButton('bulleted-list', 'list-ul', "Bulleted List")}
-      </div>
+      </div>)}
       <div className="style-chooser">
         <p className="style-chooser-text"><span className="tag is-info">Post Actions</span></p>
         <a className="style-chooser-button button is-primary" onClick={this.props.onSave}>Publish</a>
@@ -159,7 +160,7 @@ export default class extends React.Component {
 
     return (
       <span className="icon" onMouseDown={onMouseDown} data-active={isActive} data-tip={tooltip} data-for="editor-toolbar"
-        style={isActive ? { border: "1px solid", borderRadius: 1,margin: 1 } : { margin: 1 }}>
+        style={isActive ? { border: "1px solid", borderRadius: 1, margin: 1 } : { margin: 1 }}>
         <span className="fa-layers fa-fw">
           <i className={classNames("fas", "fa-" + icon)} />
           {details && <span className="fa-layers-counter">{details}</span>}
