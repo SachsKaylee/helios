@@ -1,0 +1,31 @@
+{
+  "name": "patrick-sachs.de",
+  "version": "1.0.0",
+  "description": "Website patrick-sachs.de",
+  "main": "index.js",
+  "author": "Patrick Sachs",
+  "license": "MIT",
+  "scripts": {
+    "dev": "node ./src/server",
+    "start": "node ./src/server",
+    "build": "next build src"
+  },
+  "devDependencies": {
+    "webpack": "^4.8.3"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "classnames": "^2.2.5",
+    "express": "^4.16.3",
+    "immutable": "^3.8.2",
+    "lorem-ipsum": "^1.0.4",
+    "mongoose": "^5.1.1",
+    "next": "^6.0.3",
+    "path-match": "^1.2.4",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "react-tooltip": "^3.6.0",
+    "slate": "^0.33.6",
+    "slate-react": "^0.12.6"
+  }
+}
