@@ -17,9 +17,9 @@ export default class extends React.Component {
       // We do not create the Value here, but instead in render since it was throwing an error with SSR
       posts: data.map(({ _id, author, date, title, content }) => ({
         id: _id,
-        date: new Date(date),
         title: title,
         content: content,
+        date,
         author
       })).sort((a, b) => {
         const keyA = new Date(a.date);
@@ -35,8 +35,13 @@ export default class extends React.Component {
     // todo: pagination
     const { posts } = this.props;
     return (<Layout title="Blog">
-      <SidebarLayout size={3} sidebar={<Card compactX>{lorem({ count: 5 })}</Card>}>
-        <Posts posts={posts.map(p => ({ ...p, title: Value.fromJSON(p.title), content: Value.fromJSON(p.content) }))} />
+      <SidebarLayout size={3} sidebar={<Card compactX compactY>{lorem({ count: 5 })}</Card>}>
+        <Posts posts={posts.map(p => ({
+          ...p,
+          title: Value.fromJSON(p.title),
+          content: Value.fromJSON(p.content),
+          date: new Date(p.date)
+        }))} />
       </SidebarLayout>
     </Layout>);
   }
