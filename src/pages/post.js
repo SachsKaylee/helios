@@ -18,6 +18,7 @@ export default class extends React.Component {
     const { post } = this.props;
     return (<Layout title={post.title}>
       <Post
+        edit={["show-admin-buttons"]}
         id={post._id}
         date={new Date(post.date)}
         author={post.author}

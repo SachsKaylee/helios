@@ -1,7 +1,9 @@
 import Layout from "../../components/Layout";
 import SidebarLayout from "../../components/SidebarLayout";
 import EditorToolbar from "../../components/EditorToolbar";
+import A from "../../components/A";
 import { uuid } from "../../uuid";
+import { Value } from "slate";
 import lorem from "lorem-ipsum";
 import Plain from 'slate-plain-serializer';
 import React from "react";
@@ -13,16 +15,43 @@ import NotificationProvider from "../../components/NotificationProvider"
 export default class extends React.PureComponent {
   constructor(p) {
     super(p);
-    const { url: { query: { id: id } } } = p;
     this.notifications = React.createRef();
-    this.state = {
-      title: Plain.deserialize("New Post ..."),
-      content: Plain.deserialize("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."),
-      id: id,
-      date: new Date(),
-      isNew: !id,
-      lastChanged: "content"
+    this.state = this.stateFromData(p.post);
+  }
+
+  static async getInitialProps(p) {
+    if (p.query.id) {
+      const { data } = await axios.get("/api/post/" + p.query.id);
+      return { post: data };
+    } else {
+      return {
+        post: {
+          author: "you", // todo: author
+          title: "New Post ...",
+          content: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+        }
+      };
     }
+  }
+
+  stateFromData = ({ _id, date, author, title, content }, oldState) => {
+    return {
+      id: _id,
+      isNew: !_id,
+      author,
+      lastChanged: (oldState && oldState.lastChanged) || "content",
+      date: date ? new Date(date) : new Date(),
+      title: this.toValue(title),
+      content: this.toValue(content)
+    }
+  }
+
+  toValue(value) {
+    return "string" === (typeof value)
+      ? Plain.deserialize(value)
+      : Value.isValue(value)
+        ? value
+        : Value.fromJSON(value);
   }
 
   onChange = changedFocus => what => ({ value }) => {
@@ -33,20 +62,21 @@ export default class extends React.PureComponent {
   }
 
   onSave = () => {
-    const { id, title, content, date, isNew } = this.state;
+    const { id, title, content, date, author, isNew } = this.state;
     const data = {
-      author: "You", // todo: author
-      date,
+      author, date,
       title: Plain.serialize(title),
       content: content.toJSON()
     };
     (isNew
       ? axios.post("/api/post", data)
       : axios.put("/api/post/" + id, data)).then(({ data }) => {
-        this.notifications.push({
-          canClose: true,
-          type: "success",
-          children: this.renderPostNotification({ data })
+        this.setState(this.stateFromData(data, this.state), () => {
+          this.notifications.push({
+            canClose: true,
+            type: "success",
+            children: this.renderPostNotification({ data })
+          });
         });
       });
   }
@@ -57,17 +87,16 @@ export default class extends React.PureComponent {
     } else {
       return (<div>
         <p className="subtitle">🎂 Published!</p>
-        <p>The post "{data.title}" has been published!</p>
+        <p>The post <A href={`/post/${data._id}`}>{data.title}</A> has been published!</p>
       </div>);
     }
   }
 
   render() {
-    const { id, title, content, isNew, date, lastChanged } = this.state;
-    console.log("render", { id, title, isNew, date, lastChanged, title: title !== undefined, content: content !== undefined })
+    const { id, title, content, isNew, date, author, lastChanged } = this.state;
     return (
       <Layout title={`Post: ${isNew ? id : `Composing...`}`}>
-        <SidebarLayout size={3} sidebar={<Card compactX>
+        <SidebarLayout size={3} sidebar={<Card compactX compactY>
           <EditorToolbar
             stylesChooser={lastChanged === "content"}
             value={content}
@@ -76,9 +105,9 @@ export default class extends React.PureComponent {
           <NotificationProvider ref={ref => this.notifications = ref} />
         </Card>}>
           <DynamicPost
-            allowEdit
-            author="patrick-sachs"// todo: read user id cookie and then get user
-            avatar="http://www.radfaces.com/images/avatars/wednesday-addams.jpg"
+            edit={["allow-content-editing"]}
+            author={author}
+            avatar={`/static/content/avatars/${author}.png`}
             content={content}
             date={date}
             id={id}
