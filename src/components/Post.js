@@ -26,5 +26,5 @@ export default ({ id, author, date, title, content, edit, onChange }) => (
   </Card>
 );
 
-const readonly = (edit) => edit ? edit.indexOf("allow-content-editing") : true;
+const readonly = (edit) => edit ? !!edit.indexOf("allow-content-editing") : true;
 const buttons = (edit) => edit ? !edit.indexOf("show-admin-buttons") : false;
