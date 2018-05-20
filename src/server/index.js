@@ -31,7 +31,8 @@ Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
   server.get("/post", (req, res) => next.render(req, res, "/", req.params));
   server.get("/post/:id", (req, res) => next.render(req, res, "/post", req.params));
 
-  api.post.install({ ...dbResolved, server, send });
+  // APIs
+  Object.keys(api).forEach(k => !api[k].doNotInstall && api[k].install({ ...dbResolved, server, send }));
 
   // Fallback
   server.get('*', next.getRequestHandler());

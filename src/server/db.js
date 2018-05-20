@@ -9,7 +9,7 @@ const makeModel = (source, name) => mongoose.model(name, source.schema({ mongoos
 
 const connected = new Promise(res => mongoose.connection.once('open', () => {
   const models = fp.mapObject(api, makeModel);
-  console.log("DB Connected!", "Apis:", Object.keys(api), "Models:", models);
+  console.log("DB Connected!", "APIs:", Object.keys(api));
   res({ models, mongoose });
 }));
 
