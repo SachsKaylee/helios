@@ -1,7 +1,7 @@
 const classNames = require("classnames");
 
 export default ({ compactY, compactX, image, title, subtitle, children }) => (
-  <div className="card" style={{ marginTop: compactY ? "1em" : "6em" }}>
+  <div className="card" style={{ marginTop: compactY ? "2em" : "6em" }}>
     <div className="card-content">
       <div className="media">
         {image && (<div className="media-center">
