@@ -95,7 +95,7 @@ export default class extends React.Component {
   }
 
   render() {
-    const { stylesChooser } = this.props;
+    const { stylesChooser, buttons } = this.props;
     return (<div>
       <ReactTooltip id="editor-toolbar" effect="solid" />
       {stylesChooser && (<div className="style-chooser">
@@ -115,8 +115,9 @@ export default class extends React.Component {
       </div>)}
       <div className="style-chooser">
         <p className="style-chooser-text"><span className="tag is-info">Post Actions</span></p>
-        <a className="style-chooser-button button is-primary" onClick={this.props.onSave}>Publish</a>
-        <a className="style-chooser-button button is-danger" onClick={this.props.onCancel}>Discard</a>
+        {buttons.publish && (<a className="style-chooser-button button is-primary" onClick={this.props.onSave}>Publish</a>)}
+        {buttons.discard && (<a className="style-chooser-button button is-danger" onClick={this.props.onCancel}>Discard</a>)}
+        {buttons.delete && (<a className="style-chooser-button button is-danger" onClick={this.props.onDelete}>Delete</a>)}
       </div>
       <style jsx>{`
         .style-chooser {

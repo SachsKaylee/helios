@@ -21,7 +21,7 @@ export default class extends React.PureComponent {
 
   static async getInitialProps(p) {
     if (p.query.id) {
-      const { data } = await axios.get("/api/post/" + p.query.id);
+      const { data } = await axios.get(`/api/post/${p.query.id}`);
       return { post: data };
     } else {
       return {
@@ -41,12 +41,12 @@ export default class extends React.PureComponent {
       author,
       lastChanged: (oldState && oldState.lastChanged) || "content",
       date: date ? new Date(date) : new Date(),
-      title: this.toValue(title),
-      content: this.toValue(content)
+      title: this.dataToValue(title),
+      content: this.dataToValue(content)
     }
   }
 
-  toValue(value) {
+  dataToValue(value) {
     return "string" === (typeof value)
       ? Plain.deserialize(value)
       : Value.isValue(value)
@@ -54,42 +54,105 @@ export default class extends React.PureComponent {
         : Value.fromJSON(value);
   }
 
+  valueToString(value) {
+    return "string" === (typeof value)
+      ? value
+      : Value.isValue(value)
+        ? Plain.serialize(value)
+        : "" + value;
+  }
+
   onChange = changedFocus => what => ({ value }) => {
-    console.log("change", what, value)
     this.setState(changedFocus
       ? { [what]: value, lastChanged: what }
       : { [what]: value });
   }
 
-  onSave = () => {
+  onDelete = (really) => () => {
+    if (really) {
+      const { id } = this.state;
+      axios.delete(`/api/post/${id}`).then(() => {
+        this.setState({
+          id: undefined,
+          isNew: true,
+          date: new Date()
+        }, () => {
+          this.notifications.push({
+            canClose: true,
+            type: "success",
+            children: this.renderDeleteSuccessNotification()
+          });
+        });
+      }).catch(error => {
+        this.notifications.push({
+          canClose: true,
+          type: "error",
+          children: this.renderErrorNotification({ error })
+        });
+      });
+    } else {
+      this.notifications.push({
+        canClose: true,
+        type: "danger",
+        children: this.renderDeleteConfirmNotification()
+      });
+    }
+  }
+
+  onPublish = () => {
     const { id, title, content, date, author, isNew } = this.state;
     const data = {
       author, date,
-      title: Plain.serialize(title),
+      title: this.valueToString(title),
       content: content.toJSON()
     };
     (isNew
       ? axios.post("/api/post", data)
-      : axios.put("/api/post/" + id, data)).then(({ data }) => {
+      : axios.put(`/api/post/${id}`, data)).then(({ data }) => {
         this.setState(this.stateFromData(data, this.state), () => {
           this.notifications.push({
             canClose: true,
             type: "success",
-            children: this.renderPostNotification({ data })
+            children: this.renderPublishSuccessNotification(data)
           });
+        });
+      }).catch(error => {
+        this.notifications.push({
+          canClose: true,
+          type: "error",
+          children: this.renderErrorNotification({ error })
         });
       });
   }
 
-  renderPostNotification({ error, data }) {
-    if (error) {
-      return "ok"
-    } else {
-      return (<div>
-        <p className="subtitle">🎂 Published!</p>
-        <p>The post <A href={`/post/${data._id}`}>{data.title}</A> has been published!</p>
-      </div>);
-    }
+  renderDeleteSuccessNotification() {
+    return (<div>
+      <p className="subtitle">☠️ Post deleted!</p>
+      <p>The post has been <strong>deleted</strong>. The contents of the post will remain in the editor in case you wish to re-publish it.</p>
+    </div>);
+  }
+
+  renderDeleteConfirmNotification() {
+    return (<div>
+      <p className="subtitle">🔥 Are you sure?</p>
+      <p>You are about to delete the post. This action is permanent and <strong>cannot be undone</strong>.</p>
+      <p><a onClick={this.onDelete(true)}>Fine by me, delete it!</a></p>
+    </div>);
+  }
+
+  renderPublishSuccessNotification(data) {
+    return (<div>
+      <p className="subtitle">🎂 Published!</p>
+      <p>The post <A href={`/post/${data._id}`}>{data.title}</A> has been published!</p>
+    </div>);
+  }
+
+  renderErrorNotification(error) {
+    return (<div>
+      <p className="subtitle">🤖 Error!</p>
+      <p>An error occurred! Below you can see some details, be sure to pass it to a developer robot!</p>
+      <p><code>{JSON.stringify(error)}</code></p>
+    </div>);
   }
 
   render() {
@@ -101,7 +164,13 @@ export default class extends React.PureComponent {
             stylesChooser={lastChanged === "content"}
             value={content}
             onChange={this.onChange(false)("content")}
-            onSave={this.onSave} />
+            onSave={this.onPublish}
+            onDelete={this.onDelete(false)}
+            buttons={{
+              publish: true,
+              discard: true,
+              delete: !isNew
+            }} />
           <NotificationProvider ref={ref => this.notifications = ref} />
         </Card>}>
           <DynamicPost

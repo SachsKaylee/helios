@@ -41,6 +41,12 @@ const install = ({ server, models, send }) => {
       send(res, { error, data })
     });
   });
+
+  server.delete("/api/post/:id", (req, res) => {
+    models.post.remove({ _id: req.params.id }, (error, data) => {
+      send(res, { error, data });
+    });
+  });
 }
 
 module.exports = {
