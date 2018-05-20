@@ -8,11 +8,13 @@ import React from "react";
 import Card from "../../components/Card"
 import dynamic from 'next/dynamic'
 import axios from "axios";
+import NotificationProvider from "../../components/NotificationProvider"
 
 export default class extends React.PureComponent {
   constructor(p) {
     super(p);
     const { url: { query: { id: id } } } = p;
+    this.notifications = React.createRef();
     this.state = {
       title: Plain.deserialize("New Post ..."),
       content: Plain.deserialize("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."),
@@ -38,9 +40,26 @@ export default class extends React.PureComponent {
       title: Plain.serialize(title),
       content: content.toJSON()
     };
-    isNew
+    (isNew
       ? axios.post("/api/post", data)
-      : axios.put("/api/post/" + id, data);
+      : axios.put("/api/post/" + id, data)).then(({ data }) => {
+        this.notifications.push({
+          canClose: true,
+          type: "success",
+          children: this.renderPostNotification({ data })
+        });
+      });
+  }
+
+  renderPostNotification({ error, data }) {
+    if (error) {
+      return "ok"
+    } else {
+      return (<div>
+        <p className="subtitle">🎂 Published!</p>
+        <p>The post "{data.title}" has been published!</p>
+      </div>);
+    }
   }
 
   render() {
@@ -54,6 +73,7 @@ export default class extends React.PureComponent {
             value={content}
             onChange={this.onChange(false)("content")}
             onSave={this.onSave} />
+          <NotificationProvider ref={ref => this.notifications = ref} />
         </Card>}>
           <DynamicPost
             allowEdit
