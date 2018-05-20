@@ -29,6 +29,7 @@ export default ({ compactY, compactX, image, title, subtitle, children }) => (
         margin-left: -30px;
         border: 3px solid #ccc;
         border-radius: 50%;
+        background-color: white;
     }
     .media-center {
       display: block;

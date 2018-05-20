@@ -14,7 +14,7 @@ export default (({ title, children }) => (
     <div className="container">
       <Navbar
         title={"Patrick Sachs - " + title}
-        logo="https://patrick-sachs.de/wp-content/uploads/2017/02/PatrickSachs-512x2048-Trans-Name.png"
+        logo="/static/content/system/logo.png"
         links={[{
           title: "Home",
           link: "/"
