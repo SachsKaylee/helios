@@ -10,14 +10,13 @@ import { Value } from 'slate'
 
 export default class extends React.Component {
   static async getInitialProps(p) {
-    const { data } = await axios.get("http://localhost:3000/api/post/" + p.query.id);
+    const { data } = await axios.get("/api/post/" + p.query.id);
     return { post: data };
   }
 
   render() {
     const { post } = this.props;
-    // todo: add title to page name
-    return (<Layout title="Blog">
+    return (<Layout title={post.title}>
       <Post
         id={post._id}
         date={new Date(post.date)}

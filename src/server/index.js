@@ -24,6 +24,7 @@ Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
 
   server.use(express.json());
   server.use(express.urlencoded({ extended: true }));
+  server.use("/static", express.static("static"));
 
   // Pages
   server.get("/admin/post/:id", (req, res) => next.render(req, res, "/admin/post", req.params));
@@ -35,5 +36,5 @@ Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
   // Fallback
   server.get('*', next.getRequestHandler());
 
-  server.listen(3000, (err) => err ? console.error("Error while listening", err) : console.log('Listening on port 3000!'))
+  server.listen(80, (err) => err ? console.error("Error while listening", err) : console.log('Listening on port 80!'))
 }).catch(err => console.error("Error while preparing server!", err));

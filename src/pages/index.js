@@ -12,7 +12,7 @@ export default class extends React.Component {
   static async getInitialProps() {
     // todo: get total amount of posts
     // todo: limit based on page
-    const { data } = await axios.get("http://localhost:3000/api/post");
+    const { data } = await axios.get("/api/post");
     return {
       // We do not create the Value here, but instead in render since it was throwing an error with SSR
       posts: data.map(({ _id, author, date, title, content }) => ({
