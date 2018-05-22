@@ -27,6 +27,9 @@ export default (({ title, children }) => (
           children: [{
             title: "New Post",
             link: "/admin/post"
+          },{
+            title: "Account",
+            link: "/admin/account"
           }]
         }]} />
       <div className="container">

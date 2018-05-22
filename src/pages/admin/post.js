@@ -4,6 +4,7 @@ import EditorToolbar from "../../components/EditorToolbar";
 import A from "../../components/A";
 import { uuid } from "../../uuid";
 import { Value } from "slate";
+import fp from "../../fp";
 import lorem from "lorem-ipsum";
 import Plain from 'slate-plain-serializer';
 import React from "react";
@@ -24,9 +25,10 @@ export default class extends React.PureComponent {
       const { data } = await axios.get(`/api/post/${p.query.id}`);
       return { post: data };
     } else {
+      const { data } = await axios.get("/api/session");
       return {
         post: {
-          author: "you", // todo: author
+          author: data._id, // todo: author
           title: "New Post ...",
           content: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
         }
