@@ -10,7 +10,7 @@ export default class extends React.Component {
 
   push = (p) => {
     this.setState(s => ({
-      notifications: [...s.notifications, {...p, key: uuid() }]
+      notifications: [...s.notifications, { ...p, key: uuid() }]
     }));
   }
 
@@ -26,6 +26,9 @@ export default class extends React.Component {
 
   render() {
     const { notifications } = this.state;
-    return notifications.map(n => (<Notification key={n.key} {...n} onClose={this.onClose(n)} />));
+    const { children } = this.props;
+    return notifications.length
+      ? notifications.map(n => (<Notification key={n.key} {...n} onClose={this.onClose(n)} />))
+      : children || null;
   }
 }

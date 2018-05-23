@@ -63,10 +63,15 @@ import fp from "../fp";
 class Form extends React.Component {
   constructor(p) {
     super(p);
+    this.mounted = false;
     this.state = {
-      result: {}
+      result: {},
+      waiting: false
     };
   }
+
+  componentDidMount() { this.mounted = true; }
+  componentWillUnmount() { this.mounted = false; }
 
   render() {
     const { elements, classes } = this.props;
@@ -87,7 +92,8 @@ class Form extends React.Component {
 
   renderSubmit() {
     const { submitText } = this.props;
-    return (<a className="button is-primary" onClick={this.obSubmit}>
+    const { waiting } = this.state;
+    return (<a disabled={waiting} className="button is-primary" onClick={this.onSubmit}>
       {submitText || "Submit"}
     </a>);
   }
@@ -100,6 +106,7 @@ class Form extends React.Component {
   }
 
   renderFormElementText({ key, name, ignoreData, mode, placeholder }) {
+    const { waiting } = this.state;
     return (<div className="field" key={key}>
       <label className="label">{name}</label>
       <div className="contol">
@@ -107,6 +114,7 @@ class Form extends React.Component {
           className="input"
           type={mode || "text"}
           ref={this.makeRef(key)}
+          disabled={waiting}
           defaultValue={ignoreData ? undefined : this.getData(key)}
           placeholder={placeholder} />
       </div>
@@ -115,12 +123,14 @@ class Form extends React.Component {
   }
 
   renderFormElementCheckbox({ key, name, ignoreData }) {
+    const { waiting } = this.state;
     return (<div className="field" key={key}>
       <div className="contol">
         <label className="checkbox">
           <input
             type="checkbox"
             ref={this.makeRef(key)}
+            disabled={waiting}
             defaultChecked={ignoreData ? false : this.getData(key)} />
           {this.renderValidationResult(this.getValidationResult(key))}
         </label>
@@ -139,7 +149,7 @@ class Form extends React.Component {
     return undefined;
   }
 
-  obSubmit = e => {
+  onSubmit = e => {
     const { elements, onSubmit, data } = this.props;
     e.preventDefault();
     const extract = elements.map(el => ({
@@ -156,7 +166,16 @@ class Form extends React.Component {
     console.log("validation", result, "error", hasError, "data", newData, "elements", elements)
     this.displayValidationResult(result);
     if (!hasError) {
-      onSubmit(newData);
+      this.setState({ waiting: true });
+      Promise.resolve(onSubmit(newData))
+        .then(res => this.mounted && this.setState({
+          waiting: false,
+          result: { ...result, ...res }
+        }))
+        .catch(err => this.mounted && this.setState({
+          waiting: false,
+          result: { ...result, ...err }
+        }));
     }
   }
 

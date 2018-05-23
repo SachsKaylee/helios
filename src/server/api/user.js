@@ -16,10 +16,10 @@ const schema = ({ mongoose }) => {
 
 const install = ({ server, models, $send }) => {
   $model = models.user;
+  const $sendUser = (res, { _id, permissions }) => $send(res, { data: { id: _id, permissions } });
 
-  // todo: remove password
   server.get("/api/user/:id", (req, res) => getUser(req.params.id)
-    .then(data => $send(res, { data }))
+    .then(user => $sendUser(res, user))
     .catch(error => $send(res, { error })));
 
   server.post("/api/user", (req, res) => {
@@ -34,7 +34,7 @@ const install = ({ server, models, $send }) => {
             _id: id
           });
           user.isNew = true;
-          user.save((error, data) => $send(res, { error, data })); // todo: don't send password back
+          user.save((error, data) => data ? $sendUser(res, data) : $send(res, { error, data }));
         } else {
           $send.missingPermission(res, permission.admin);
         }
@@ -42,7 +42,7 @@ const install = ({ server, models, $send }) => {
       .catch(error => $send(res, { error }));
   });
 
-  server.post("/api/login", (req, res) => {
+  server.post("/api/session/login", (req, res) => {
     if (getSessionUserId(req)) {
       $send(res, { error: "already-logged-in", errorCode: 400 });
     } else {
@@ -51,7 +51,7 @@ const install = ({ server, models, $send }) => {
         .then(user => {
           if (user.password === encrypt(password)) {
             $setSessionUserId(req, id);
-            $send(res, { data: id });
+            $sendUser(res, user);
           } else {
             $send(res, { error: "incorrect-password", errorCode: 400 });
           }
@@ -60,7 +60,7 @@ const install = ({ server, models, $send }) => {
     }
   });
 
-  server.post("/api/logout", (req, res) => {
+  server.post("/api/session/logout", (req, res) => {
     const id = getSessionUserId(req);
     if (id) {
       $setSessionUserId(req, undefined);
@@ -72,7 +72,7 @@ const install = ({ server, models, $send }) => {
 
   server.get("/api/session", (req, res) =>
     getSessionUser(req)
-      .then(user => $send(res, { data: user })) // todo: don't send password back
+      .then(user => $sendUser(res, user))
       .catch(error => $send(res, { error, errorCode: 400 })));
 
   $createDefaults();
@@ -105,7 +105,7 @@ const $setSessionUserId = (req, userId) => $putSession(req, { userId });
 
 const getSessionUser = req => getSessionUserId(req) ? getUser(getSessionUserId(req)) : Promise.reject("not-logged-in");
 
-const getUser = _id => new Promise((res, rej) => $model.findOne({ _id }, (error, data) => data && !error ? res(data) : rej(error || "user not found")));
+const getUser = _id => new Promise((res, rej) => $model.findOne({ _id }, (error, data) => data && !error ? res(data) : rej(error)));
 
 const hasPermission = (user, permission, notImpliedByAdmin) => user.permissions.includes(permission) || (!notImpliedByAdmin && user.permissions.includes(permission.admin));
 

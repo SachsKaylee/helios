@@ -10,6 +10,7 @@ const next = require('next')({
 });
 
 const $send = (res, { error, data, errorCode, successCode }) => {
+  console.info("sending", { error, data, errorCode, successCode })
   if (error) {
     res.status(errorCode || 500);
     res.send(error);

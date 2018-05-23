@@ -4,6 +4,7 @@ import classNames from "classnames";
 import React from 'react'
 import { isKeyHotkey } from 'is-hotkey'
 import ReactTooltip from 'react-tooltip';
+import Tag from "./Tag";
 
 const DEFAULT_NODE = 'paragraph'
 const isBoldHotkey = isKeyHotkey('mod+b')
@@ -99,14 +100,14 @@ export default class extends React.Component {
     return (<div>
       <ReactTooltip id="editor-toolbar" effect="solid" />
       {stylesChooser && (<div className="style-chooser">
-        <p className="style-chooser-text"><span className="tag is-info">Format Selection</span></p>
+        <p className="style-chooser-text"><Tag type="info">Format Selection</Tag></p>
         {this.renderMarkButton('bold', 'bold', "Bold")}
         {this.renderMarkButton('italic', 'italic', "Italic")}
         {this.renderMarkButton('underlined', 'underline', "Underlined")}
         {this.renderMarkButton('code', 'code', "Inline Code")}
       </div>)}
       {stylesChooser && (<div className="style-chooser">
-        <p className="style-chooser-text"><span className="tag is-info">Format Paragraph</span></p>
+        <p className="style-chooser-text"><Tag type="info">Format Paragraph</Tag></p>
         {this.renderBlockButton('heading-one', 'heading', "Headline 1", "H1")}
         {this.renderBlockButton('heading-two', 'heading', "Headline 2", "H2")}
         {this.renderBlockButton('block-quote', 'quote-right', "Quote")}
@@ -114,7 +115,7 @@ export default class extends React.Component {
         {this.renderBlockButton('bulleted-list', 'list-ul', "Bulleted List")}
       </div>)}
       <div className="style-chooser">
-        <p className="style-chooser-text"><span className="tag is-info">Post Actions</span></p>
+        <p className="style-chooser-text"><Tag type="info">Post Actions</Tag></p>
         {buttons.publish && (<a className="style-chooser-button button is-primary" onClick={this.props.onSave}>Publish</a>)}
         {buttons.discard && (<a className="style-chooser-button button is-danger" onClick={this.props.onCancel}>Discard</a>)}
         {buttons.delete && (<a className="style-chooser-button button is-danger" onClick={this.props.onDelete}>Delete</a>)}
