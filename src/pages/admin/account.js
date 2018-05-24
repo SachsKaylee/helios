@@ -82,7 +82,7 @@ export default class Account extends React.Component {
   render() {
     return (<Layout title="Account">
       <SidebarLayout size={3} sidebar={this.renderSidebar()}>
-        <Card compactY>{this.renderContent()}</Card>
+        <Card compactY compactX>{this.renderContent()}</Card>
       </SidebarLayout>
     </Layout>)
   }
@@ -101,12 +101,12 @@ export default class Account extends React.Component {
   }
 
   renderSidebar() {
-    return <Card compactY compactX>
+    return (<Card compactY compactX>
       <p><Tag type="info">Notifications</Tag></p>
       <NotificationProvider ref={n => this.notifications = n} >
         <p>🤘 No notifications!</p>
       </NotificationProvider>
-    </Card>
+    </Card>);
   }
 
   renderLogIn() {
@@ -148,26 +148,18 @@ export default class Account extends React.Component {
           <p>You have the following permissions: {permissions.length ? permissions.map(p => (<Tag key={p}>{p}</Tag>)) : "none"}</p>
         </div>
       </div>
-      <div className="media">
-        <div className="media-content">
-          <h2 className="subtitle">Update profile</h2>
-          {this.renderUpdateForm()}
-        </div>
-      </div>
-      <div className="media">
-        <div className="media-content">
-          <h2 className="subtitle">Actions</h2>
-          <a className="button is-primary" onClick={this.onSignOut}>🔑 Sign Out</a>
-          <A className="button is-link" href={`/about/${id}`}>👁️ View Public Profile</A>
-          <a className="button is-danger">🔥 Delete Account</a>
-        </div>
-      </div>
+      <h2 className="subtitle">Update profile</h2>
+      {this.renderUpdateForm()}
+      <h2 className="subtitle">Actions</h2>
+      <a className="button is-primary" onClick={this.onSignOut}>🔑 Sign Out</a>
+      <A className="button is-link" href={`/about/${id}`}>👁️ View Public Profile</A>
+      <a className="button is-danger">🔥 Delete Account</a>
     </div>);
   }
 
   renderUpdateForm() {
     return (<Form
-      submitText={(<span><i className="fas fa-save"/> Save</span>)}
+      submitText={(<span><i className="fas fa-save" /> Save</span>)}
       onSubmit={this.onSubmitProfile}
       elements={[
         {

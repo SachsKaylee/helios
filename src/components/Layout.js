@@ -11,30 +11,28 @@ export default (({ title, children }) => (
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css" />
       <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
     </Head>
+    <Navbar
+      title={"Patrick Sachs - " + title}
+      logo="/static/content/system/logo.png"
+      links={[{
+        title: "Home",
+        link: "/"
+      }, {
+        title: "Projects",
+        link: "/projects"
+      }, {
+        title: "Admin",
+        link: "/admin",
+        children: [{
+          title: "New Post",
+          link: "/admin/post"
+        }, {
+          title: "Account",
+          link: "/admin/account"
+        }]
+      }]} />
     <div className="container">
-      <Navbar
-        title={"Patrick Sachs - " + title}
-        logo="/static/content/system/logo.png"
-        links={[{
-          title: "Home",
-          link: "/"
-        }, {
-          title: "Projects",
-          link: "/projects"
-        }, {
-          title: "Admin",
-          link: "/admin",
-          children: [{
-            title: "New Post",
-            link: "/admin/post"
-          },{
-            title: "Account",
-            link: "/admin/account"
-          }]
-        }]} />
-      <div className="container">
-        {children}
-      </div>
+      {children}
     </div>
     <style jsx>
       {`html, body {

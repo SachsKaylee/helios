@@ -17,14 +17,14 @@ export default class extends React.Component {
   render() {
     const { logo, title, links } = this.props;
     const { active } = this.state;
-    return (<nav className="navbar">
+    return (<nav className="navbar" role="navigation" aria-label="main navigation">
       <div className="container">
         <div className="navbar-brand">
           <A className="navbar-item" href="../">
             <img className="logo-image" src={logo} alt="Logo" />
             {title}
           </A>
-          <span className={classnames("navbar-burger", "burger", active && "is-active")} onClick={this.toggleActive}>
+          <span className={classnames("navbar-burger", "burger", active && "is-active")} onClick={this.toggleActive} aria-label="menu" aria-expanded={active}>
             <span></span>
             <span></span>
             <span></span>

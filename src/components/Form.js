@@ -72,6 +72,7 @@
  */
 import React from "react";
 import fp from "../fp";
+import classnames from "classnames";
 
 class Form extends React.Component {
   constructor(p) {
@@ -107,7 +108,7 @@ class Form extends React.Component {
   renderSubmit() {
     const { submitText } = this.props;
     const { waiting } = this.state;
-    return (<a disabled={waiting} className="button is-primary" onClick={this.onSubmit}>
+    return (<a disabled={waiting} className={classnames("button", "is-primary", waiting && "is-loading")} onClick={this.onSubmit}>
       {submitText || "Submit"}
     </a>);
   }

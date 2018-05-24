@@ -41,3 +41,9 @@ $ npm run dev
 $ npm run build
 $ npm run start
 ```
+
+## Contributing
+
+Always welcome!
+
+Make sure to read CONTRIBUTING.md and STYLE.md beforehand though.
