@@ -1,3 +1,4 @@
 module.exports = {
-  title: "Helios"
+  title: "Helios",
+  maxAvatarSize: 200 * 1024
 }

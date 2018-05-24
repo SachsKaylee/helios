@@ -26,10 +26,16 @@ const sandbox = (code, net) => {
   }
 }
 
+const all = (array, predicate) => {
+  const invertedPredicate = (value, index, array) => !predicate(value, index, array);
+  const found = array.find(invertedPredicate);
+  return found === undefined ? true : false;
+}
 
 module.exports = {
   mapObject,
   splice,
   sandbox,
-  arrayToObject
+  arrayToObject, 
+  all
 }

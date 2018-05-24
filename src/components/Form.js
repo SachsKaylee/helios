@@ -199,7 +199,6 @@ class Form extends React.Component {
     this.getValidatedValues()
       .then(({ result, values }) => {
         console.log("Form submit!", "result", result, "values", values);
-        if (this.mounted) this.setState({ result });
         Promise.resolve(onSubmit(values))
           .then(res => this.mounted && this.setState({
             waiting: false,

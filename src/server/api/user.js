@@ -3,12 +3,14 @@
  */
 const config = require("../../config/server");
 const crypto = require("crypto");
+const fp = require("../../fp");
 
 let $model;
 
 const schema = ({ mongoose }) => {
   return mongoose.Schema({
     _id: String,
+    avatar: String,
     password: String,
     permissions: [String]
   });
@@ -16,7 +18,7 @@ const schema = ({ mongoose }) => {
 
 const install = ({ server, models, $send }) => {
   $model = models.user;
-  const $sendUser = (res, { _id, permissions }) => $send(res, { data: { id: _id, permissions } });
+  const $sendUser = (res, { _id, avatar, permissions }) => $send(res, { data: { id: _id, avatar, permissions } });
 
   server.get("/api/user/:id", (req, res) => getUser(req.params.id)
     .then(user => $sendUser(res, user))
@@ -53,7 +55,7 @@ const install = ({ server, models, $send }) => {
             $setSessionUserId(req, id);
             $sendUser(res, user);
           } else {
-            $send(res, { error: "incorrect-password", errorCode: 400 });
+            $send.incorrectPassword(res);
           }
         })
         .catch(error => $send(res, { error, errorCode: 400 }));
@@ -75,7 +77,34 @@ const install = ({ server, models, $send }) => {
       .then(user => $sendUser(res, user))
       .catch(error => $send(res, { error, errorCode: 400 })));
 
+  server.put("/api/session", (req, res) => getSessionUser(req)
+    .then(user => {
+      const { password } = req.body;
+      if (user.password !== encrypt(password)) {
+        $send.incorrectPassword(res);
+      } else {
+        const { passwordNew, avatar } = req.body;
+        const newModel = createUpdatedModel(user, { password: passwordNew, avatar });
+        newModel.save((error, data) => (error || !data) ? $send(res, { error, data }) : $sendUser(res, data));
+      }
+    })
+    .catch(error => $send(res, { error, errorCode: 400 })));
+
   $createDefaults();
+}
+
+const createUpdatedModel = (user, { password, avatar, permissions }) => {
+  const validPassword = password => password && ("string" === typeof password);
+  const validAvatar = avatar => avatar && ("string" === typeof avatar) && avatar.length <= 200 * 1024;
+  const validPermissions = permissions => permissions && Array.isArray(permission) && fp.all(permissions, p => permission[p]);
+  const newUser = new $model({
+    _id: user._id,
+    permissions: validPermissions(permissions) ? permissions : user.permissions,
+    password: validPassword(password) ? encrypt(password) : user.password,
+    avatar: validAvatar(avatar) ? avatar : user.avatar
+  });
+  newUser.isNew = false;
+  return newUser;
 }
 
 // Create default content for the CMS
@@ -84,6 +113,7 @@ const $createDefaults = () => {
     const { password, id } = config.defaultUser;
     const user = new $model({
       _id: id,
+      avatar: "",
       password: encrypt(password),
       permissions: [permission.admin]
     });

@@ -23,12 +23,13 @@ const $send = (res, { error, data, errorCode, successCode }) => {
   }
 }
 $send.missingPermission = (res, permission) => $send(res, { error: `missing-permission-${permission}`, errorCode: 403 });
+$send.incorrectPassword = (res) => $send(res, { error: "incorrect-password", errorCode: 400 });
 
 Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
   const server = express();
 
-  server.use(express.json());
-  server.use(express.urlencoded({ extended: true }));
+  server.use(express.json({ limit: config.maxPayloadSize }));
+  server.use(express.urlencoded({ limit: config.maxPayloadSize, extended: true }));
   server.use("/static", express.static("static"));
   server.use(session({
     // todo: Have a look at this again once we switch to HTTPS, or go live(Cookie laws...)!

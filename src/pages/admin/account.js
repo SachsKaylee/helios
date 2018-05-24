@@ -1,8 +1,9 @@
 import React from "react";
-import { get, post } from "axios";
+import { get, post, put } from "axios";
 import Layout from "../../components/Layout";
 import Card from "../../components/Card";
 import Form from "../../components/Form";
+import A from "../../components/A";
 import SidebarLayout from "../../components/SidebarLayout";
 import Tag from "../../components/Tag";
 import NotificationProvider from "../../components/NotificationProvider";
@@ -22,14 +23,14 @@ export default class Account extends React.Component {
       .catch(() => this.setState({ session: "none" }));
   }
 
-  onSubmit = async values => {
+  onSubmit = values => {
     return new Promise((res, rej) => {
       post("/api/session/login", values)
         .then(({ data }) => {
           this.notifications.push({
             type: "success",
             canClose: true,
-            children: "You were logged in."
+            children: "🔑 You were signed in."
           });
           this.setState({ session: data });
           res();
@@ -37,9 +38,9 @@ export default class Account extends React.Component {
         .catch(error => {
           console.error("log in error", error.response.data);
           rej(errorToMessage(error.response.data));
-        })
-    })
-  };
+        });
+    });
+  }
 
   onSignOut = () => {
     post("/api/session/logout")
@@ -47,15 +48,39 @@ export default class Account extends React.Component {
         this.notifications.push({
           type: "success",
           canClose: true,
-          children: "You were logged out."
+          children: "🔑 You were signed out."
         });
-        this.setState({ session: "none" })
+        this.setState({ session: "none" });
       })
       .catch(console.error);
   }
 
+  onSubmitProfile = values => {
+    const newData = {
+      password: values.password,
+      passwordNew: values.passwordNew,
+      avatar: values.avatar.data
+    };
+    return new Promise((res, rej) => {
+      put("/api/session", newData)
+        .then(({ data }) => {
+          this.notifications.push({
+            type: "success",
+            canClose: true,
+            children: "💾 Your profile has been updated."
+          });
+          this.setState({ session: data });
+          res();
+        })
+        .catch(error => {
+          console.error("save profile error", error.response.data);
+          rej(errorToMessage(error.response.data));
+        });
+    });
+  }
+
   render() {
-    return (<Layout title="Log In">
+    return (<Layout title="Account">
       <SidebarLayout size={3} sidebar={this.renderSidebar()}>
         <Card compactY>{this.renderContent()}</Card>
       </SidebarLayout>
@@ -112,10 +137,72 @@ export default class Account extends React.Component {
     const { session } = this.state;
     const { id, permissions } = session;
     return (<div>
-      <h1>Welcome, {id}!</h1>
-      <p>You have the following permissions: {permissions.length ? permissions.map(p => (<Tag key={p}>{p}</Tag>)) : "none"}</p>
-      <a className="button is-primary" onClick={this.onSignOut}>Sign Out</a>
+      <div className="media">
+        <div className="media-left">
+          <figure className="image is-64x64">
+            <img src={`/static/content/avatars/${id}.png`} />
+          </figure>
+        </div>
+        <div className="media-content">
+          <h1 className="title">Welcome, {id}!</h1>
+          <p>You have the following permissions: {permissions.length ? permissions.map(p => (<Tag key={p}>{p}</Tag>)) : "none"}</p>
+        </div>
+      </div>
+      <div className="media">
+        <div className="media-content">
+          <h2 className="subtitle">Update profile</h2>
+          {this.renderUpdateForm()}
+        </div>
+      </div>
+      <div className="media">
+        <div className="media-content">
+          <h2 className="subtitle">Actions</h2>
+          <a className="button is-primary" onClick={this.onSignOut}>🔑 Sign Out</a>
+          <A className="button is-link" href={`/about/${id}`}>👁️ View Public Profile</A>
+          <a className="button is-danger">🔥 Delete Account</a>
+        </div>
+      </div>
     </div>);
+  }
+
+  renderUpdateForm() {
+    return (<Form
+      submitText={(<span><i className="fas fa-save"/> Save</span>)}
+      onSubmit={this.onSubmitProfile}
+      elements={[
+        {
+          key: "avatar",
+          type: "file",
+          name: "Change Avatar",
+          validator: avatar => ({ error: avatar.size > 200 * 1024, message: "The avatar may not be larger than 200KiB." })
+        },
+        {
+          key: "passwordNew",
+          type: "text",
+          name: "Change Password",
+          mode: "password",
+          ignoreData: true,
+          placeholder: "🔑 Your new password (optional)"
+        },
+        {
+          key: "passwordNewConfirm",
+          type: "text",
+          name: "Change Password (Confirm)",
+          mode: "password",
+          ignoreData: true,
+          placeholder: "🔑 Confirm your new password (optional)",
+          validator: (v, d) => ({ error: v !== d.passwordNew, message: "The two passwords are different." })
+        },
+        {
+          key: "password",
+          type: "text",
+          name: (<span><i className="fas fa-exclamation" /> Enter your current Password to confirm</span>),
+          mode: "password",
+          ignoreData: true,
+          placeholder: "🔑 Your old password (required)",
+          validator: pw => ({ error: !pw, message: "Enter your password to confirm." })
+        }
+      ]} />);
   }
 };
 

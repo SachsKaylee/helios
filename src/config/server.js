@@ -1,3 +1,5 @@
+const client = require("./client");
+
 module.exports = {
   passwordSecret: "sol-invictus",
   cookieSecret: "7-rays-of-light",
@@ -7,5 +9,6 @@ module.exports = {
     id: "admin",
     password: "helios"
   },
-  client: require("./client")
+  maxPayloadSize: client.maxAvatarSize + 100 * 1024,
+  client
 }
