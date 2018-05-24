@@ -28,7 +28,7 @@ export default class extends React.PureComponent {
       const { data } = await axios.get("/api/session");
       return {
         post: {
-          author: data._id, // todo: author
+          author: data.id,
           title: "New Post ...",
           content: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
         }
@@ -160,7 +160,7 @@ export default class extends React.PureComponent {
   render() {
     const { id, title, content, isNew, date, author, lastChanged } = this.state;
     return (
-      <Layout title={`Post: ${isNew ? id : `Composing...`}`}>
+      <Layout title={`Post: ${isNew ? `Composing...` : id}`}>
         <SidebarLayout size={3} sidebar={<Card compactX compactY>
           <EditorToolbar
             stylesChooser={lastChanged === "content"}
