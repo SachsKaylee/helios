@@ -184,12 +184,6 @@ export default class extends React.PureComponent {
             title={title}
             onChange={this.onChange(true)}
           />
-          <Card compactY>
-            <p>Last changed: {lastChanged}</p>
-            <code style={{ color: "black" }}>
-              {JSON.stringify(this.state[lastChanged].toJSON())}
-            </code>
-          </Card>
         </SidebarLayout>
       </Layout>
     );
