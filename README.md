@@ -19,7 +19,7 @@ Why should you **use** Helios?
 - Helios was developed with a mobile first approach.
 - Helios is easily forkable - Getting into the codebase and changing things to your liking isn't difficult.
 - Helios is MIT licensed - You can do WHATEVER you want with it.
-- Helios is secure, traffic is served over HTTP/2(with HTTPS) only. (*Note*: Not as of now!)
+- Helios is secure, traffic is served over HTTPS(preferably HTTP/2) only.
 
 Why should you **not use** Helios?
 

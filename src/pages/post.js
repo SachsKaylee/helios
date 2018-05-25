@@ -5,6 +5,7 @@ import Card from "../components/Card"
 import React from "react"
 import axios from "axios"
 import Plain from 'slate-plain-serializer';
+import Head from "next/head";
 import { Value } from 'slate'
 
 export default class extends React.Component {
@@ -14,8 +15,11 @@ export default class extends React.Component {
   }
 
   render() {
-    const { post } = this.props;
+    const { post, _id } = this.props;
     return (<Layout title={post.title}>
+      <Head>
+        <link key="canonical" rel="canonical" href={`/post/${_id}`} />
+      </Head>
       <Post
         edit={["show-admin-buttons"]}
         id={post._id}
