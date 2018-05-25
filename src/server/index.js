@@ -4,6 +4,9 @@ const api = require("./api");
 const db = require("./db");
 const config = require("../config/server");
 
+console.log("📡", "Helios is starting ...")
+console.log("📡", "Mode:", process.env.NODE_ENV)
+
 const next = require('next')({
   dev: process.env.NODE_ENV !== 'production',
   dir: "./src"
@@ -48,5 +51,5 @@ Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
   // Fallback
   server.get('*', next.getRequestHandler());
 
-  server.listen(80, (err) => err ? console.error("Error while listening", err) : console.log('Listening on port 80!'))
-}).catch(err => console.error("Error while preparing server!", err));
+  server.listen(config.port, (err) => err ? console.error("📡", "Error while listening", err) : console.log("📡", `Listening on port ${config.port}!`))
+}).catch(err => console.error("📡", "Error while preparing server!", err));

@@ -2,6 +2,9 @@ require('dotenv').config();
 const webpack = require('webpack');
 const path = require('path');
 const glob = require('glob');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
+console.log("NODE_ENV", process.env.NODE_ENV);
 
 module.exports = {
   webpack: (config, { dev }) => {
@@ -39,6 +42,7 @@ module.exports = {
 
     // Setup environment variables
     config.plugins.push(new webpack.EnvironmentPlugin(process.env));
+    config.plugins.push(new UglifyJsPlugin());
 
     return config;
   }

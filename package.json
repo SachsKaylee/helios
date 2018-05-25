@@ -7,15 +7,18 @@
   "license": "MIT",
   "scripts": {
     "dev": "node ./src/server",
-    "start": "node ./src/server",
+    "start": "cross-env NODE_ENV=production node ./src/server",
     "build": "next build src"
+  },
+  "devDependencies": {
+    "cross-env": "^5.1.6",
+    "uglifyjs-webpack-plugin": "^1.2.5"
   },
   "dependencies": {
     "@zeit/next-sass": "^0.2.0",
     "axios": "^0.18.0",
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-plugin-wrap-in-js": "^1.1.1",
-    "bloomer": "^0.6.3",
     "bulma": "^0.7.1",
     "classnames": "^2.2.5",
     "dotenv": "^5.0.1",
