@@ -73,6 +73,7 @@
 import React from "react";
 import fp from "../fp";
 import classnames from "classnames";
+import Icon, { icons } from "./Icon";
 
 class Form extends React.Component {
   constructor(p) {
@@ -137,7 +138,7 @@ class Form extends React.Component {
               multiple={multiple}
               onChange={(e) => this.setFieldMeta(key, [...e.currentTarget.files].map(f => f.name))} />
             <span className="file-cta">
-              <span className="file-icon"><i className="fas fa-upload" /></span>
+              <span className="file-icon"><Icon>{icons.upload}</Icon></span>
               <span className="file-label">Choose a file…</span>
             </span>
             <span className="file-name">{this.renderFileList(meta)}</span>
@@ -188,8 +189,8 @@ class Form extends React.Component {
   }
 
   renderValidationResult(result) {
-    if (result && result.error) return (<span className="tag is-danger"><i className="fas fa-exclamation-triangle" />&nbsp;{result.message}</span>);
-    if (result && result.forceDisplay) return (<span className="tag is-info"><i className="fas fa-info" />&nbsp;{result.message}</span>);;
+    if (result && result.error) return (<span className="tag is-danger"><Icon>{icons.exclamation}</Icon>&nbsp;{result.message}</span>);
+    if (result && result.forceDisplay) return (<span className="tag is-info"><Icon>{icons.info}</Icon>&nbsp;{result.message}</span>);;
     return null;
   }
 

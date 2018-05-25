@@ -5,6 +5,7 @@ import React from 'react'
 import { isKeyHotkey } from 'is-hotkey'
 import ReactTooltip from 'react-tooltip';
 import Tag from "./Tag";
+import Icon, { icons } from "./Icon";
 
 const DEFAULT_NODE = 'paragraph'
 const isBoldHotkey = isKeyHotkey('mod+b')
@@ -101,18 +102,18 @@ export default class extends React.Component {
       <ReactTooltip id="editor-toolbar" effect="solid" />
       {stylesChooser && (<div className="style-chooser">
         <p className="style-chooser-text"><Tag type="info">Format Selection</Tag></p>
-        {this.renderMarkButton('bold', 'bold', "Bold")}
-        {this.renderMarkButton('italic', 'italic', "Italic")}
-        {this.renderMarkButton('underlined', 'underline', "Underlined")}
-        {this.renderMarkButton('code', 'code', "Inline Code")}
+        {this.renderMarkButton('bold', icons.bold, "Bold")}
+        {this.renderMarkButton('italic', icons.italic, "Italic")}
+        {this.renderMarkButton('underlined', icons.underline, "Underlined")}
+        {this.renderMarkButton('code', icons.code, "Inline Code")}
       </div>)}
       {stylesChooser && (<div className="style-chooser">
         <p className="style-chooser-text"><Tag type="info">Format Paragraph</Tag></p>
-        {this.renderBlockButton('heading-one', 'heading', "Headline 1", "H1")}
-        {this.renderBlockButton('heading-two', 'heading', "Headline 2", "H2")}
-        {this.renderBlockButton('block-quote', 'quote-right', "Quote")}
-        {this.renderBlockButton('numbered-list', 'list-ol', "Numbered List")}
-        {this.renderBlockButton('bulleted-list', 'list-ul', "Bulleted List")}
+        {this.renderBlockButton('heading-one', icons.heading, "Headline 1", "H1")}
+        {this.renderBlockButton('heading-two', icons.heading, "Headline 2", "H2")}
+        {this.renderBlockButton('block-quote', icons.quoteRight, "Quote")}
+        {this.renderBlockButton('numbered-list', icons.listOl, "Numbered List")}
+        {this.renderBlockButton('bulleted-list', icons.listUl, "Bulleted List")}
       </div>)}
       <div className="style-chooser">
         <p className="style-chooser-text"><Tag type="info">Post Actions</Tag></p>
@@ -143,7 +144,7 @@ export default class extends React.Component {
       <span className="icon" onMouseDown={onMouseDown} data-active={isActive} data-tip={tooltip} data-for="editor-toolbar"
         style={isActive ? { border: "1px solid", borderRadius: 1, margin: 1 } : { margin: 1 }}>
         <span className="fa-layers fa-fw">
-          <i className={classNames("fas", "fa-" + icon)} />
+          <Icon>{icon}</Icon>
           {details && <span className="fa-layers-counter">{details}</span>}
         </span>
       </span>
@@ -164,7 +165,7 @@ export default class extends React.Component {
       <span className="icon" onMouseDown={onMouseDown} data-active={isActive} data-tip={tooltip} data-for="editor-toolbar"
         style={isActive ? { border: "1px solid", borderRadius: 1, margin: 1 } : { margin: 1 }}>
         <span className="fa-layers fa-fw">
-          <i className={classNames("fas", "fa-" + icon)} />
+          <Icon>{icon}</Icon>
           {details && <span className="fa-layers-counter">{details}</span>}
         </span>
       </span>

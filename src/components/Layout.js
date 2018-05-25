@@ -10,7 +10,6 @@ export default (({ title, children }) => (
       <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
       <title key="title">{title} | Patrick Sachs</title>
       <style dangerouslySetInnerHTML={{ __html: style }} />
-      <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
     </Head>
     <Navbar
       title={"Patrick Sachs - " + title}
