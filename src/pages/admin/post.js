@@ -5,7 +5,6 @@ import A from "../../components/A";
 import { uuid } from "../../uuid";
 import { Value } from "slate";
 import fp from "../../fp";
-import lorem from "lorem-ipsum";
 import Plain from 'slate-plain-serializer';
 import React from "react";
 import Card from "../../components/Card"

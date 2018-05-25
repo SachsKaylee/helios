@@ -1,7 +1,6 @@
 import Layout from "../components/Layout";
 import SidebarLayout from "../components/SidebarLayout";
 import Posts from "../components/Posts";
-import lorem from "lorem-ipsum";
 import Plain from 'slate-plain-serializer';
 import Card from "../components/Card"
 import React from "react"
@@ -35,7 +34,7 @@ export default class extends React.Component {
     // todo: pagination
     const { posts } = this.props;
     return (<Layout title="Blog">
-      <SidebarLayout size={3} sidebar={<Card compactX compactY>{lorem({ count: 5 })}</Card>}>
+      <SidebarLayout size={3} sidebar={<Card compactX compactY>{"Lorem Ipsum"}</Card>}>
         <Posts posts={posts.map(p => ({
           ...p,
           title: Plain.deserialize(p.title),

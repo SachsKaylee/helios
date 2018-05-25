@@ -1,7 +1,6 @@
 import Layout from "../components/Layout";
 import SidebarLayout from "../components/SidebarLayout";
 import Post from "../components/Post";
-import lorem from "lorem-ipsum";
 import Card from "../components/Card"
 import React from "react"
 import axios from "axios"
