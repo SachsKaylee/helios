@@ -5,7 +5,7 @@ import React from 'react'
 import { isKeyHotkey } from 'is-hotkey'
 import ReactTooltip from 'react-tooltip';
 import Tag from "./Tag";
-import Icon, { icons } from "./Icon";
+import { IconLayers, icons } from "./Icon";
 
 const DEFAULT_NODE = 'paragraph'
 const isBoldHotkey = isKeyHotkey('mod+b')
@@ -143,10 +143,7 @@ export default class extends React.Component {
     return (
       <span className="icon" onMouseDown={onMouseDown} data-active={isActive} data-tip={tooltip} data-for="editor-toolbar"
         style={isActive ? { border: "1px solid", borderRadius: 1, margin: 1 } : { margin: 1 }}>
-        <span className="fa-layers fa-fw">
-          <Icon>{icon}</Icon>
-          {details && <span className="fa-layers-counter">{details}</span>}
-        </span>
+        <IconLayers counter={details}>{icon}</IconLayers>
       </span>
     )
   }
@@ -164,10 +161,7 @@ export default class extends React.Component {
     return (
       <span className="icon" onMouseDown={onMouseDown} data-active={isActive} data-tip={tooltip} data-for="editor-toolbar"
         style={isActive ? { border: "1px solid", borderRadius: 1, margin: 1 } : { margin: 1 }}>
-        <span className="fa-layers fa-fw">
-          <Icon>{icon}</Icon>
-          {details && <span className="fa-layers-counter">{details}</span>}
-        </span>
+        <IconLayers counter={details}>{icon}</IconLayers>
       </span>
     )
   }
