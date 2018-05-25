@@ -7,6 +7,7 @@ import A from "../../components/A";
 import SidebarLayout from "../../components/SidebarLayout";
 import Tag from "../../components/Tag";
 import NotificationProvider from "../../components/NotificationProvider";
+import Icon, { icons } from "../../components/Icon";
 
 export default class Account extends React.Component {
   constructor(p) {
@@ -159,7 +160,7 @@ export default class Account extends React.Component {
 
   renderUpdateForm() {
     return (<Form
-      submitText={(<span><i className="fas fa-save" /> Save</span>)}
+      submitText={(<span><Icon>{icons.save}</Icon> Save</span>)}
       onSubmit={this.onSubmitProfile}
       elements={[
         {
@@ -188,7 +189,7 @@ export default class Account extends React.Component {
         {
           key: "password",
           type: "text",
-          name: (<span><i className="fas fa-exclamation" /> Enter your current Password to confirm</span>),
+          name: (<span><Icon>{icons.exclamation}</Icon> Enter your current Password to confirm</span>),
           mode: "password",
           ignoreData: true,
           placeholder: "🔑 Your old password (required)",
