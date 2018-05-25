@@ -10,6 +10,13 @@ const schema = ({ mongoose }) => {
   });
 }
 
+const niceUri = text =>
+  (("" + (text || uuid.uuidSection())) // Make sure we have a string! If not just shove a UUID in there.
+    .replace(/[^a-zA-Z0-9]/g, '-')     // Replace non alphanumerical things with "-"
+    .toLowerCase()                     // the interet is lowercase
+    + "-" + uuid.uuidSection())        // Append a UUID to it, in case someone writes two posts with the same title
+    .replace(/-+/g, "-");              // Avoid having URIs with multiple "-"s after another
+
 const install = ({ server, models, $send }) => {
   // todo: introduce optional limit, etc.
   // https://stackoverflow.com/questions/5830513/how-do-i-limit-the-number-of-returned-items
@@ -20,7 +27,8 @@ const install = ({ server, models, $send }) => {
   });
 
   server.post("/api/post", (req, res) => {
-    const post = new models.post({ ...req.body, _id: uuid() });
+    const { title } = req.body;
+    const post = new models.post({ ...req.body, _id: niceUri(title) });
     post.isNew = true;
     post.save((error, data) => {
       $send(res, { error, data })
@@ -28,7 +36,9 @@ const install = ({ server, models, $send }) => {
   });
 
   server.get("/api/post/:id", (req, res) => {
-    models.post.findOne({ _id: req.params.id }, (error, data) => {
+    // We use a reg exp to find the post to allow users to potentially omit the UUID from the URL.
+    const idRegExp = new RegExp("^" + req.params.id);
+    models.post.findOne({ _id: idRegExp }, (error, data) => {
       $send(res, { error, data });
     });
   });

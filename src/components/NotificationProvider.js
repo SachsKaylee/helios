@@ -1,7 +1,7 @@
 import React from "react";
 import Notification from "./Notification";
 import fp from "../fp";
-import uuid from "../uuid";
+import { uuid } from "../uuid";
 
 export default class extends React.Component {
   state = {

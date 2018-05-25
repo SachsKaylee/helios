@@ -2,7 +2,6 @@ import Layout from "../../components/Layout";
 import SidebarLayout from "../../components/SidebarLayout";
 import EditorToolbar from "../../components/EditorToolbar";
 import A from "../../components/A";
-import { uuid } from "../../uuid";
 import { Value } from "slate";
 import fp from "../../fp";
 import Plain from 'slate-plain-serializer';

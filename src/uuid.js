@@ -1,5 +1,7 @@
-const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+const uuidSection = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 
-const uuid = () => s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+const uuid = () => uuidSection() + uuidSection() + '-' + uuidSection() + '-' + uuidSection() + '-' + uuidSection() + '-' + uuidSection() + uuidSection() + uuidSection();
 
-module.exports = uuid
+module.exports = {
+  uuid, uuidSection
+}
