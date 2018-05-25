@@ -42,7 +42,9 @@ module.exports = {
 
     // Setup environment variables
     config.plugins.push(new webpack.EnvironmentPlugin(process.env));
-    config.plugins.push(new UglifyJsPlugin());
+    if (process.env.NODE_ENV === "production") {
+      config.plugins.push(new UglifyJsPlugin());
+    }
 
     return config;
   }
