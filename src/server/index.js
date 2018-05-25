@@ -1,14 +1,24 @@
 const express = require('express');
+const spdy = require("spdy");
 const session = require('express-session');
 const api = require("./api");
 const db = require("./db");
 const config = require("../config/server");
+const fs = require("fs");
+const axios = require("axios");
 
-console.log("📡", "Helios is starting ...")
-console.log("📡", "Mode:", process.env.NODE_ENV)
+const isDevelopment = process.env.NODE_ENV !== "production";
+
+axios.defaults.baseURL = `https://localhost:${config.port}`;
+if (isDevelopment) {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+}
+
+console.log("📡", "Helios is starting ...");
+console.log("📡", "Dev-Mode:", isDevelopment);
 
 const next = require('next')({
-  dev: process.env.NODE_ENV !== 'production',
+  dev: isDevelopment,
   dir: "./src"
 });
 
@@ -51,5 +61,13 @@ Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
   // Fallback
   server.get('*', next.getRequestHandler());
 
-  server.listen(config.port, (err) => err ? console.error("📡", "Error while listening", err) : console.log("📡", `Listening on port ${config.port}!`))
+  spdy.createServer(spdyOptions(), server).listen(config.port, (err) => err ? console.error("📡", "Error while listening", err) : console.log("📡", `Listening on port ${config.port}!`))
 }).catch(err => console.error("📡", "Error while preparing server!", err));
+
+const spdyOptions = () => {
+  const { key, cert } = config.certs;
+  return {
+    key: fs.readFileSync(key),
+    cert: fs.readFileSync(cert)
+  };
+};
