@@ -90,19 +90,14 @@ class Form extends React.Component {
   componentWillUnmount() { this.mounted = false; }
 
   render() {
-    const { elements, classes } = this.props;
-    return (<form onSubmit={this.onSubmit}>
+    const { elements, classes, className } = this.props;
+    return (<form onSubmit={this.onSubmit} className={className}>
       <div>
         {elements.map(this.renderFormElement)}
       </div>
-      <div className="submit-div">
+      <div className="push-12">
         {this.renderSubmit()}
       </div>
-      <style jsx>{`
-        .submit-div {
-          margin-top: 12px;
-        }
-      `}</style>
     </form>);
   }
 

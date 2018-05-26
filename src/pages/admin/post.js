@@ -11,6 +11,7 @@ import Post from "../../components/Post";
 import dynamic from 'next/dynamic'
 import axios from "axios";
 import NotificationProvider from "../../components/NotificationProvider"
+import Icon, { icons } from "../../components/Icon";
 
 export default class extends React.PureComponent {
   constructor(p) {
@@ -129,14 +130,14 @@ export default class extends React.PureComponent {
 
   renderDeleteSuccessNotification() {
     return (<div>
-      <p className="subtitle">☠️ Post deleted!</p>
+      <p className="subtitle"><Icon>{icons.trash}</Icon> Post deleted!</p>
       <p>The post has been <strong>deleted</strong>. The contents of the post will remain in the editor in case you wish to re-publish it.</p>
     </div>);
   }
 
   renderDeleteConfirmNotification() {
     return (<div>
-      <p className="subtitle">🔥 Are you sure?</p>
+      <p className="subtitle"><Icon>{icons.exclamation}</Icon> Are you sure?</p>
       <p>You are about to delete the post. This action is permanent and <strong>cannot be undone</strong>.</p>
       <p><a onClick={this.onDelete(true)}>Fine by me, delete it!</a></p>
     </div>);
@@ -144,14 +145,14 @@ export default class extends React.PureComponent {
 
   renderPublishSuccessNotification(data) {
     return (<div>
-      <p className="subtitle">🎂 Published!</p>
+      <p className="subtitle"><Icon>{icons.cake}</Icon> Published!</p>
       <p>The post <A href={`/post/${data._id}`}>{data.title}</A> has been published!</p>
     </div>);
   }
 
   renderErrorNotification(error) {
     return (<div>
-      <p className="subtitle">🤖 Error!</p>
+      <p className="subtitle"><Icon>{icons.exclamation}</Icon> Error!</p>
       <p>An error occurred! Below you can see some details, be sure to pass it to a developer robot!</p>
       <p><code>{JSON.stringify(error)}</code></p>
     </div>);
@@ -159,7 +160,7 @@ export default class extends React.PureComponent {
 
   renderLoading() {
     return (<Layout title="Post: Loading...">
-      <Card compactY title={(<p>⏳ Loading Editor ⌛</p>)} ><p>Thank you for your patience.</p></Card>
+      <Card compactY title={(<p>Loading Editor ...</p>)} ><Icon spin size="4x">{icons.spinner}</Icon></Card>
     </Layout>);
   }
 

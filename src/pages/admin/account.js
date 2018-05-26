@@ -31,7 +31,7 @@ export default class Account extends React.Component {
           this.notifications.push({
             type: "success",
             canClose: true,
-            children: "🔑 You were signed in."
+            children: (<span><Icon>{icons.signIn}</Icon> You were signed in.</span>)
           });
           this.setState({ session: data });
           res();
@@ -49,7 +49,7 @@ export default class Account extends React.Component {
         this.notifications.push({
           type: "success",
           canClose: true,
-          children: "🔑 You were signed out."
+          children: (<span><Icon>{icons.signOut}</Icon> You were signed out.</span>)
         });
         this.setState({ session: "none" });
       })
@@ -68,7 +68,7 @@ export default class Account extends React.Component {
           this.notifications.push({
             type: "success",
             canClose: true,
-            children: "💾 Your profile has been updated."
+            children: (<span><Icon>{icons.user}</Icon> Your profile has been updated.</span>)
           });
           this.setState({ session: data });
           res();
@@ -105,14 +105,14 @@ export default class Account extends React.Component {
     return (<Card compactY compactX>
       <p><Tag type="info">Notifications</Tag></p>
       <NotificationProvider ref={n => this.notifications = n} >
-        <p>🤘 No notifications!</p>
+        <p>No notifications!</p>
       </NotificationProvider>
     </Card>);
   }
 
   renderLogIn() {
     return (<Form
-      submitText="Sign In"
+      submitText={(<span><Icon>{icons.signIn}</Icon> Sign In</span>)}
       onSubmit={this.onSubmit}
       elements={[
         {
@@ -120,7 +120,7 @@ export default class Account extends React.Component {
           type: "text",
           name: "Username",
           validator: (name) => ({ error: !name, message: "Please enter your username." }),
-          placeholder: "🙃 @your-name-here"
+          placeholder: "@your-name-here"
         },
         {
           key: "password",
@@ -129,7 +129,7 @@ export default class Account extends React.Component {
           mode: "password",
           ignoreData: true,
           validator: (pw) => ({ error: !pw, message: "Please enter your password." }),
-          placeholder: "🔑 Not 123!"
+          placeholder: "Not 123!"
         }
       ]} />);
   }
@@ -152,14 +152,15 @@ export default class Account extends React.Component {
       <h2 className="subtitle">Update profile</h2>
       {this.renderUpdateForm()}
       <h2 className="subtitle">Actions</h2>
-      <a className="button is-primary" onClick={this.onSignOut}>🔑 Sign Out</a>
-      <A className="button is-link" href={`/about/${id}`}>👁️ View Public Profile</A>
-      <a className="button is-danger">🔥 Delete Account</a>
+      <a className="margin-2 button is-primary" onClick={this.onSignOut}><Icon>{icons.signOut}</Icon> Sign Out</a>
+      <A className="margin-2 button is-link" href={`/about/${id}`}><Icon>{icons.eye}</Icon> View Public Profile</A>
+      <a className="margin-2 button is-danger"><Icon>{icons.trash}</Icon> Delete Account</a>
     </div>);
   }
 
   renderUpdateForm() {
     return (<Form
+      className="margin-2"
       submitText={(<span><Icon>{icons.save}</Icon> Save</span>)}
       onSubmit={this.onSubmitProfile}
       elements={[
@@ -175,7 +176,7 @@ export default class Account extends React.Component {
           name: "Change Password",
           mode: "password",
           ignoreData: true,
-          placeholder: "🔑 Your new password (optional)"
+          placeholder: "Your new password (optional)"
         },
         {
           key: "passwordNewConfirm",
@@ -183,7 +184,7 @@ export default class Account extends React.Component {
           name: "Change Password (Confirm)",
           mode: "password",
           ignoreData: true,
-          placeholder: "🔑 Confirm your new password (optional)",
+          placeholder: "Confirm your new password (optional)",
           validator: (v, d) => ({ error: v !== d.passwordNew, message: "The two passwords are different." })
         },
         {
@@ -192,7 +193,7 @@ export default class Account extends React.Component {
           name: (<span><Icon>{icons.exclamation}</Icon> Enter your current Password to confirm</span>),
           mode: "password",
           ignoreData: true,
-          placeholder: "🔑 Your old password (required)",
+          placeholder: "Your old password (required)",
           validator: pw => ({ error: !pw, message: "Enter your password to confirm." })
         }
       ]} />);

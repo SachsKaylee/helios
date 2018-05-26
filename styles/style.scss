@@ -8,5 +8,13 @@ html, body, #__next {
   overflow-y: unset !important; // Who thought that adding overflow-y scroll to html AND body is a good idea?
 }
 
+.margin-2 { 
+  margin: 2px; 
+}
+
+.push-12 {
+  margin-top: 12px;
+}
+
 // 3. Import the rest of Bulma;
 @import 'bulma/bulma';

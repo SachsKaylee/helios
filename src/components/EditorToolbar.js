@@ -100,39 +100,27 @@ export default class extends React.Component {
     const { stylesChooser, buttons } = this.props;
     return (<div>
       <ReactTooltip id="editor-toolbar" effect="solid" />
-      {stylesChooser && (<div className="style-chooser">
-        <p className="style-chooser-text"><Tag type="info">Format Selection</Tag></p>
+      {stylesChooser && (<div>
+        <div className="margin-2"><Tag type="info">Format Selection</Tag></div>
         {this.renderMarkButton('bold', icons.bold, "Bold")}
         {this.renderMarkButton('italic', icons.italic, "Italic")}
         {this.renderMarkButton('underlined', icons.underline, "Underlined")}
         {this.renderMarkButton('code', icons.code, "Inline Code")}
       </div>)}
-      {stylesChooser && (<div className="style-chooser">
-        <p className="style-chooser-text"><Tag type="info">Format Paragraph</Tag></p>
+      {stylesChooser && (<div>
+        <div className="margin-2"><Tag type="info">Format Paragraph</Tag></div>
         {this.renderBlockButton('heading-one', icons.heading, "Headline 1", "H1")}
         {this.renderBlockButton('heading-two', icons.heading, "Headline 2", "H2")}
         {this.renderBlockButton('block-quote', icons.quoteRight, "Quote")}
         {this.renderBlockButton('numbered-list', icons.listOl, "Numbered List")}
         {this.renderBlockButton('bulleted-list', icons.listUl, "Bulleted List")}
       </div>)}
-      <div className="style-chooser">
-        <p className="style-chooser-text"><Tag type="info">Post Actions</Tag></p>
-        {buttons.publish && (<a className="style-chooser-button button is-primary" onClick={this.props.onSave}>Publish</a>)}
-        {buttons.discard && (<a className="style-chooser-button button is-danger" onClick={this.props.onCancel}>Discard</a>)}
-        {buttons.delete && (<a className="style-chooser-button button is-danger" onClick={this.props.onDelete}>Delete</a>)}
+      <div>
+        <div className="margin-2"><Tag type="info">Post Actions</Tag></div>
+        {buttons.publish && (<a className="margin-2 button is-primary" onClick={this.props.onSave}>Publish</a>)}
+        {buttons.discard && (<a className="margin-2 button is-danger" onClick={this.props.onCancel}>Discard</a>)}
+        {buttons.delete && (<a className="margin-2 button is-danger" onClick={this.props.onDelete}>Delete</a>)}
       </div>
-      <style jsx>{`
-        .style-chooser {
-          padding-bottom: 12px;
-        }
-        .style-chooser-text {
-          margin-bottom: 2px !important;
-        }
-        .style-chooser-button {
-          margin-right: 2px;
-          margin-bottom: 2px;
-        }
-      `}</style>
     </div>)
   }
 

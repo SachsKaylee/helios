@@ -92,21 +92,18 @@ const CustomCard = ({ title, subtitle, children }) => // The newline is optional
 
 ### Indent using 2 spaces
 
-I'm sure you've notices already, but: We use two spaces for indent and add line break like reasonable people.
+I'm sure you've notices already, but: We use two spaces for indent and add line breaks like reasonable people.
 
 I feel like giving an example so here we go:
 
 Bad:
 ```js
 const SaveMe = ({ example }) => { const why
-                                            =
-          example === "useless"
+        =example === "useless"
 ? "not found"
                               : "learning purposes"
-                              ;
-                              return isUseful(
-        why
-);}
+                              ;return isUseful(
+  why);}
 ```
 
 Good:
@@ -120,3 +117,7 @@ const SaveMe = ({ example }) => {
 ```
 
 I'm sorry. I'm really sorry.
+
+### We use double quotes for strings
+
+This is at odds with what almost everyone else uses, but I come from languages in which strings were forcibly wrapped in double quotes. This also allows us to more easily differentiate between string templates and actual strings.

@@ -14,15 +14,10 @@ export default ({ id, author, date, title, content, edit, onChange }) => (
     subtitle={<><A href={readonly(edit) ? `/about/${author}` : undefined}>@{author}</A> on {date.toLocaleString()}</>}>
     <div>
       {createEditor({ edit, onChange, value: content, name: "content" })}
-      {buttons(edit) && (<div className="admin-buttons">
+      {buttons(edit) && (<div className="push-12">
         <A className="button is-link" href={`/admin/post/${id}`}>Edit Post</A>
       </div>)}
     </div>
-    <style jsx>{`
-      .admin-buttons {
-        margin-top: 12px;
-      }
-    `}</style>
   </Card>
 );
 

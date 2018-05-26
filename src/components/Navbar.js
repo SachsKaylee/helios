@@ -21,7 +21,8 @@ export default class extends React.Component {
       <div className="container">
         <div className="navbar-brand">
           <A className="navbar-item" href="../">
-            <img className="logo-image" src={logo} alt="Logo" />
+            <img src={logo} alt="Logo" />
+            &nbsp;
             {title}
           </A>
           <span className={classnames("navbar-burger", "burger", active && "is-active")} onClick={this.toggleActive} aria-label="menu" aria-expanded={active}>
@@ -36,11 +37,6 @@ export default class extends React.Component {
           </div>
         </div>
       </div>
-      <style jsx>
-        {`.logo-image {
-         margin-right: 6px;
-      }`}
-      </style>
     </nav>);
   }
 };
