@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Navbar from "./Navbar";
-import style from "../../styles/style.scss";
+import style from "../../styles/style.sass";
 
 export default (({ title, children }) => (
   <div>

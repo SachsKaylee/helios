@@ -5,7 +5,7 @@ export default ({ spacing: { top, inner } = {}, image, title, subtitle, children
     <div className="card-content">
       <div className="media">
         {image && (<div className="media-center">
-          <img src={image.src || image} className="top-image" alt={image.alt || image} />
+          <img src={image.src || image} className="card-shadow top-image" alt={image.alt || image} />
         </div>)}
         {(title || subtitle) && (<div className="media-content has-text-centered">
           {title && (<div className="title card-title">{title}</div>)}
@@ -27,7 +27,6 @@ export default ({ spacing: { top, inner } = {}, image, title, subtitle, children
         width: 60px;
         height: 60px;
         margin-left: -30px;
-        border: 3px solid #ccc;
         border-radius: 50%;
         background-color: white;
     }

@@ -1,0 +1,22 @@
+// 1. Import the initial variables
+@import 'bulma/sass/utilities/initial-variables'
+
+$card-shadow: 0 2px 3px rgba($black, 0.1), 0 0 2px 1px rgba($black, 0.1) !default
+
+// 2. Override styles
+html, body, #__next 
+  margin: 0
+  height: 100%
+  overflow-y: unset !important // Who thought that adding overflow-y scroll to html AND body is a good idea?
+
+.margin-2 
+  margin: 2px
+
+.push-12 
+  margin-top: 12px
+
+.card-shadow 
+  box-shadow: $card-shadow
+
+// 3. Import the rest of Bulma;
+@import 'bulma/bulma'
