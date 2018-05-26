@@ -8,6 +8,7 @@ export default (({ title, children }) => (
       <meta charSet="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
+      <link key="manifest" rel="manifest" href="/manifest.json" />
       <title key="title">{title} | Patrick Sachs</title>
       <style dangerouslySetInnerHTML={{ __html: style }} />
     </Head>

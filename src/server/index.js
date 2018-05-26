@@ -7,6 +7,7 @@ const session = require("express-session");
 const compression = require("compression");
 const api = require("./api");
 const db = require("./db");
+const robots = require("./robots");
 const config = require("../config/server");
 
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -57,7 +58,9 @@ Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
   server.get("/post/:id", (req, res) => next.render(req, res, "/post", req.params));
 
   // APIs
-  Object.keys(api).forEach(k => !api[k].doNotInstall && api[k].install({ ...dbResolved, server, $send }));
+  const installData = { ...dbResolved, server, $send };
+  robots.install(installData);
+  Object.keys(api).forEach(k => !api[k].doNotInstall && api[k].install(installData));
 
   // Fallback
   server.get('*', next.getRequestHandler());
