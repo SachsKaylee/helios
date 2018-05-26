@@ -7,6 +7,7 @@ import fp from "../../fp";
 import Plain from 'slate-plain-serializer';
 import React from "react";
 import Card from "../../components/Card"
+import Post from "../../components/Post";
 import dynamic from 'next/dynamic'
 import axios from "axios";
 import NotificationProvider from "../../components/NotificationProvider"
@@ -15,23 +16,24 @@ export default class extends React.PureComponent {
   constructor(p) {
     super(p);
     this.notifications = React.createRef();
-    this.state = this.stateFromData(p.post);
+    this.state = {
+      state: "loading"
+    };
   }
 
-  static async getInitialProps(p) {
-    if (p.query.id) {
-      const { data } = await axios.get(`/api/post/${p.query.id}`);
-      return { post: data };
-    } else {
-      const { data } = await axios.get("/api/session");
-      return {
-        post: {
-          author: data.id,
-          title: "New Post ...",
-          content: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
-        }
-      };
-    }
+  static async getInitialProps({ query: { id } }) {
+    return { id };
+  }
+
+  componentDidMount() {
+    const { id } = this.props;
+    id
+      ? axios.get(`/api/post/${p.query.id}`)
+        .then(({ data }) => this.setState({ ...this.stateFromData(data), state: "loaded" }))
+        .catch((data) => this.setState({ error: data, state: "error" }))
+      : axios.get("/api/session")
+        .then(({ data }) => this.setState({ ...this.stateFromData({ ...defaultPostData(), author: data.id, }), state: "loaded" }))
+        .catch((data) => this.setState({ error: data, state: "error" }));
   }
 
   stateFromData = ({ _id, date, author, title, content }, oldState) => {
@@ -155,7 +157,22 @@ export default class extends React.PureComponent {
     </div>);
   }
 
-  render() {
+  renderLoading() {
+    return (<Layout title="Post: Loading...">
+      <Card compactY title={(<p>⏳ Loading Editor ⌛</p>)} ><p>Thank you for your patience.</p></Card>
+    </Layout>);
+  }
+
+  renderError() {
+    const { error } = this.state;
+    return (<Layout title="Post: Error!">
+      <Card compactY title={(<p>Error!</p>)} >
+        <p><code>{JSON.stringify(error)}</code></p>
+      </Card>
+    </Layout>);
+  }
+
+  renderLoaded() {
     const { id, title, content, isNew, date, author, lastChanged } = this.state;
     return (
       <Layout title={`Post: ${isNew ? `Composing...` : id}`}>
@@ -173,7 +190,7 @@ export default class extends React.PureComponent {
             }} />
           <NotificationProvider ref={ref => this.notifications = ref} />
         </Card>}>
-          <DynamicPost
+          <Post
             edit={["allow-content-editing"]}
             author={author}
             avatar={`/static/content/avatars/${author}.png`}
@@ -187,12 +204,26 @@ export default class extends React.PureComponent {
       </Layout>
     );
   }
+
+  render() {
+    const { state } = this.state;
+    switch (state) {
+      case "loaded": return this.renderLoaded();
+      case "loading": return this.renderLoading();
+      case "error": return this.renderError();
+    }
+  }
 }
+
+const defaultPostData = () => ({
+  title: "New Post ...",
+  content: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+});
 
 // issue: Slate Editor Mode cannot be used with SSR
 // https://github.com/ianstormtaylor/slate/issues/870
 // A user claims that it works, but for me the "onChange" events were not triggered. Also the toolbar did nothing.
-const DynamicPost = dynamic(import("../../components/Post"), {
+/*const DynamicPost = dynamic(import("../../components/Post"), {
   loading: () => (<Card title={(<p>⏳ Loading Editor ⌛</p>)} />), // todo: put this in a card!
   ssr: false
-});
+});*/

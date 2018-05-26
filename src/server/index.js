@@ -1,11 +1,12 @@
-const express = require('express');
+const fs = require("fs");
+const axios = require("axios");
 const spdy = require("spdy");
-const session = require('express-session');
+const createNext = require("next");
+const express = require("express");
+const session = require("express-session");
 const api = require("./api");
 const db = require("./db");
 const config = require("../config/server");
-const fs = require("fs");
-const axios = require("axios");
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -17,7 +18,7 @@ if (isDevelopment) {
 console.log("📡", "Helios is starting ...");
 console.log("📡", "Dev-Mode:", isDevelopment);
 
-const next = require('next')({
+const next = createNext({
   dev: isDevelopment,
   dir: "./src"
 });
