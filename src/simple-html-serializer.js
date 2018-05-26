@@ -9,12 +9,6 @@
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
-/**
- * A rule to (de)serialize text nodes.
- *
- * @type {Object}
- */
-
 const textRule = {
   serialize(obj, children) {
     if (obj.object === 'string') {
@@ -45,7 +39,7 @@ const serializeNode = (rules, node) => {
   return serializeSingle(rules, node, children, { key: getKey() });
 }
 
-const serializeLeaf = (rules, leaf) => { // todo: check if we actually need the immutable.js record?
+const serializeLeaf = (rules, leaf) => {
   const string = { object: 'string', text: leaf.text };
   const text = serializeString(rules, string);
   return leaf.marks.reduce((children, mark) => serializeSingle(rules, mark, children, { key: getKey() }), text);
