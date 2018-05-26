@@ -14,10 +14,10 @@ export default class extends React.Component {
   }
 
   render() {
-    const { post, _id } = this.props;
+    const { post } = this.props;
     return (<Layout title={post.title}>
       <Head>
-        <link key="canonical" rel="canonical" href={`/post/${_id}`} />
+        <link key="canonical" rel="canonical" href={`/post/${post._id}`} />
       </Head>
       <Post
         edit={["show-admin-buttons"]}
