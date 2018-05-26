@@ -16,7 +16,7 @@ There are two very simple reasons why I wrote Helios:
 Why should you **use** Helios?
 
 - Helios was developed with a mobile first approach.
-- Helios is lightweight - Low resource usage on the server, fast load speeds for your visitors due to Server Side Rendering.
+- Helios is lightweight - Low resource usage on the server, fast load speeds for your visitors due to Server Side Rendering & Gzip compression.
 - Helios is easily forkable - Getting into the codebase and changing things to your liking isn't difficult.
 - Helios is MIT licensed - You can do WHATEVER you want with it.
 - Helios is secure, traffic is served over HTTPS(preferably HTTP/2) only.
