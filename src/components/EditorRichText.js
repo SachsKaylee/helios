@@ -1,5 +1,7 @@
 import React from "react";
 import { Editor } from 'slate-react';
+import { defaultRules } from "../slate-renderer";
+import { serializeSingle } from "../simple-html-serializer";
 
 const editorCode = {
   color: "black"
@@ -16,34 +18,12 @@ export default class EditorRichText extends React.Component {
   }
 
   renderNode = props => {
-    const { attributes, children, node } = props
-    switch (node.type) {
-      case 'block-quote':
-        return <blockquote {...attributes}>{children}</blockquote>
-      case 'bulleted-list':
-        return <ul {...attributes}>{children}</ul>
-      case 'heading-one':
-        return <h1 {...attributes}>{children}</h1>
-      case 'heading-two':
-        return <h2 {...attributes}>{children}</h2>
-      case 'list-item':
-        return <li {...attributes}>{children}</li>
-      case 'numbered-list':
-        return <ol {...attributes}>{children}</ol>
-    }
+    const { attributes, children, node } = props;
+    return serializeSingle(defaultRules, node, children, attributes);
   }
 
   renderMark = props => {
-    const { children, mark, attributes } = props
-    switch (mark.type) {
-      case 'bold':
-        return <strong {...attributes}>{children}</strong>
-      case 'code':
-        return <code style={editorCode} {...attributes}>{children}</code>
-      case 'italic':
-        return <em {...attributes}>{children}</em>
-      case 'underlined':
-        return <u {...attributes}>{children}</u>
-    }
+    const { attributes, children, mark } = props;
+    return serializeSingle(defaultRules, mark, children, attributes);
   }
 }

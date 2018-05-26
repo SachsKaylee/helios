@@ -38,45 +38,33 @@ const serialize = (rules, value, options = {}) => {
 }
 
 const serializeNode = (rules, node) => {
-  console.log("Serialize", node)
   if (node.object === 'text') {
     return node.leaves.map(leaf => serializeLeaf(rules, leaf));
   }
   const children = node.nodes.map(node => serializeNode(rules, node));
-  for (const rule of rules) {
-    if (!rule.serialize) continue;
-    const ret = rule.serialize(node, children);
-    if (ret === null) return;
-    if (ret) return addKey(ret);
-  }
-  console.error("errnode -- ", node);
-  throw new Error(`No serializer defined for node of type "${node.type}".`);
+  return serializeSingle(rules, node, children, { key: getKey() });
 }
 
 const serializeLeaf = (rules, leaf) => { // todo: check if we actually need the immutable.js record?
   const string = { object: 'string', text: leaf.text };
   const text = serializeString(rules, string);
-  return leaf.marks.reduce((children, mark) => {
-    for (const rule of rules) {
-      if (!rule.serialize) continue;
-      const ret = rule.serialize(mark, children);
-      if (ret === null) return;
-      if (ret) return addKey(ret);
-    }
-    console.error("errnode -- ", node);
-    throw new Error(`No serializer defined for mark of type "${mark.type}".`);
-  }, text);
+  return leaf.marks.reduce((children, mark) => serializeSingle(rules, mark, children, { key: getKey() }), text);
 }
 
-const serializeString = (rules, string) => {
+const serializeString = (rules, string) => serializeSingle(rules, string, string.text);
+
+const serializeSingle = (rules, obj, children, attributes) => {
   for (const rule of rules) {
     if (!rule.serialize) continue;
-    const ret = rule.serialize(string, string.text);
+    const ret = rule.serialize(obj, children, attributes);
+    if (ret === null) return;
     if (ret) return ret;
   }
+  throw new Error(`No serializer defined for mark of type "${obj.type}".`);
 }
 
-const addKey = element => React.cloneElement(element, { key: addKey.$key++ });
-addKey.$key = 0;
+const getKey = () => getKey.$key++;
+getKey.$key = 0;
+const addKey = element => React.cloneElement(element, { key: getKey() });
 
-module.exports = { textRule, serialize };
+module.exports = { serializeSingle, textRule, serialize };

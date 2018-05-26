@@ -1,39 +1,36 @@
 const html = require("./simple-html-serializer");
 
-// todo: allow us to re-use these rules in the EditorRichText component
-
-const defaultRules = [
+export const defaultRules = [
   html.textRule,
   // Serialize Blocks
   {
-    serialize(obj, children) {
+    serialize(obj, children, attributes) {
       if (obj.object == "block") {
         switch (obj.type) {
-          case "line": return (<p>{children}</p>);
-          case "block-quote": return (<blockquote>{children}</blockquote>);
-          case "bulleted-list": return (<ul>{children}</ul>);
-          case "heading-one": return (<h1>{children}</h1>);
-          case "heading-two": return (<h2>{children}</h2>);
-          case "list-item": return (<li>{children}</li>);
-          case "numbered-list": return (<ol>{children}</ol>);
+          case "line": return (<p {...attributes}>{children}</p>);
+          case "block-quote": return (<blockquote {...attributes}>{children}</blockquote>);
+          case "bulleted-list": return (<ul {...attributes}>{children}</ul>);
+          case "heading-one": return (<h1 {...attributes}>{children}</h1>);
+          case "heading-two": return (<h2 {...attributes}>{children}</h2>);
+          case "list-item": return (<li {...attributes}>{children}</li>);
+          case "numbered-list": return (<ol {...attributes}>{children}</ol>);
         }
       }
     }
   },
   // Serialize Marks
   {
-    serialize(obj, children) {
+    serialize(obj, children, attributes) {
       if (obj.object == "mark") {
         switch (obj.type) {
-          case "bold": return (<strong>{children}</strong>);
-          case "code": return (<code>{children}</code>);
-          case "italic": return (<em>{children}</em>);
-          case "underlined": return (<u>{children}</u>);
+          case "bold": return (<strong {...attributes}>{children}</strong>);
+          case "code": return (<code {...attributes}>{children}</code>);
+          case "italic": return (<em {...attributes}>{children}</em>);
+          case "underlined": return (<u {...attributes}>{children}</u>);
         }
       }
     }
   }
 ]
 
-export const render = rules => (value, options) => html.serialize(rules, value, options);
-export const renderDefault = render(defaultRules);
+export const render = (rules, value, options) => html.serialize(rules, value, options);
