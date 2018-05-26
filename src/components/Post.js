@@ -8,7 +8,7 @@ const createEditor = ({ edit, value, name, onChange }) => (<Editor
   onChange={onChange && onChange(name)} />);
 
 export default ({ id, author, date, title, content, edit, onChange }) => (
-  <Card compactY
+  <Card
     image={`/static/content/avatars/${author}.png`}
     title={<A href={readonly(edit) ? `/post/${id}` : undefined}>{createEditor({ edit, onChange, value: title, name: "title" })}</A>}
     subtitle={<><A href={readonly(edit) ? `/about/${author}` : undefined}>@{author}</A> on {date.toLocaleString()}</>}>

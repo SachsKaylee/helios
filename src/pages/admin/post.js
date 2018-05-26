@@ -160,14 +160,14 @@ export default class extends React.PureComponent {
 
   renderLoading() {
     return (<Layout title="Post: Loading...">
-      <Card compactY title={(<p>Loading Editor ...</p>)} ><Icon spin size="4x">{icons.spinner}</Icon></Card>
+      <Card title={(<p>Loading Editor ...</p>)} ><Icon spin size="4x">{icons.spinner}</Icon></Card>
     </Layout>);
   }
 
   renderError() {
     const { error } = this.state;
     return (<Layout title="Post: Error!">
-      <Card compactY title={(<p>Error!</p>)} >
+      <Card title={(<p>Error!</p>)} >
         <p><code>{JSON.stringify(error)}</code></p>
       </Card>
     </Layout>);
@@ -177,7 +177,7 @@ export default class extends React.PureComponent {
     const { id, title, content, isNew, date, author, lastChanged } = this.state;
     return (
       <Layout title={`Post: ${isNew ? `Composing...` : id}`}>
-        <SidebarLayout size={3} sidebar={<Card compactX compactY>
+        <SidebarLayout size={3} sidebar={<Card>
           <EditorToolbar
             stylesChooser={lastChanged === "content"}
             value={content}
