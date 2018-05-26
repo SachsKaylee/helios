@@ -8,7 +8,7 @@ export default ({ id, author, date, title, content, edit, onChange }) => (
     title={<A href={`/post/${id}`}>{title}</A>}
     subtitle={<><A href={`/about/${author}`}>@{author}</A> on {date.toLocaleString()}</>}>
     <div>
-      <div dangerouslySetInnerHTML={{ __html: render(defaultRules, content) }} />
+      <div>{render(defaultRules, content)}</div>
       {buttons(edit) && (<div className="push-12">
         <A className="button is-link" href={`/admin/post/${id}`}>Edit Post</A>
       </div>)}
