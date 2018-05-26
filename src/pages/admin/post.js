@@ -28,7 +28,7 @@ export default class extends React.PureComponent {
   componentDidMount() {
     const { id } = this.props;
     id
-      ? axios.get(`/api/post/${p.query.id}`)
+      ? axios.get(`/api/post/${id}`)
         .then(({ data }) => this.setState({ ...this.stateFromData(data), state: "loaded" }))
         .catch((data) => this.setState({ error: data, state: "error" }))
       : axios.get("/api/session")
