@@ -28,6 +28,9 @@ module.exports = {
   // The two certificates included by default are development certificates and not
   // meant for production. They are not signed.
   certs: {
+    // Are unsigned certs allowed in production? (NOT recommended)
+    allowUnsigned: true,
+    // Your keys. They are to be placed in this directory.
     key: path.resolve(__dirname, "./key.pem"),
     cert: path.resolve(__dirname, "./server.crt")
   },

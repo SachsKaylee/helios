@@ -11,9 +11,7 @@ const config = require("../config/server");
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 axios.defaults.baseURL = `https://localhost:${config.port}`;
-if (isDevelopment) {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-}
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = isDevelopment || config.certs.allowUnsigned ? "0" : "1";
 
 console.log("📡", "Helios is starting ...");
 console.log("📡", "Dev-Mode:", isDevelopment);
