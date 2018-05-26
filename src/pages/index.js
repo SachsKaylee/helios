@@ -1,11 +1,9 @@
 import Layout from "../components/Layout";
 import SidebarLayout from "../components/SidebarLayout";
 import Posts from "../components/Posts";
-import Plain from "slate-plain-serializer";
 import Card from "../components/Card";
 import React from "react";
 import axios from "axios";
-import { Value } from "slate";
 
 export default class extends React.Component {
   static async getInitialProps() {
@@ -37,8 +35,8 @@ export default class extends React.Component {
       <SidebarLayout size={3} sidebar={<Card compactX compactY>{"Lorem Ipsum"}</Card>}>
         <Posts posts={posts.map(p => ({
           ...p,
-          title: Plain.deserialize(p.title),
-          content: Value.fromJSON(p.content),
+          title: p.title,
+          content: p.content,
           date: new Date(p.date)
         }))} />
       </SidebarLayout>

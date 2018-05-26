@@ -38,6 +38,7 @@
     "react-dom": "^16.3.2",
     "react-tooltip": "^3.6.0",
     "slate": "^0.33.6",
+    "slate-html-serializer": "^0.6.3",
     "slate-react": "^0.12.6",
     "spdy": "^3.4.7"
   }

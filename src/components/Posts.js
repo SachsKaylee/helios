@@ -1,4 +1,4 @@
-import Post from "./Post";
+import Post from "./ReadOnlyPost";
 import Card from "./Card";
 
 export default ({ posts }) => (
