@@ -10,7 +10,7 @@ const config = require("../config/server");
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-axios.defaults.baseURL = `https://localhost:${config.port}`;
+axios.defaults.baseURL = `https://localhost:${config.port.https}`;
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = isDevelopment || config.certs.allowUnsigned ? "0" : "1";
 
 console.log("📡", "Helios is starting ...");
@@ -60,8 +60,19 @@ Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
   // Fallback
   server.get('*', next.getRequestHandler());
 
-  spdy.createServer(spdyOptions(), server).listen(config.port, (err) => err ? console.error("📡", "Error while listening", err) : console.log("📡", `Listening on port ${config.port}!`))
-}).catch(err => console.error("📡", "Error while preparing server!", err));
+  // HTTP Server
+  if (config.port.http) {
+    const fallbackServer = express();
+    fallbackServer.get("*", (req, res) => res.redirect("https://" + req.headers.host + ":" + config.port.https + req.url));
+    fallbackServer.listen(config.port.http, err => err
+      ? console.error("🔥", "Error while listening to fallback HTTP server", err)
+      : console.log("📡", `Listening on fallback HTTP port ${config.port.http}!`));
+  }
+  // HTTPS Server
+  spdy.createServer(spdyOptions(), server).listen(config.port.https, err => err
+    ? console.error("🔥", "Error while listening", err)
+    : console.log("📡", `Listening on port ${config.port.https}!`))
+}).catch(err => console.error("🔥", "Error while preparing server!", err));
 
 const spdyOptions = () => {
   const { key, cert } = config.certs;
