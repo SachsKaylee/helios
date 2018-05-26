@@ -3,7 +3,7 @@ import Card from "./Card";
 import { render, defaultRules } from "../slate-renderer";
 
 export default ({ id, author, date, title, content, edit, onChange }) => (
-  <Card compactY
+  <Card
     image={`/static/content/avatars/${author}.png`}
     title={<A href={`/post/${id}`}>{title}</A>}
     subtitle={<><A href={`/about/${author}`}>@{author}</A> on {date.toLocaleString()}</>}>

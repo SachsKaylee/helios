@@ -32,7 +32,7 @@ export default class extends React.Component {
     // todo: pagination
     const { posts } = this.props;
     return (<Layout title="Blog">
-      <SidebarLayout size={3} sidebar={<Card compactX compactY>{"Lorem Ipsum"}</Card>}>
+      <SidebarLayout size={3} sidebar={<Card>{"Lorem Ipsum"}</Card>}>
         <Posts posts={posts.map(p => ({
           ...p,
           title: p.title,

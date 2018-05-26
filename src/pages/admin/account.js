@@ -83,7 +83,7 @@ export default class Account extends React.Component {
   render() {
     return (<Layout title="Account">
       <SidebarLayout size={3} sidebar={this.renderSidebar()}>
-        <Card compactY compactX>{this.renderContent()}</Card>
+        <Card>{this.renderContent()}</Card>
       </SidebarLayout>
     </Layout>)
   }
@@ -102,7 +102,7 @@ export default class Account extends React.Component {
   }
 
   renderSidebar() {
-    return (<Card compactY compactX>
+    return (<Card>
       <p><Tag type="info">Notifications</Tag></p>
       <NotificationProvider ref={n => this.notifications = n} >
         <p>No notifications!</p>
