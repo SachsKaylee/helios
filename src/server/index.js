@@ -4,6 +4,7 @@ const spdy = require("spdy");
 const createNext = require("next");
 const express = require("express");
 const session = require("express-session");
+const compression = require("compression");
 const api = require("./api");
 const db = require("./db");
 const config = require("../config/server");
@@ -40,6 +41,7 @@ $send.incorrectPassword = (res) => $send(res, { error: "incorrect-password", err
 Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
   const server = express();
 
+  server.use(compression({ filter: shouldCompress }));
   server.use(express.json({ limit: config.maxPayloadSize }));
   server.use(express.urlencoded({ limit: config.maxPayloadSize, extended: true }));
   server.use("/static", express.static("static"));
@@ -73,6 +75,12 @@ Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
     ? console.error("🔥", "Error while listening", err)
     : console.log("📡", `Listening on port ${config.port.https}!`))
 }).catch(err => console.error("🔥", "Error while preparing server!", err));
+
+const shouldCompress = (req, res) => {
+  if (isDevelopment) return false;
+  if (req.headers["x-no-compression"]) return false;
+  return compression.filter(req, res);
+}
 
 const spdyOptions = () => {
   const { key, cert } = config.certs;

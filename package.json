@@ -23,6 +23,7 @@
     "babel-plugin-wrap-in-js": "^1.1.1",
     "bulma": "^0.7.1",
     "classnames": "^2.2.5",
+    "compression": "^1.7.2",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
