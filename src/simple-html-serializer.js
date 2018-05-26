@@ -6,10 +6,7 @@
  * We also do not need deserilization capabilities as we only ever serialize to HTML. For actual 
  * editing we still use the Slate Editor itself, which produces JSON.
  */
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-
-const textRule = {
+export const textRule = {
   serialize(obj, children) {
     if (obj.object === 'string') {
       return children.split('\n').reduce((array, text, i) => {
@@ -21,14 +18,10 @@ const textRule = {
   },
 }
 
-const serialize = (rules, value, options = {}) => {
+export const serialize = (rules, value, options = {}) => {
   const { document } = value;
   const elements = document.nodes.map(node => serializeNode(rules, node)).filter(el => el);
-  if (options.render === false) return elements;
-
-  const html = ReactDOMServer.renderToStaticMarkup(<body>{elements}</body>);
-  const inner = html.slice(6, -7);
-  return inner;
+  return elements;
 }
 
 const serializeNode = (rules, node) => {
@@ -47,7 +40,7 @@ const serializeLeaf = (rules, leaf) => {
 
 const serializeString = (rules, string) => serializeSingle(rules, string, string.text);
 
-const serializeSingle = (rules, obj, children, attributes) => {
+export const serializeSingle = (rules, obj, children, attributes) => {
   for (const rule of rules) {
     if (!rule.serialize) continue;
     const ret = rule.serialize(obj, children, attributes);
@@ -59,6 +52,3 @@ const serializeSingle = (rules, obj, children, attributes) => {
 
 const getKey = () => getKey.$key++;
 getKey.$key = 0;
-const addKey = element => React.cloneElement(element, { key: getKey() });
-
-module.exports = { serializeSingle, textRule, serialize };
