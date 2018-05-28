@@ -5,19 +5,20 @@ import axios from "axios";
 import Head from "next/head";
 import Tag from "../components/Tag";
 import Card from "../components/Card";
+import PostMedia from "../components/PostMedia";
 
 class About extends React.Component {
   static getInitialProps({ query: { id } }) {
-    return new Promise((res, rej) => {
-      // If the user did not specify an ID we will get the default user.
-      axios.get(id ? `/api/user/${id}` : "/api/user")
-        .then(({ data }) => res({ user: data, error: false }))
-        .catch(( data ) => res({ error: data, error: true }));
-    });
+    // If the user did not specify an ID we will get the default user.
+    return Promise.all([
+      axios.get(id ? `/api/user/${id}` : "/api/user"),
+      axios.get(id ? `/api/posts-of/${id}?limit=3` : "/api/posts-of?limit=3")
+    ]).then(([{ data: user }, { data: posts }]) => ({ user, posts, error: false }))
+      .catch((error) => ({ error: error.response.data }));
   }
 
   renderUser() {
-    const { user: { id, permissions } } = this.props;
+    const { user: { id, permissions }, posts } = this.props;
     // We need a canonical URL since the ID of the user can be inferred by accessing 
     // the /about page, which resolved to the default user.
     return (<Layout title={`About ${id}`}>
@@ -33,10 +34,14 @@ class About extends React.Component {
             </figure>
           </div>
           <div className="media-content">
-            <h1 className="title">{id}</h1>
+            <h1 className="title">About {id}</h1>
             <p>This user has the following permissions: {permissions.length ? permissions.map(p => (<Tag key={p}>{p}</Tag>)) : "none"}</p>
           </div>
         </div>
+
+        <h2 className="subtitle">Recent posts by {id}</h2>
+        {posts.map(post => (<PostMedia key={post._id} {...post} />))}
+
       </Card>
     </Layout>);
   }
@@ -44,8 +49,9 @@ class About extends React.Component {
   renderError() {
     // todo: implement a proper error rendering component
     // todo: implement a better translation of mongo errors on server side
+    const { error } = this.props;
     return (<Layout title="Error">
-      error :(
+      {JSON.stringify(error)}
     </Layout>);
   }
 

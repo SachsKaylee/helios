@@ -1,4 +1,5 @@
 const uuid = require("../../uuid");
+const config = require("../../config/server");
 
 const schema = ({ mongoose }) => {
   return mongoose.Schema({
@@ -53,6 +54,19 @@ const install = ({ server, models, $send }) => {
 
   server.delete("/api/post/:id", (req, res) => {
     models.post.remove({ _id: req.params.id }, (error, data) => {
+      $send(res, { error, data });
+    });
+  });
+
+  // todo: limit
+  server.get("/api/posts-of", (req, res) => {
+    models.post.find({ author: config.defaultUser.id }, (error, data) => {
+      $send(res, { error, data });
+    });
+  });
+
+  server.get("/api/posts-of/:id", (req, res) => {
+    models.post.find({ author: req.params.id }, (error, data) => {
       $send(res, { error, data });
     });
   });
