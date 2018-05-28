@@ -61,6 +61,8 @@ const installServer = () => {
     server.get("/admin/post/:id", (req, res) => next.render(req, res, "/admin/post", req.params));
     server.get("/post", (req, res) => next.render(req, res, "/", req.params));
     server.get("/post/:id", (req, res) => next.render(req, res, "/post", req.params));
+    server.get("/about", (req, res) => next.render(req, res, "/about", req.params));
+    server.get("/about/:id", (req, res) => next.render(req, res, "/about", req.params));
 
     // APIs
     const installData = { ...dbResolved, server, $send };

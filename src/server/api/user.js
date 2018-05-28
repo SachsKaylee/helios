@@ -20,6 +20,11 @@ const install = ({ server, models, $send }) => {
   $model = models.user;
   const $sendUser = (res, { _id, avatar, permissions }) => $send(res, { data: { id: _id, avatar, permissions } });
 
+  // todo: handle if no default user exists (is that even reasonable?)
+  server.get("/api/user", (req, res) => getUser(config.defaultUser.id)
+    .then(user => $sendUser(res, user))
+    .catch(error => $send(res, { error })));
+
   server.get("/api/user/:id", (req, res) => getUser(req.params.id)
     .then(user => $sendUser(res, user))
     .catch(error => $send(res, { error })));
