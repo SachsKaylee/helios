@@ -37,8 +37,10 @@ export default (({ title, children }) => (
           link: "/admin/account"
         }]
       }]} />
-    <div className="container">
-      {children}
+    <div className="section">
+      <div className="container">
+        {children}
+      </div>
     </div>
   </div>
 ));
