@@ -6,6 +6,7 @@ import React from "react"
 import axios from "axios"
 import Plain from 'slate-plain-serializer';
 import Head from "next/head";
+import config from "../config/client";
 
 export default class extends React.Component {
   static async getInitialProps(p) {
@@ -15,9 +16,12 @@ export default class extends React.Component {
 
   render() {
     const { post } = this.props;
+    // We use absolute
     return (<Layout title={post.title}>
       <Head>
-        <link key="canonical" rel="canonical" href={`/post/${post._id}`} />
+        <link key="canonical" rel="canonical" href={`https://${config.domains[0]}:${config.port.https}/post/${post._id}`} />
+        <meta key="author" name="author" content={post.author} />
+        <meta key="description" name="description" content={post.title} />
       </Head>
       <Post
         edit={["show-admin-buttons"]}

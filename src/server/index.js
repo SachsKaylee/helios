@@ -16,7 +16,7 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 
 // We use the domain in the request and not localhost since our certificate is not signed against localhost, 
 // and we don't accept unsigned certs in production.
-axios.defaults.baseURL = `https://${config.client.domains[0]}:${config.port.https}`;
+axios.defaults.baseURL = `https://${config.client.domains[0]}:${config.client.port.https}`;
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = isDevelopment || config.certs.allowUnsigned ? "0" : "1";
 
@@ -81,9 +81,9 @@ const shouldCompress = (req, res) => {
 
 // This installs greenlock, which is used for lets-encrypt.
 const installGreenlock = () => greenlock.create({ ...greenlockOptions(), app: installServer() })
-  .listen(config.port.http, config.port.https, err => err
+  .listen(config.client.port.http, config.client.port.https, err => err
     ? console.error("🔥", "Error while listening to greenlock", err)
-    : console.log("📡", `Listening on greenlock ports HTTP ${config.port.http} & HTTPS ${config.port.https}!`));
+    : console.log("📡", `Listening on greenlock ports HTTP ${config.client.port.http} & HTTPS ${config.client.port.https}!`));
 
 const greenlockOptions = () => ({
   agreeTos: true, // todo : You MUST NOT build clients that accept the ToS without asking the user
@@ -102,17 +102,17 @@ const installSpdy = () => {
   const server = installServer();
 
   // HTTP Server
-  if (config.port.http) {
+  if (config.client.port.http) {
     const fallbackServer = express();
-    fallbackServer.get("*", (req, res) => res.redirect("https://" + req.headers.host + ":" + config.port.https + req.url));
-    fallbackServer.listen(config.port.http, err => err
+    fallbackServer.get("*", (req, res) => res.redirect("https://" + req.headers.host + ":" + config.client.port.https + req.url));
+    fallbackServer.listen(config.client.port.http, err => err
       ? console.error("🔥", "Error while listening to fallback HTTP server", err)
-      : console.log("📡", `Listening on fallback HTTP port ${config.port.http}!`));
+      : console.log("📡", `Listening on fallback HTTP port ${config.client.port.http}!`));
   }
   // HTTPS Server
-  spdy.createServer(spdyOptions(), server).listen(config.port.https, err => err
+  spdy.createServer(spdyOptions(), server).listen(config.client.port.https, err => err
     ? console.error("🔥", "Error while listening", err)
-    : console.log("📡", `Listening on primary HTTPS port ${config.port.https}!`))
+    : console.log("📡", `Listening on primary HTTPS port ${config.client.port.https}!`))
 }
 
 const spdyOptions = () => ({
