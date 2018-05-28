@@ -6,6 +6,7 @@ import Head from "next/head";
 import Tag from "../components/Tag";
 import Card from "../components/Card";
 import PostMedia from "../components/PostMedia";
+import { render, defaultRules } from "../slate-renderer";
 
 class About extends React.Component {
   static getInitialProps({ query: { id } }) {
@@ -18,7 +19,7 @@ class About extends React.Component {
   }
 
   renderUser() {
-    const { user: { id, permissions }, posts } = this.props;
+    const { user: { id, permissions, bio }, posts } = this.props;
     // We need a canonical URL since the ID of the user can be inferred by accessing 
     // the /about page, which resolved to the default user.
     return (<Layout title={`About ${id}`}>
@@ -36,6 +37,7 @@ class About extends React.Component {
           <div className="media-content">
             <h1 className="title">About {id}</h1>
             <p>This user has the following permissions: {permissions.length ? permissions.map(p => (<Tag key={p}>{p}</Tag>)) : "none"}</p>
+            {bio && render(defaultRules, bio)}
           </div>
         </div>
 

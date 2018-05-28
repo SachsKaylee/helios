@@ -115,12 +115,12 @@ export default class extends React.Component {
         {this.renderBlockButton('numbered-list', icons.listOl, "Numbered List")}
         {this.renderBlockButton('bulleted-list', icons.listUl, "Bulleted List")}
       </div>)}
-      <div>
+      {buttons && (<div>
         <div className="margin-2"><Tag type="info">Post Actions</Tag></div>
         {buttons.publish && (<a className="margin-2 button is-primary" onClick={this.props.onSave}>Publish</a>)}
         {buttons.discard && (<a className="margin-2 button is-danger" onClick={this.props.onCancel}>Discard</a>)}
         {buttons.delete && (<a className="margin-2 button is-danger" onClick={this.props.onDelete}>Delete</a>)}
-      </div>
+      </div>)}
     </div>)
   }
 

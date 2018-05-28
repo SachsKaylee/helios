@@ -4,12 +4,14 @@
 const config = require("../../config/server");
 const crypto = require("crypto");
 const fp = require("../../fp");
+const { default: Plain } = require("slate-plain-serializer");
 
 let $model;
 
 const schema = ({ mongoose }) => {
   return mongoose.Schema({
     _id: String,
+    bio: Object,
     avatar: String,
     password: String,
     permissions: [String]
@@ -18,7 +20,7 @@ const schema = ({ mongoose }) => {
 
 const install = ({ server, models, $send }) => {
   $model = models.user;
-  const $sendUser = (res, { _id, avatar, permissions }) => $send(res, { data: { id: _id, permissions } });
+  const $sendUser = (res, { _id, avatar, bio, permissions }) => $send(res, { data: { id: _id, bio, permissions } });
 
   // todo: handle if no default user exists (is that even reasonable?)
   server.get("/api/user", (req, res) => getUser(config.defaultUser.id)
@@ -88,8 +90,8 @@ const install = ({ server, models, $send }) => {
       if (user.password !== encrypt(password)) {
         $send.incorrectPassword(res);
       } else {
-        const { passwordNew, avatar } = req.body;
-        const newModel = createUpdatedModel(user, { password: passwordNew, avatar });
+        const { passwordNew, avatar, bio } = req.body;
+        const newModel = createUpdatedModel(user, { password: passwordNew, avatar, bio });
         newModel.save((error, data) => (error || !data) ? $send(res, { error, data }) : $sendUser(res, data));
       }
     })
@@ -104,15 +106,25 @@ const install = ({ server, models, $send }) => {
   $createDefaults();
 }
 
-const createUpdatedModel = (user, { password, avatar, permissions }) => {
+const createUpdatedModel = (user, { password, avatar, permissions, bio }) => {
   const validPassword = password => password && ("string" === typeof password);
   // todo: make sure the avatar is of the right image format. We don't want users to upload malware!
   const validAvatar = avatar => avatar && ("string" === typeof avatar) && avatar.length <= 200 * 1024;
   const validPermissions = permissions => permissions && Array.isArray(permission) && fp.all(permissions, p => permission[p]);
+  const validBio = bio => {
+    if (!bio) return false;
+    return true;// todo <<<---- this is broken, serialize is always ""!!!!!!!!!!!!! FIX ME FIX ME
+    try { return Plain.serialize(bio).trim() !== ""; } 
+    catch (_) { return false; }
+  };
+
+  console.log("bio", {bio,plain: Plain.serialize(bio), valid:validBio(bio)})
+
   const newUser = new $model({
     _id: user._id,
     permissions: validPermissions(permissions) ? permissions : user.permissions,
     password: validPassword(password) ? encrypt(password) : user.password,
+    bio: validBio(bio) ? bio : user.bio,
     avatar: validAvatar(avatar) ? avatar : user.avatar
   });
   newUser.isNew = false;
@@ -125,6 +137,7 @@ const $createDefaults = () => {
     const { password, id } = config.defaultUser;
     const user = new $model({
       _id: id,
+      bio: Plain.deserialize("").toJSON(),
       avatar: "",
       password: encrypt(password),
       permissions: [permission.admin]

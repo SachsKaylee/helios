@@ -60,7 +60,8 @@ export default class Account extends React.Component {
     const newData = {
       password: values.password,
       passwordNew: values.passwordNew,
-      avatar: values.avatar.data
+      avatar: values.avatar.data,
+      bio: values.bio
     };
     return new Promise((res, rej) => {
       put("/api/session", newData)
@@ -159,8 +160,10 @@ export default class Account extends React.Component {
   }
 
   renderUpdateForm() {
+    const { session } = this.props;
     return (<Form
       className="margin-2"
+      values={session}
       submitText={(<span><Icon>{icons.save}</Icon> Save</span>)}
       onSubmit={this.onSubmitProfile}
       elements={[
@@ -169,6 +172,12 @@ export default class Account extends React.Component {
           type: "file",
           name: "Change Avatar",
           validator: avatar => ({ error: avatar.size > 200 * 1024, message: "The avatar may not be larger than 200KiB." })
+        },
+        {
+          key: "bio",
+          type: "richtext",
+          name: "Bio",
+          placeholder: "Write someting about you!"
         },
         {
           key: "passwordNew",
