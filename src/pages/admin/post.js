@@ -194,7 +194,7 @@ export default class extends React.PureComponent {
           <Post
             edit={["allow-content-editing"]}
             author={author}
-            avatar={`/static/content/avatars/${author}.png`}
+            avatar={`/api/avatar/${author}`}
             content={content}
             date={date}
             id={id}

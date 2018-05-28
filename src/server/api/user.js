@@ -18,7 +18,7 @@ const schema = ({ mongoose }) => {
 
 const install = ({ server, models, $send }) => {
   $model = models.user;
-  const $sendUser = (res, { _id, avatar, permissions }) => $send(res, { data: { id: _id, avatar, permissions } });
+  const $sendUser = (res, { _id, avatar, permissions }) => $send(res, { data: { id: _id, permissions } });
 
   // todo: handle if no default user exists (is that even reasonable?)
   server.get("/api/user", (req, res) => getUser(config.defaultUser.id)
@@ -95,11 +95,18 @@ const install = ({ server, models, $send }) => {
     })
     .catch(error => $send(res, { error, errorCode: 400 })));
 
+  server.get("/api/avatar/:id", (req, res) => getUser(req.params.id)
+    .then(user => user.avatar
+      ? $send.blob(res, user.avatar)
+      : res.redirect("/static/content/system/default-avatar.png"))
+    .catch(error => $send(res, { error })));
+
   $createDefaults();
 }
 
 const createUpdatedModel = (user, { password, avatar, permissions }) => {
   const validPassword = password => password && ("string" === typeof password);
+  // todo: make sure the avatar is of the right image format. We don't want users to upload malware!
   const validAvatar = avatar => avatar && ("string" === typeof avatar) && avatar.length <= 200 * 1024;
   const validPermissions = permissions => permissions && Array.isArray(permission) && fp.all(permissions, p => permission[p]);
   const newUser = new $model({

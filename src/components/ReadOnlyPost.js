@@ -4,7 +4,7 @@ import { render, defaultRules } from "../slate-renderer";
 
 export default ({ id, author, date, title, content, edit, onChange }) => (
   <Card
-    image={`/static/content/avatars/${author}.png`}
+    image={`/api/avatar/${author}`}
     title={<A href={`/post/${id}`}>{title}</A>}
     subtitle={<><A href={`/about/${author}`}>@{author}</A> on {date.toLocaleString()}</>}>
     <div>

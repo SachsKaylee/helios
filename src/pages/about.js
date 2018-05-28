@@ -29,7 +29,7 @@ class About extends React.Component {
         <div className="media">
           <div className="media-left">
             <figure className="image is-64x64">
-              <img src={`/static/content/avatars/${id}.png`} />
+              <img src={`/api/avatar/${id}`} />
             </figure>
           </div>
           <div className="media-content">
