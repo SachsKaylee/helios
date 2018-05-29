@@ -2,16 +2,11 @@ import { Editor } from 'slate-react'
 import { Value } from 'slate'
 import classNames from "classnames";
 import React from 'react'
-import { isKeyHotkey } from 'is-hotkey'
 import ReactTooltip from 'react-tooltip';
 import Tag from "./Tag";
 import { IconLayers, icons } from "./Icon";
 
 const DEFAULT_NODE = "line";
-const isBoldHotkey = isKeyHotkey('mod+b')
-const isItalicHotkey = isKeyHotkey('mod+i')
-const isUnderlinedHotkey = isKeyHotkey('mod+u')
-const isCodeHotkey = isKeyHotkey('mod+`')
 
 export default class extends React.Component {
   hasMark = type => {
@@ -22,26 +17,6 @@ export default class extends React.Component {
   hasBlock = type => {
     const { value } = this.props;
     return value.blocks.some(node => node.type == type)
-  }
-
-  onKeyDown = (event, change) => {
-    let mark
-
-    if (isBoldHotkey(event)) {
-      mark = 'bold'
-    } else if (isItalicHotkey(event)) {
-      mark = 'italic'
-    } else if (isUnderlinedHotkey(event)) {
-      mark = 'underlined'
-    } else if (isCodeHotkey(event)) {
-      mark = 'code'
-    } else {
-      return
-    }
-
-    event.preventDefault()
-    change.toggleMark(mark)
-    return true
   }
 
   onClickMark = (event, type) => {
