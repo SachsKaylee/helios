@@ -36,8 +36,8 @@ class About extends React.Component {
           </div>
           <div className="media-content">
             <h1 className="title">About {id}</h1>
-            <p>This user has the following permissions: {permissions.length ? permissions.map(p => (<Tag key={p}>{p}</Tag>)) : "none"}</p>
             {bio && render(defaultRules, bio)}
+            <p className="content is-small">This user has the following permissions: {permissions.length ? permissions.map(p => (<Tag key={p}>{p}</Tag>)) : "none"}</p>
           </div>
         </div>
 

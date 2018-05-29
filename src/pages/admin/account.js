@@ -160,10 +160,10 @@ export default class Account extends React.Component {
   }
 
   renderUpdateForm() {
-    const { session } = this.props;
+    const { session } = this.state;
     return (<Form
       className="margin-2"
-      values={session}
+      data={session}
       submitText={(<span><Icon>{icons.save}</Icon> Save</span>)}
       onSubmit={this.onSubmitProfile}
       elements={[
