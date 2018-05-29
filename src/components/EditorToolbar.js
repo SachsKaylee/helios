@@ -7,7 +7,7 @@ import ReactTooltip from 'react-tooltip';
 import Tag from "./Tag";
 import { IconLayers, icons } from "./Icon";
 
-const DEFAULT_NODE = 'paragraph'
+const DEFAULT_NODE = "line";
 const isBoldHotkey = isKeyHotkey('mod+b')
 const isItalicHotkey = isKeyHotkey('mod+i')
 const isUnderlinedHotkey = isKeyHotkey('mod+u')
