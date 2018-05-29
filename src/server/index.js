@@ -38,6 +38,16 @@ const $send = (res, { error, data, errorCode, successCode }) => {
 }
 $send.missingPermission = (res, permission) => $send(res, { error: `missing-permission-${permission}`, errorCode: 403 });
 $send.incorrectPassword = (res) => $send(res, { error: "incorrect-password", errorCode: 400 });
+$send.blob = (res, blob) => {
+  const [details, data] = blob.split(",");
+  const [mime, format] = details.split(";");
+  const buffer = new Buffer(data, format);
+  res.writeHead(200, {
+    "Content-Type": mime.substr("data:".length),
+    "Content-Length": buffer.length
+  });
+  res.end(buffer);
+};
 
 // Creates the express server BUT DOES NOT LISTEN TO it that will be used to handle requests.
 const installServer = () => {
@@ -61,6 +71,8 @@ const installServer = () => {
     server.get("/admin/post/:id", (req, res) => next.render(req, res, "/admin/post", req.params));
     server.get("/post", (req, res) => next.render(req, res, "/", req.params));
     server.get("/post/:id", (req, res) => next.render(req, res, "/post", req.params));
+    server.get("/about", (req, res) => next.render(req, res, "/about", req.params));
+    server.get("/about/:id", (req, res) => next.render(req, res, "/about", req.params));
 
     // APIs
     const installData = { ...dbResolved, server, $send };

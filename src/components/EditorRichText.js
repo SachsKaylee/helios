@@ -2,18 +2,26 @@ import React from "react";
 import { Editor } from 'slate-react';
 import { defaultRules } from "../slate-renderer";
 import { serializeSingle } from "../simple-html-serializer";
+import { Value } from "slate";
+import Plain from "slate-plain-serializer";
 
-const editorCode = {
-  color: "black"
+export const dataToValue = (value = "") => {
+  return "string" === (typeof value)
+    ? Plain.deserialize(value)
+    : Value.isValue(value)
+      ? value
+      : Value.fromJSON(value);
 }
 
 export default class EditorRichText extends React.Component {
   render() {
+    const { value } = this.props;
     return (<div>
       <Editor
         renderNode={this.renderNode}
         renderMark={this.renderMark}
-        {...this.props} />
+        {...this.props}
+        value={dataToValue(value)} />
     </div>);
   }
 

@@ -25,9 +25,8 @@ module.exports = {
   // By default we let Let's Encrypt create a nice and free cert for us. If you are
   // hosting on an intranet this is not possible though, so you may prefer the config
   // below.
-  certs: "lets-encrypt",
+  //certs: "lets-encrypt",
 
-  /*
   // Paths to your SSL certificates. Make sure they are signed by a proper authority 
   // if used for a public server, or browsers will complain. (This typically isn't free)
   // The two certificates included by default are development certificates and not
@@ -40,8 +39,7 @@ module.exports = {
     key: path.resolve(__dirname, "./key.pem"),
     cert: path.resolve(__dirname, "./server.crt")
   },
-  */
-
+  
   // The client configuration should also be available on the server.
   client
 }

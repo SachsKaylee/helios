@@ -11,7 +11,7 @@ module.exports = {
   // Host on these domains. The first domain will be your primary, canocial URL
   // IPs are NOT ALLOWED if using { certs: "lets-encrypt" } (which is the default)
   // in the server.js config!
-  domains: ["helios.patrick-sachs.de", "www.helios.patrick-sachs.de"],
+  domains: ["localhost"],
 
   // The port your server runs on. You typically don't want to change this. Make 
   // sure to forward the port!

@@ -71,9 +71,11 @@
  * recceive an array of files.
  */
 import React from "react";
-import fp from "../fp";
+import fp from "../../fp";
 import classnames from "classnames";
-import Icon, { icons } from "./Icon";
+import Icon, { icons } from "../Icon";
+import dynamic from "next/dynamic";
+const FormFieldRichText = dynamic(import("./FormFieldRichText"))
 
 class Form extends React.Component {
   constructor(p) {
@@ -111,6 +113,7 @@ class Form extends React.Component {
 
   renderFormElement = (element) => {
     switch (element.type) {
+      case "richtext": return this.renderFormElementRichText(element);
       case "text": return this.renderFormElementText(element);
       case "checkbox": return this.renderFormElementCheckbox(element);
       case "file": return this.renderFormElementFile(element);
@@ -148,6 +151,12 @@ class Form extends React.Component {
     if (!files || !files.length) return "No files selected…";
     if (files.length !== 1) return `${files.length} files selected.`;
     return files[0];
+  }
+
+  renderFormElementRichText({ key, ...props }) {
+    const { waiting } = this.state;
+    // todo : dynamic laod!!!
+    return (<FormFieldRichText {...props} key={key} keyName={key} waiting={waiting} form={this} />);
   }
 
   renderFormElementText({ key, name, ignoreData, mode, placeholder }) {
@@ -249,6 +258,12 @@ class Form extends React.Component {
     const value = data ? data[element.key] : undefined;
     const html = this.getRef(element.key);
     switch (element.type) {
+      case "richtext": {
+        const meta = this.getFieldMeta(element.key);
+        console.log("meta", meta, element)
+        if (meta) return meta.value;
+        return value;
+      }
       case "text": {
         if (html) return html.value;
         if (value !== undefined) return value;

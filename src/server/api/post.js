@@ -1,4 +1,8 @@
 const uuid = require("../../uuid");
+const config = require("../../config/server");
+
+const intOr = (int, or) => Number.isInteger(int) ? int : or;
+const stringOr = (string, or) => ("string" === typeof string) ? string : or;
 
 const schema = ({ mongoose }) => {
   return mongoose.Schema({
@@ -18,13 +22,13 @@ const niceUri = text =>
     .replace(/-+/g, "-");              // Avoid having URIs with multiple "-"s after another
 
 const install = ({ server, models, $send }) => {
-  // todo: introduce optional limit, etc.
   // https://stackoverflow.com/questions/5830513/how-do-i-limit-the-number-of-returned-items
-  server.get("/api/post", (req, res) => {
-    models.post.find({}, (error, data) => {
-      $send(res, { error, data });
-    });
-  });
+  server.get("/api/post", (req, res) =>
+    models.post
+      .find({})
+      .sort({ date: "descending" })
+      .limit(intOr(parseInt(req.query.limit), undefined))
+      .exec((error, data) => $send(res, { error, data })));
 
   server.post("/api/post", (req, res) => {
     const { title } = req.body;
@@ -56,6 +60,21 @@ const install = ({ server, models, $send }) => {
       $send(res, { error, data });
     });
   });
+
+  // todo: limit
+  server.get("/api/posts-of", (req, res) =>
+    models.post
+      .find({ author: config.defaultUser.id })
+      .sort({ date: "descending" })
+      .limit(intOr(parseInt(req.query.limit), undefined))
+      .exec((error, data) => $send(res, { error, data })));
+
+  server.get("/api/posts-of/:id", (req, res) =>
+    models.post
+      .find({ author: req.params.id })
+      .sort({ date: "descending" })
+      .limit(intOr(parseInt(req.query.limit), undefined))
+      .exec((error, data) => $send(res, { error, data })));
 }
 
 module.exports = {
