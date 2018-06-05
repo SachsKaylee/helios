@@ -62,8 +62,16 @@ const installServer = () => {
     server.use(express.urlencoded({ limit: config.maxPayloadSize, extended: true }));
     server.use("/static", express.static("static"));
     server.use(session({
-      // todo: Have a look at this again once we switch to HTTPS, or go live(Cookie laws...)!
       // todo: Use a better session store! (MongoDB)
+      name: "helios",
+      cookie: {
+        httpOnly: true,
+        sameSite: true,
+        secure: true // todo: test this with a proxy! -> server.set("trust proxy", 1); to trust 1st proxy
+      },
+      resave: false,
+      saveUninitialized: false,
+      unset: "destroy",
       secret: config.cookieSecret
     }));
 

@@ -131,6 +131,12 @@ export default class Account extends React.Component {
           ignoreData: true,
           validator: (pw) => ({ error: !pw, message: "Please enter your password." }),
           placeholder: "Not 123!"
+        },
+        {
+          key: "cookie",
+          type: "checkbox",
+          name: "I agree that this website will use a cookie to keep me signed in.",
+          validator: (cookie) => ({error: !cookie, message: "We cannot sign you in without a cookie. Sorry."})
         }
       ]} />);
   }
