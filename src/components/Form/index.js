@@ -182,14 +182,16 @@ class Form extends React.Component {
       <div className="contol">
         <label className="checkbox">
           <input
+            style={{ marginRight: 2 }}
             type="checkbox"
             ref={this.makeRef(key)}
             disabled={waiting}
             defaultChecked={ignoreData ? false : this.getData(key)} />
-          {this.renderValidationResult(this.getValidationResult(key))}
+          <span>{name}</span>
         </label>
       </div>
-    </div>);
+      {this.renderValidationResult(this.getValidationResult(key))}
+    </div >);
   }
 
   renderValidationResult(result) {
