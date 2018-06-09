@@ -12,6 +12,8 @@ import dynamic from 'next/dynamic'
 import axios from "axios";
 import NotificationProvider from "../../components/NotificationProvider"
 import Icon, { icons } from "../../components/Icon";
+import { FormattedMessage } from "react-intl";
+import config from "../../config/client";
 
 export default class extends React.PureComponent {
   constructor(p) {
@@ -130,44 +132,76 @@ export default class extends React.PureComponent {
 
   renderDeleteSuccessNotification() {
     return (<div>
-      <p className="subtitle"><Icon>{icons.trash}</Icon> Post deleted!</p>
-      <p>The post has been <strong>deleted</strong>. The contents of the post will remain in the editor in case you wish to re-publish it.</p>
+      <p className="subtitle">
+        <Icon>{icons.trash}</Icon>
+        <FormattedMessage id="post.editor.notification.deleted.title" />
+      </p>
+      <p>
+        <FormattedMessage id="post.editor.notification.deleted.description" />
+      </p>
     </div>);
   }
 
   renderDeleteConfirmNotification() {
     return (<div>
-      <p className="subtitle"><Icon>{icons.exclamation}</Icon> Are you sure?</p>
-      <p>You are about to delete the post. This action is permanent and <strong>cannot be undone</strong>.</p>
-      <p><a onClick={this.onDelete(true)}>Fine by me, delete it!</a></p>
+      <p className="subtitle">
+        <Icon>{icons.exclamation}</Icon>
+        <FormattedMessage id="post.editor.notification.delete.title" />
+      </p>
+      <p>
+        <FormattedMessage id="post.editor.notification.delete.description" />
+      </p>
+      <p><a onClick={this.onDelete(true)}>
+        <FormattedMessage id="post.editor.notification.delete.confirm" />
+      </a></p>
     </div>);
   }
 
   renderPublishSuccessNotification(data) {
+    const { title, _id: id } = data;
+    const args = {
+      link: (<A href={`/post/${id}`}>{title}</A>)
+    };
     return (<div>
-      <p className="subtitle"><Icon>{icons.cake}</Icon> Published!</p>
-      <p>The post <A href={`/post/${data._id}`}>{data.title}</A> has been published!</p>
+      <p className="subtitle">
+        <Icon>{icons.cake}</Icon>
+        <FormattedMessage id="post.editor.notification.published.title" values={args} />
+      </p>
+      <p>
+        <FormattedMessage id="post.editor.notification.published.description" values={args} />
+      </p>
     </div>);
   }
 
   renderErrorNotification(error) {
+    // todo: error renderer
     return (<div>
-      <p className="subtitle"><Icon>{icons.exclamation}</Icon> Error!</p>
-      <p>An error occurred! Below you can see some details, be sure to pass it to a developer robot!</p>
+      <p className="subtitle">
+        <Icon>{icons.exclamation}</Icon>
+        <FormattedMessage id="error" />
+      </p>
+      <p>
+        <FormattedMessage id="errorMessages.generic" />
+      </p>
       <p><code>{JSON.stringify(error)}</code></p>
     </div>);
   }
 
   renderLoading() {
-    return (<Layout title="Post: Loading...">
-      <Card title={(<p>Loading Editor ...</p>)} ><Icon spin size="4x">{icons.spinner}</Icon></Card>
+    return (<Layout title={<FormattedMessage id="loading" />}>
+      <Card title={(<p><FormattedMessage id="loading" /></p>)}>
+        <Icon spin size="4x">{icons.spinner}</Icon></Card>
     </Layout>);
   }
 
   renderError() {
+    // todo: error renderer
     const { error } = this.state;
-    return (<Layout title="Post: Error!">
-      <Card title={(<p>Error!</p>)} >
+    return (<Layout title={<FormattedMessage id="error" />}>
+      <Card title={(<p><FormattedMessage id="error" /></p>)} >
+        <p>
+          <FormattedMessage id="errorMessages.generic" />
+        </p>
         <p><code>{JSON.stringify(error)}</code></p>
       </Card>
     </Layout>);
@@ -175,8 +209,11 @@ export default class extends React.PureComponent {
 
   renderLoaded() {
     const { id, title, content, isNew, date, author, lastChanged } = this.state;
+    const titleComponent = isNew
+      ? <FormattedMessage id="post.title.new" values={{ title: this.valueToString(title) }} />
+      : <FormattedMessage id="post.title.edit" values={{ title: this.valueToString(title) }} />;
     return (
-      <Layout title={`Post: ${isNew ? `Composing...` : id}`}>
+      <Layout title={titleComponent}>
         <SidebarLayout size={3} sidebar={<Card>
           <EditorToolbar
             stylesChooser={lastChanged === "content"}
@@ -217,14 +254,6 @@ export default class extends React.PureComponent {
 }
 
 const defaultPostData = () => ({
-  title: "New Post ...",
-  content: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+  title: config.locale.post.defaults.title,
+  content: config.locale.post.defaults.description
 });
-
-// issue: Slate Editor Mode cannot be used with SSR
-// https://github.com/ianstormtaylor/slate/issues/870
-// A user claims that it works, but for me the "onChange" events were not triggered. Also the toolbar did nothing.
-/*const DynamicPost = dynamic(import("../../components/Post"), {
-  loading: () => (<Card title={(<p>⏳ Loading Editor ⌛</p>)} />), // todo: put this in a card!
-  ssr: false
-});*/

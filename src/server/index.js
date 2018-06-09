@@ -11,6 +11,8 @@ const api = require("./api");
 const db = require("./db");
 const robots = require("./robots");
 const config = require("../config/server");
+const areIntlLocalesSupported = require("intl-locales-supported");
+const reactIntl = require("react-intl");
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -22,6 +24,18 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = isDevelopment || config.certs.allowUn
 
 console.log("📡", "Helios is starting ...");
 console.log("📡", "Dev-Mode:", isDevelopment);
+
+// Load the locale data for NodeJS if it has not been installed.
+if (global.Intl && !areIntlLocalesSupported([config.client.locale.meta.id])) {
+  console.log("📡", "Polyfilling locale for NodeJS", config.client.locale.meta.id);
+  const IntlPolyfill = require('intl');
+  Intl.NumberFormat = IntlPolyfill.NumberFormat;
+  Intl.DateTimeFormat = IntlPolyfill.DateTimeFormat;
+} else if (!global.Intl) {
+  console.log("📡", "Polyfilling Intl for NodeJS");
+  global.Intl = require('intl');
+}
+reactIntl.addLocaleData(config.client.locale.meta.intl);
 
 const $send = (res, { error, data, errorCode, successCode }) => {
   if (isDevelopment) console.info("sending", { error, data, errorCode, successCode })

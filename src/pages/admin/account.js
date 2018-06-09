@@ -8,6 +8,8 @@ import SidebarLayout from "../../components/SidebarLayout";
 import Tag from "../../components/Tag";
 import NotificationProvider from "../../components/NotificationProvider";
 import Icon, { icons } from "../../components/Icon";
+import config from "../../config/client";
+import { FormattedMessage } from "react-intl";
 
 export default class Account extends React.Component {
   constructor(p) {
@@ -31,7 +33,10 @@ export default class Account extends React.Component {
           this.notifications.push({
             type: "success",
             canClose: true,
-            children: (<span><Icon>{icons.signIn}</Icon> You were signed in.</span>)
+            children: (<span>
+              <Icon>{icons.signIn}</Icon>
+              <FormattedMessage id="account.notification.signedIn.title" />
+            </span>)
           });
           this.setState({ session: data });
           res();
@@ -49,7 +54,10 @@ export default class Account extends React.Component {
         this.notifications.push({
           type: "success",
           canClose: true,
-          children: (<span><Icon>{icons.signOut}</Icon> You were signed out.</span>)
+          children: (<span>
+            <Icon>{icons.signOut}</Icon>
+            <FormattedMessage id="account.notification.signedOut.title" />
+          </span>)
         });
         this.setState({ session: "none" });
       })
@@ -69,7 +77,10 @@ export default class Account extends React.Component {
           this.notifications.push({
             type: "success",
             canClose: true,
-            children: (<span><Icon>{icons.user}</Icon> Your profile has been updated.</span>)
+            children: (<span>
+              <Icon>{icons.user}</Icon>
+              <FormattedMessage id="account.notification.updatedProfile.title" />
+            </span>)
           });
           this.setState({ session: data });
           res();
@@ -82,7 +93,7 @@ export default class Account extends React.Component {
   }
 
   render() {
-    return (<Layout title="Account">
+    return (<Layout title={<FormattedMessage id="account.title" />}>
       <SidebarLayout size={3} sidebar={this.renderSidebar()}>
         <Card>{this.renderContent()}</Card>
       </SidebarLayout>
@@ -104,39 +115,55 @@ export default class Account extends React.Component {
 
   renderSidebar() {
     return (<Card>
-      <p><Tag type="info">Notifications</Tag></p>
+      <p><Tag type="info"><FormattedMessage id="notifications" /></Tag></p>
       <NotificationProvider ref={n => this.notifications = n} >
-        <p>No notifications!</p>
+        <p><FormattedMessage id="noNotifications" /></p>
       </NotificationProvider>
     </Card>);
   }
 
   renderLogIn() {
     return (<Form
-      submitText={(<span><Icon>{icons.signIn}</Icon> Sign In</span>)}
+      submitText={(<span>
+        <Icon>{icons.signIn}</Icon>
+        <FormattedMessage id="account.signIn" />
+      </span>)}
       onSubmit={this.onSubmit}
       elements={[
         {
           key: "id",
           type: "text",
-          name: "Username",
-          validator: (name) => ({ error: !name, message: "Please enter your username." }),
-          placeholder: "@your-name-here"
+          name: <FormattedMessage id="username" />,
+          validator: (name) => ({
+            error: !name,
+            message: <FormattedMessage id="formValueRequired" values={{
+              field: <FormattedMessage id="username" />
+            }} />
+          }),
+          placeholder: <FormattedMessage id="account.usernamePlaceholder" />
         },
         {
           key: "password",
           type: "text",
-          name: "Password",
+          name: <FormattedMessage id="password" />,
           mode: "password",
           ignoreData: true,
-          validator: (pw) => ({ error: !pw, message: "Please enter your password." }),
-          placeholder: "Not 123!"
+          validator: (pw) => ({
+            error: !pw,
+            message: <FormattedMessage id="formValueRequired" values={{
+              field: <FormattedMessage id="password" />
+            }} />
+          }),
+          placeholder: <FormattedMessage id="account.passwordPlaceholder" />
         },
         {
           key: "cookie",
           type: "checkbox",
-          name: "I agree that this website will use a cookie to keep me signed in.",
-          validator: (cookie) => ({error: !cookie, message: "We cannot sign you in without a cookie. Sorry."})
+          name: <FormattedMessage id="account.acceptCookie" />,
+          validator: (cookie) => ({
+            error: !cookie,
+            message: <FormattedMessage id="account.cookieRequired" />
+          })
         }
       ]} />);
   }
@@ -152,16 +179,31 @@ export default class Account extends React.Component {
           </figure>
         </div>
         <div className="media-content">
-          <h1 className="title">Welcome, {id}!</h1>
-          <p>You have the following permissions: {permissions.length ? permissions.map(p => (<Tag key={p}>{p}</Tag>)) : "none"}</p>
+          <h1 className="title"><FormattedMessage id="account.welcome" values={{ id }} /></h1>
+          <p><FormattedMessage id="account.permissions" /> {permissions.length
+            ? permissions.map(p => (<Tag key={p}>{p}</Tag>))
+            : <FormattedMessage id="none" />}</p>
         </div>
       </div>
-      <h2 className="subtitle">Update profile</h2>
+      <h2 className="subtitle">
+        <FormattedMessage id="account.updateProfile" />
+      </h2>
       {this.renderUpdateForm()}
-      <h2 className="subtitle">Actions</h2>
-      <a className="margin-2 button is-primary" onClick={this.onSignOut}><Icon>{icons.signOut}</Icon> Sign Out</a>
-      <A className="margin-2 button is-link" href={`/about/${id}`}><Icon>{icons.eye}</Icon> View Public Profile</A>
-      <a className="margin-2 button is-danger"><Icon>{icons.trash}</Icon> Delete Account</a>
+      <h2 className="subtitle">
+        <FormattedMessage id="actions" />
+      </h2>
+      <a className="margin-2 button is-primary" onClick={this.onSignOut}>
+        <Icon>{icons.signOut}</Icon>
+        <FormattedMessage id="account.signOut" />
+      </a>
+      <A className="margin-2 button is-link" href={`/about/${id}`}>
+        <Icon>{icons.eye}</Icon>
+        <FormattedMessage id="account.viewPublic" />
+      </A>
+      <a className="margin-2 button is-danger">
+        <Icon>{icons.trash}</Icon>
+        <FormattedMessage id="account.delete" />
+      </a>
     </div>);
   }
 
@@ -170,46 +212,67 @@ export default class Account extends React.Component {
     return (<Form
       className="margin-2"
       data={session}
-      submitText={(<span><Icon>{icons.save}</Icon> Save</span>)}
+      submitText={(<span>
+        <Icon>{icons.save}</Icon>
+        <FormattedMessage id="save" />
+      </span>)}
       onSubmit={this.onSubmitProfile}
       elements={[
         {
           key: "avatar",
           type: "file",
-          name: "Change Avatar",
-          validator: avatar => ({ error: avatar.size > 200 * 1024, message: "The avatar may not be larger than 200KiB." })
+          name: (<FormattedMessage id="account.changeAvatar" />),
+          validator: avatar => ({
+            error: avatar.size > config.maxAvatarSize,
+            // todo: better byte size formatter
+            message: (<FormattedMessage id="account.avatarTooLarge" values={{
+              isSize: avatar.size + "B",
+              maxSize: config.maxAvatarSize + "B"
+            }} />)
+          })
         },
         {
           key: "bio",
           type: "richtext",
-          name: "Bio",
-          placeholder: "Write someting about you!"
+          name: (<FormattedMessage id="account.bio" />),
+          placeholder: (<FormattedMessage id="account.bioPlaceholder" />)
         },
         {
           key: "passwordNew",
           type: "text",
-          name: "Change Password",
+          name: (<FormattedMessage id="account.changePassword.field1" />),
           mode: "password",
           ignoreData: true,
-          placeholder: "Your new password (optional)"
+          placeholder: (<FormattedMessage id="account.changePassword.field1Placeholder" />)
         },
         {
           key: "passwordNewConfirm",
           type: "text",
-          name: "Change Password (Confirm)",
+          name: (<FormattedMessage id="account.changePassword.field2" />),
           mode: "password",
           ignoreData: true,
-          placeholder: "Confirm your new password (optional)",
-          validator: (v, d) => ({ error: v !== d.passwordNew, message: "The two passwords are different." })
+          placeholder: (<FormattedMessage id="account.changePassword.field2Placeholder" />),
+          validator: (v, d) => ({
+            error: v !== d.passwordNew,
+            message: (<FormattedMessage id="account.changePassword.mismatchError" />)
+          })
         },
         {
           key: "password",
           type: "text",
-          name: (<span><Icon>{icons.exclamation}</Icon> Enter your current Password to confirm</span>),
+          name: (<span>
+            <Icon>{icons.exclamation}</Icon>
+            <FormattedMessage id="account.confirmPassword.field" />
+          </span>),
           mode: "password",
           ignoreData: true,
-          placeholder: "Your old password (required)",
-          validator: pw => ({ error: !pw, message: "Enter your password to confirm." })
+          placeholder: <FormattedMessage id="account.confirmPassword.placeholder" />,
+          validator: pw => ({
+            error: !pw,
+            message: <FormattedMessage id="formValueRequired" values={{
+              field: <FormattedMessage id="account.confirmPassword.field" />
+            }} />
+          })
         }
       ]} />);
   }

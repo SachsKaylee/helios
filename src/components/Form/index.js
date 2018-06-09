@@ -75,6 +75,7 @@ import fp from "../../fp";
 import classnames from "classnames";
 import Icon, { icons } from "../Icon";
 import dynamic from "next/dynamic";
+import textContent from "react-addons-text-content";
 const FormFieldRichText = dynamic(import("./FormFieldRichText"))
 
 class Form extends React.Component {
@@ -170,7 +171,7 @@ class Form extends React.Component {
           ref={this.makeRef(key)}
           disabled={waiting}
           defaultValue={ignoreData ? undefined : this.getData(key)}
-          placeholder={placeholder} />
+          placeholder={textContent(placeholder)} />
       </div>
       {this.renderValidationResult(this.getValidationResult(key))}
     </div>);
