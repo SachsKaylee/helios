@@ -1,4 +1,4 @@
-import Layout from "../components/Layout";
+import PageRoot from "../components/PageRoot";
 import SidebarLayout from "../components/SidebarLayout";
 import Post from "../components/ReadOnlyPost";
 import Card from "../components/Card"
@@ -16,8 +16,7 @@ export default class extends React.Component {
 
   render() {
     const { post } = this.props;
-    // We use absolute
-    return (<Layout title={post.title}>
+    return (<PageRoot title={post.title}>
       <Head>
         <link key="canonical" rel="canonical" href={`https://${config.domains[0]}:${config.port.https}/post/${post._id}`} />
         <meta key="author" name="author" content={post.author} />
@@ -30,6 +29,6 @@ export default class extends React.Component {
         author={post.author}
         title={post.title}
         content={post.content} />
-    </Layout>);
+    </PageRoot>);
   }
 };

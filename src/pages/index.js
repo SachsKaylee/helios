@@ -1,4 +1,4 @@
-import Layout from "../components/Layout";
+import PageRoot from "../components/PageRoot";
 import SidebarLayout from "../components/SidebarLayout";
 import Posts from "../components/Posts";
 import Card from "../components/Card";
@@ -32,7 +32,7 @@ export default class extends React.Component {
   render() {
     // todo: pagination
     const { posts } = this.props;
-    return (<Layout title={locale.pages.blog.title}>
+    return (<PageRoot title={locale.pages.blog.title}>
       <SidebarLayout size={3} sidebar={<Card>{"Lorem Ipsum"}</Card>}>
         <Posts posts={posts.map(p => ({
           ...p,
@@ -41,6 +41,6 @@ export default class extends React.Component {
           date: new Date(p.date)
         }))} />
       </SidebarLayout>
-    </Layout>);
+    </PageRoot>);
   }
 };

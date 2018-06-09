@@ -1,4 +1,4 @@
-import Layout from "../../components/Layout";
+import PageRoot from "../../components/PageRoot";
 import SidebarLayout from "../../components/SidebarLayout";
 import EditorToolbar from "../../components/EditorToolbar";
 import A from "../../components/A";
@@ -188,23 +188,23 @@ export default class extends React.PureComponent {
   }
 
   renderLoading() {
-    return (<Layout title={<FormattedMessage id="loading" />}>
+    return (<PageRoot title={<FormattedMessage id="loading" />}>
       <Card title={(<p><FormattedMessage id="loading" /></p>)}>
         <Icon spin size="4x">{icons.spinner}</Icon></Card>
-    </Layout>);
+    </PageRoot>);
   }
 
   renderError() {
     // todo: error renderer
     const { error } = this.state;
-    return (<Layout title={<FormattedMessage id="error" />}>
+    return (<PageRoot title={<FormattedMessage id="error" />}>
       <Card title={(<p><FormattedMessage id="error" /></p>)} >
         <p>
           <FormattedMessage id="errorMessages.generic" />
         </p>
         <p><code>{JSON.stringify(error)}</code></p>
       </Card>
-    </Layout>);
+    </PageRoot>);
   }
 
   renderLoaded() {
@@ -213,7 +213,7 @@ export default class extends React.PureComponent {
       ? <FormattedMessage id="post.title.new" values={{ title: this.valueToString(title) }} />
       : <FormattedMessage id="post.title.edit" values={{ title: this.valueToString(title) }} />;
     return (
-      <Layout title={titleComponent}>
+      <PageRoot title={titleComponent}>
         <SidebarLayout size={3} sidebar={<Card>
           <EditorToolbar
             stylesChooser={lastChanged === "content"}
@@ -239,7 +239,7 @@ export default class extends React.PureComponent {
             onChange={this.onChange(true)}
           />
         </SidebarLayout>
-      </Layout>
+      </PageRoot>
     );
   }
 

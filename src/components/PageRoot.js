@@ -27,7 +27,7 @@ const {
 } = config.locale;
 
 
-export default class Layout extends React.Component {
+export default class PageRoot extends React.Component {
   constructor(p) {
     super(p);
     this.state = {

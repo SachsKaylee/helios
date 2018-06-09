@@ -1,5 +1,5 @@
 import React from "react";
-import Layout from "../../components/Layout";
+import PageRoot from "../../components/PageRoot";
 import Card from "../../components/Card";
 import Form from "../../components/Form";
 import A from "../../components/A";
@@ -17,9 +17,9 @@ export default class Account extends React.Component {
   }
 
   render() {
-    return (<Layout title={<FormattedMessage id="account.title" />}>
+    return (<PageRoot title={<FormattedMessage id="account.title" />}>
       <Card>{this.renderContent()}</Card>
-    </Layout>)
+    </PageRoot>)
   }
 
   renderContent() {

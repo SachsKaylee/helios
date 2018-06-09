@@ -1,5 +1,5 @@
 import React from "react";
-import Layout from "../components/Layout";
+import PageRoot from "../components/PageRoot";
 import config from "../config/client";
 import axios from "axios";
 import Head from "next/head";
@@ -23,7 +23,7 @@ class About extends React.Component {
     const { user: { id, permissions, bio }, posts } = this.props;
     // We need a canonical URL since the ID of the user can be inferred by accessing 
     // the /about page, which resolved to the default user.
-    return (<Layout title={<FormattedMessage id="about.title" values={{ id }} />}>
+    return (<PageRoot title={<FormattedMessage id="about.title" values={{ id }} />}>
       <Head>
         <link key="canonical" rel="canonical" href={`https://${config.domains[0]}:${config.port.https}/about/${id}`} />
         <meta key="author" name="author" content={id} />
@@ -52,16 +52,16 @@ class About extends React.Component {
         {posts.map(post => (<PostMedia key={post._id} {...post} />))}
 
       </Card>
-    </Layout>);
+    </PageRoot>);
   }
 
   renderError() {
     // todo: implement a proper error rendering component
     // todo: implement a better translation of mongo errors on server side
     const { error } = this.props;
-    return (<Layout title={<FormattedMessage id="error" />}>
+    return (<PageRoot title={<FormattedMessage id="error" />}>
       {JSON.stringify(error)}
-    </Layout>);
+    </PageRoot>);
   }
 
   render() {
