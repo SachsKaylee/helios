@@ -1,102 +1,102 @@
 module.exports = {
-  // Some metadata about this locale. This object is not accessible as a message.
-  /*meta: {
+  meta: {
     id: "en",
     name: "English",
     intl: require("react-intl/locale-data/en")
   },
-  /*misc: {
-    error: "Error",
-    none: "None",
-    notifications: "Notifications",
-    noNotifications: "No notifications!",
-    username: "Username",
-    password: "Password",
-    actions: "Actions",
-    save: "Save"
-  },
+  loading: "Loading...",
+  error: "Error",
   errorMessages: {
-    generic: "An error occurred! Below you can see some details, be sure to pass it to a developer robot!"
+    generic: "Some general error thing occurred. Maybe you can find more details somewhere on this page."
   },
+  notifications: "Notifications",
+  noNotifications: "No Notifications!",
+  username: "Username",
+  password: "Password",
+  save: "Save",
+  none: "None",
+  actions: "Actions",
+  formValueRequired: "\"{field}\" is required!",
   // Strings used for displaying and editing posts
   post: {
     subtitle: "{author} on {date, date, medium}",
-    edit: "Edit Post",
+    edit: "Edit post",
     editor: {
-
-    }
-  },
-  pages: {
-    account: {
-      title: "Account",
-      signOut: "Sign Out",
-      signIn: "Sign In",
-      viewPublic: "View Public Profile",
-      delete: "Delete Account",
-      wasSignedOut: "You were signed out",
-      wasSignedIn: "You were signed in",
-      updatedProfile: "Your profile has been updated.",
-      usernamePlaceholder: "@your-name-here",
-      passwordPlaceholder: "Not 123!",
-      usernameRequired: "Please enter your username.",
-      passwordRequired: "Please enter your password.",
-      agreeToCookie: "I agree that this website will use a cookie to keep me signed in.",
-      agreeToCookieRequired: "We cannot sign you in without a cookie. Sorry.",
-      welcome: '({ id }) => (<React.Fragment>Welcome, {id}!</React.Fragment>)',
-      permissionList: "You have the following permissions:",
-      updateProfile: "Update Profile",
-      changeAvatar: "Change Avatar",
-      avatarTooLarge: '({ maxSize, isSize }) => (<>The avatar may not be larger than {maxSize}. (The selected one has {isSize})</>)',
-      bio: "Bio",
-      bioPlaceholder: "Write something about you!",
-      changePassword: "Change Password",
-      changePasswordPlaceholder: "Your new password (optional)",
-      changePasswordConfirm: "Change Password (Confirm)",
-      changePasswordConfirmPlaceholder: "Confirm your new password (optional)",
-      changePasswordConfirmDifferent: "The two passwords are different.",
-      confirmPassword: "Enter your current Password to confirm",
-      confirmPasswordRequired: "Enter your Password to confirm",
-      confirmPasswordPlaceholder: "Your old password (required)"
-    },
-    about: {
-      title: "About {id}",
-      permissionList: "This user has the following permissions:",
-      recentPosts: "Recent posts"
-    },
-    blog: {
-      title: "Blog"
-    },
-    admin: {
-      post: {
-        title: '({ section }) => section ? (<>Post: {section}</>) : "Post"',
+      notification: {
+        deleted: {
+          title: "Post deleted.",
+          description: "The post has been deleted. The contents of the post will stay in the editor in case you wish to re-publish it."
+        },
         delete: {
-          deleted: {
-            title: "Post deleted!",
-            description: '(<>The post has been <strong>deleted</strong>. The contents of the post will remain in the editor in case you wish to re-publish it.</>)'
-          },
           title: "Are you sure?",
-          description: '(<>You are about to delete the post. This action is permanent and <strong>cannot be undone</strong>.</>)',
-          confirmDelete: "Fine by me, delete it!"
+          description: "You are about to delete this post. This cannot be undone.",
+          confirm: "Understood - Delete regardless"
         },
-        publish: {
-          published: {
-            title: "Published!",
-            description: '({ url, title }) => (<>The post <A href={url}>{title}</A> has been published!</>)'
-          }
-        },
-        editor: {
-          loading: {
-            title: "Loading...",
-            description: "Loading Editor..."
-          },
-          titleNew: "Composing...",
-          titleEdit: '({ title }) => (<>Editing "{title}"...</>)'
-        },
-        default: {
-          titleString: "New Post...",
-          descriptionString: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+        published: {
+          title: "Published!",
+          description: "The post {link} has been published."
         }
       }
+    },
+    title: {
+      new: "Composing post...",
+      edit: "Editing {title}"
+    },
+    defaults: {
+      title: "New post",
+      description: "But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful."
     }
-  }*/
+  },
+  about: {
+    title: "About {id}...",
+    permissions: "Permissions:",
+    recentPosts: "Latest posts"
+  },
+  account: {
+    title: "Account",
+    signIn: "Sign In",
+    signOut: "Sign Out",
+    notification: {
+      signedIn: {
+        title: "You were signed in."
+      },
+      signedOut: {
+        title: "You were signed out."
+      },
+      updatedProfile: {
+        title: "Your profile has been updated."
+      }
+    },
+    changePassword: {
+      field1: "Change password",
+      field2: "Change password (confirm)",
+      field1Placeholder: "Your new password (optional)",
+      field2Placeholder: "Your new password (optional)",
+      mismatchError: "Both passwords have to be the same. If you do not wish to change your password leave both fields empty."
+    },
+    confirmPassword: {
+      field: "Current Password",
+      placeholder: "Enter your current password to confirm"
+    },
+    bio: {
+      field: "Bio",
+      placeholder: "Text entered here will be displayed on your public profile page."
+    },
+    permissions: "Permissions:",
+    welcome: "Welcome, {id}!",
+    viewPublic: "View public profile",
+    updateProfile: "Update account",
+    changeAvatar: "Change avatar",
+    avatarTooLarge: "The avatar may not be larger than {maxSize}. (Selected size: {isSize})",
+    delete: "Delete account",
+    usernamePlaceholder: "your-username",
+    passwordPlaceholder: "Your password",
+    cookieRequired: "The cookie is required to sign you in.",
+    acceptCookie: "I agree to this website using a cookie to sign me into my account."
+  },
+  pages: {
+    blog: {
+      title: "Blog"
+    }
+  }
 }

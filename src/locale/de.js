@@ -78,8 +78,10 @@ module.exports = {
       field: "Aktuelles Passwort",
       placeholder: "Geben Sie Ihr Passwort zum Bestätigen ein"
     },
-    bio: "Informationen über Sie",
-    bioPlaceholder: "Der hier eingegebene Text ist auf Ihrer Profilseite für Besucher der Webseite sichtbar.",
+    bio: {
+      field: "Informationen über Sie",
+      placeholder: "Der hier eingegebene Text ist auf Ihrer Profilseite für Besucher der Webseite sichtbar."
+    },
     permissions: "Berechtigungen:",
     welcome: "Willkommen, {id}!",
     viewPublic: "Öffentliches Profil ansehen",

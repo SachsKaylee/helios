@@ -234,8 +234,8 @@ export default class Account extends React.Component {
         {
           key: "bio",
           type: "richtext",
-          name: (<FormattedMessage id="account.bio" />),
-          placeholder: (<FormattedMessage id="account.bioPlaceholder" />)
+          name: (<FormattedMessage id="account.bio.field" />),
+          placeholder: (<FormattedMessage id="account.bio.placeholder" />)
         },
         {
           key: "passwordNew",
