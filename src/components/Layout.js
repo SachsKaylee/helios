@@ -2,7 +2,7 @@ import Head from "next/head";
 import Navbar from "./Navbar";
 import config from "../config/client";
 import textContent from "react-addons-text-content";
-import { IntlProvider, addLocaleData } from "react-intl";
+import { IntlProvider, addLocaleData, FormattedMessage } from "react-intl";
 import { flattenObject } from "../fp"
 import areIntlLocalesSupported from "intl-locales-supported";
 import intl from "intl"; // todo: try to make this import lazy!
@@ -48,16 +48,16 @@ export default class Layout extends React.Component {
             title={(<span>{config.title} - {title}</span>)}
             logo="/static/content/system/logo.png"
             links={[{
-              title: "Home",
+              title: (<FormattedMessage id="navigation.home" />),
               link: "/"
             }, {
-              title: "Admin",
+              title: (<FormattedMessage id="navigation.admin.menu" />),
               link: "/admin",
               children: [{
-                title: "New Post",
+                title: (<FormattedMessage id="navigation.admin.newPost" />),
                 link: "/admin/post"
               }, {
-                title: "Account",
+                title: (<FormattedMessage id="navigation.admin.account" />),
                 link: "/admin/account"
               }]
             }]} />

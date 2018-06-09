@@ -17,6 +17,15 @@ module.exports = {
   none: "Keine",
   actions: "Aktionen",
   formValueRequired: "\"{field}\" muss angegeben werden!",
+  // Navigation
+  navigation: {
+    home: "Startseite",
+    admin: {
+      menu: "Administration",
+      account: "Benutzerkonto",
+      newPost: "Neuer Post"
+    }
+  },
   // Strings used for displaying and editing posts
   post: {
     subtitle: "{author} am {date, date, medium}",
