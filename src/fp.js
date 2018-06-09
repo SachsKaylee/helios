@@ -1,5 +1,6 @@
 const mapObject = (obj, fn) => Object.keys(obj).reduce((a, k) => ({ ...a, [k]: fn(obj[k], k) }), {});
-const arrayToObject = (array, processor) => array.reduce((a, c) => ({ ...a, ...processor ? processor(c): c }), {});
+const mapObjectKeys = (obj, fn) => Object.keys(obj).reduce((a, k) => ({ ...a, [fn(k, obj[k])]: obj[k] }), {});
+const arrayToObject = (array, processor) => array.reduce((a, c) => ({ ...a, ...processor ? processor(c) : c }), {});
 
 // https://gist.github.com/YuCJ/0a42afc1b578b2545195a7b688dcbab6
 const splice = (array, start, deleteCount, items = []) => {
@@ -32,10 +33,19 @@ const all = (array, predicate) => {
   return found === undefined ? true : false;
 }
 
+const flattenObject = (obj, sep = ".") =>
+  Object.keys(obj).reduce((a, k) => {
+    const value = obj[k];
+    if (value && "object" === typeof value) return { ...a, ...mapObjectKeys(flattenObject(value), oldKey => k + sep + oldKey) };
+    return { ...a, [k]: value };
+  }, {});
+
 module.exports = {
   mapObject,
+  mapObjectKeys,
   splice,
   sandbox,
-  arrayToObject, 
+  flattenObject,
+  arrayToObject,
   all
 }

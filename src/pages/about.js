@@ -7,6 +7,7 @@ import Tag from "../components/Tag";
 import Card from "../components/Card";
 import PostMedia from "../components/PostMedia";
 import { render, defaultRules } from "../slate-renderer";
+import { FormattedMessage } from "react-intl";
 
 class About extends React.Component {
   static getInitialProps({ query: { id } }) {
@@ -22,7 +23,7 @@ class About extends React.Component {
     const { user: { id, permissions, bio }, posts } = this.props;
     // We need a canonical URL since the ID of the user can be inferred by accessing 
     // the /about page, which resolved to the default user.
-    return (<Layout title={`About ${id}`}>
+    return (<Layout title={<FormattedMessage id="about.title" values={{ id }} />}>
       <Head>
         <link key="canonical" rel="canonical" href={`https://${config.domains[0]}:${config.port.https}/about/${id}`} />
         <meta key="author" name="author" content={id} />
@@ -35,13 +36,19 @@ class About extends React.Component {
             </figure>
           </div>
           <div className="media-content">
-            <h1 className="title">About {id}</h1>
+            <h1 className="title">
+              <FormattedMessage id="about.title" values={{ id }} />
+            </h1>
             {bio && render(defaultRules, bio)}
-            <p className="content is-small">This user has the following permissions: {permissions.length ? permissions.map(p => (<Tag key={p}>{p}</Tag>)) : "none"}</p>
+            <p className="content is-small"><FormattedMessage id="about.permissions" /> {permissions.length
+              ? permissions.map(p => (<Tag key={p}>{p}</Tag>))
+              : <FormattedMessage id="none" />}</p>
           </div>
         </div>
 
-        <h2 className="subtitle">Recent posts by {id}</h2>
+        <h2 className="subtitle">
+          <FormattedMessage id="about.recentPosts" />
+        </h2>
         {posts.map(post => (<PostMedia key={post._id} {...post} />))}
 
       </Card>
@@ -52,7 +59,7 @@ class About extends React.Component {
     // todo: implement a proper error rendering component
     // todo: implement a better translation of mongo errors on server side
     const { error } = this.props;
-    return (<Layout title="Error">
+    return (<Layout title={<FormattedMessage id="error" />}>
       {JSON.stringify(error)}
     </Layout>);
   }

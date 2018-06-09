@@ -4,6 +4,7 @@ import Posts from "../components/Posts";
 import Card from "../components/Card";
 import React from "react";
 import axios from "axios";
+import { locale } from "../config/client";
 
 export default class extends React.Component {
   static async getInitialProps() {
@@ -31,7 +32,7 @@ export default class extends React.Component {
   render() {
     // todo: pagination
     const { posts } = this.props;
-    return (<Layout title="Blog">
+    return (<Layout title={locale.pages.blog.title}>
       <SidebarLayout size={3} sidebar={<Card>{"Lorem Ipsum"}</Card>}>
         <Posts posts={posts.map(p => ({
           ...p,
