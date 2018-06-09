@@ -11,11 +11,9 @@ const PostMedia = (post) => (
     </figure>
     <div className="media-content">
       <div className="content">
-        <p>
-          <strong><A href={`/post/${post._id}`}>{post.title}</A></strong> <small>{new Date(post.date).toLocaleString()}</small>
-          <br />
-          {render(defaultRules, post.content)}
-      </p>
+        <strong><A href={`/post/${post._id}`}>{post.title}</A></strong> <small>{new Date(post.date).toLocaleString()}</small>
+        <br />
+        {render(defaultRules, post.content)}
       </div>
     </div>
   </article>);
