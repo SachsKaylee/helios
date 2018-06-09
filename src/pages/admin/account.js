@@ -1,5 +1,4 @@
 import React from "react";
-import { get, post, put } from "axios";
 import Layout from "../../components/Layout";
 import Card from "../../components/Card";
 import Form from "../../components/Form";
@@ -10,64 +9,11 @@ import NotificationProvider from "../../components/NotificationProvider";
 import Icon, { icons } from "../../components/Icon";
 import config from "../../config/client";
 import { FormattedMessage } from "react-intl";
+import Store from "../../store";
 
 export default class Account extends React.Component {
   constructor(p) {
     super(p);
-    this.state = {
-      session: "loading"
-    };
-  }
-
-  componentDidMount() {
-    get("/api/session")
-      .then(({ data }) => this.setState({ session: data }))
-      .catch(() => this.setState({ session: "none" }));
-  }
-
-  onSubmit = values => {
-    return new Promise((res, rej) => {
-      post("/api/session/login", values)
-        .then(({ data }) => this.setState({ session: data }, () => res()))
-        .catch(error => {
-          console.error("log in error", error && error.response && error.response.data);
-          rej(errorToMessage(error.response.data));
-        });
-    });
-  }
-
-  onSignOut = () => {
-    post("/api/session/logout")
-      .then(() => this.setState({ session: "none" }))
-      .catch(console.error);
-  }
-
-  onSubmitProfile = values => {
-    const newData = {
-      password: values.password,
-      passwordNew: values.passwordNew,
-      avatar: values.avatar.data,
-      bio: values.bio
-    };
-    return new Promise((res, rej) => {
-      put("/api/session", newData)
-        .then(({ data }) => {
-          this.notifications.push({
-            type: "success",
-            canClose: true,
-            children: (<span>
-              <Icon>{icons.user}</Icon>
-              <FormattedMessage id="account.notification.updatedProfile.title" />
-            </span>)
-          });
-          this.setState({ session: data });
-          res();
-        })
-        .catch(error => {
-          console.error("save profile error", error.response.data);
-          rej(errorToMessage(error.response.data));
-        });
-    });
   }
 
   render() {
@@ -77,25 +23,23 @@ export default class Account extends React.Component {
   }
 
   renderContent() {
-    const { session } = this.state;
-    switch (session) {
-      case "loading": return this.renderLoading();
-      case "none": return this.renderLogIn();
-      default: return this.renderLogOut();
-    }
+    return (<Store.Consumer>
+      {store => store.session
+        ? this.renderLogOut(store)
+        : this.renderLogIn(store)}
+    </Store.Consumer>);
   }
 
-  renderLoading() {
-    return ".... LOADING ....";
-  }
-
-  renderLogIn() {
+  renderLogIn(store) {
     return (<Form
       submitText={(<span>
         <Icon>{icons.signIn}</Icon>
         <FormattedMessage id="account.signIn" />
       </span>)}
-      onSubmit={this.onSubmit}
+      onSubmit={values => store.actions
+        .signIn(values)
+        .then(session => ({}))
+        .catch(error => errorToMessage(error))}
       elements={[
         {
           key: "id",
@@ -135,8 +79,8 @@ export default class Account extends React.Component {
       ]} />);
   }
 
-  renderLogOut() {
-    const { session } = this.state;
+  renderLogOut(store) {
+    const { session } = store;
     const { id, permissions } = session;
     return (<div>
       <div className="media">
@@ -155,11 +99,13 @@ export default class Account extends React.Component {
       <h2 className="subtitle">
         <FormattedMessage id="account.updateProfile" />
       </h2>
-      {this.renderUpdateForm()}
+      {this.renderUpdateForm(store)}
       <h2 className="subtitle">
         <FormattedMessage id="actions" />
       </h2>
-      <a className="margin-2 button is-primary" onClick={this.onSignOut}>
+      <a className="margin-2 button is-primary" onClick={() => store.actions.signOut()
+        .then(() => ({}))
+        .catch(error => errorToMessage(error))}>
         <Icon>{icons.signOut}</Icon>
         <FormattedMessage id="account.signOut" />
       </a>
@@ -174,8 +120,8 @@ export default class Account extends React.Component {
     </div>);
   }
 
-  renderUpdateForm() {
-    const { session } = this.state;
+  renderUpdateForm(store) {
+    const { session } = store;
     return (<Form
       className="margin-2"
       data={session}
@@ -183,7 +129,13 @@ export default class Account extends React.Component {
         <Icon>{icons.save}</Icon>
         <FormattedMessage id="save" />
       </span>)}
-      onSubmit={this.onSubmitProfile}
+      onSubmit={values => store.actions.updateProfile({
+        password: values.password,
+        passwordNew: values.passwordNew,
+        avatar: values.avatar.data,
+        bio: values.bio
+      }).then(() => ({}))
+        .catch(error => errorToMessage(error))}
       elements={[
         {
           key: "avatar",
