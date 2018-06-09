@@ -56,17 +56,6 @@ module.exports = {
     title: "Benutzerkonto",
     signIn: "Anmelden",
     signOut: "Abmelden",
-    notification: {
-      signedIn: {
-        title: "Sie wurden angemeldet."
-      },
-      signedOut: {
-        title: "Sie wurden abgemeldet."
-      },
-      updatedProfile: {
-        title: "Ihr Profil wurde aktualisiert."
-      }
-    },
     changePassword: {
       field1: "Passwort ändern",
       field2: "Passwort ändern (erneut eingeben)",

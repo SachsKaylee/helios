@@ -56,17 +56,6 @@ module.exports = {
     title: "Account",
     signIn: "Sign In",
     signOut: "Sign Out",
-    notification: {
-      signedIn: {
-        title: "You were signed in."
-      },
-      signedOut: {
-        title: "You were signed out."
-      },
-      updatedProfile: {
-        title: "Your profile has been updated."
-      }
-    },
     changePassword: {
       field1: "Change password",
       field2: "Change password (confirm)",

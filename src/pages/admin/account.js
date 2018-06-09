@@ -14,7 +14,6 @@ import { FormattedMessage } from "react-intl";
 export default class Account extends React.Component {
   constructor(p) {
     super(p);
-    this.notifications = React.createRef();
     this.state = {
       session: "loading"
     };
@@ -29,20 +28,9 @@ export default class Account extends React.Component {
   onSubmit = values => {
     return new Promise((res, rej) => {
       post("/api/session/login", values)
-        .then(({ data }) => {
-          this.notifications.push({
-            type: "success",
-            canClose: true,
-            children: (<span>
-              <Icon>{icons.signIn}</Icon>
-              <FormattedMessage id="account.notification.signedIn.title" />
-            </span>)
-          });
-          this.setState({ session: data });
-          res();
-        })
+        .then(({ data }) => this.setState({ session: data }, () => res()))
         .catch(error => {
-          console.error("log in error", error.response.data);
+          console.error("log in error", error && error.response && error.response.data);
           rej(errorToMessage(error.response.data));
         });
     });
@@ -50,17 +38,7 @@ export default class Account extends React.Component {
 
   onSignOut = () => {
     post("/api/session/logout")
-      .then(() => {
-        this.notifications.push({
-          type: "success",
-          canClose: true,
-          children: (<span>
-            <Icon>{icons.signOut}</Icon>
-            <FormattedMessage id="account.notification.signedOut.title" />
-          </span>)
-        });
-        this.setState({ session: "none" });
-      })
+      .then(() => this.setState({ session: "none" }))
       .catch(console.error);
   }
 
@@ -94,9 +72,7 @@ export default class Account extends React.Component {
 
   render() {
     return (<Layout title={<FormattedMessage id="account.title" />}>
-      <SidebarLayout size={3} sidebar={this.renderSidebar()}>
-        <Card>{this.renderContent()}</Card>
-      </SidebarLayout>
+      <Card>{this.renderContent()}</Card>
     </Layout>)
   }
 
@@ -111,15 +87,6 @@ export default class Account extends React.Component {
 
   renderLoading() {
     return ".... LOADING ....";
-  }
-
-  renderSidebar() {
-    return (<Card>
-      <p><Tag type="info"><FormattedMessage id="notifications" /></Tag></p>
-      <NotificationProvider ref={n => this.notifications = n} >
-        <p><FormattedMessage id="noNotifications" /></p>
-      </NotificationProvider>
-    </Card>);
   }
 
   renderLogIn() {
