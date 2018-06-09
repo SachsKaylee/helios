@@ -8,7 +8,6 @@ import areIntlLocalesSupported from "intl-locales-supported";
 import intl from "intl"; // todo: try to make this import lazy!
 
 const g = global || window;
-console.log("Layout.js", g.Intl, areIntlLocalesSupported([config.locale.meta.id]));
 // Load the locale data for NodeJS if it has not been installed.
 if (g.Intl && !areIntlLocalesSupported([config.locale.meta.id])) {
   console.log("📡", "Polyfilling locale for client", config.locale.meta.id);
