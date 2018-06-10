@@ -33,6 +33,8 @@ const all = (array, predicate) => {
   return found === undefined ? true : false;
 }
 
+const zipObject = (keys, values) => keys.reduce((accumulator, key, index) => ({ ...accumulator, [key]: values[index] }), {});
+
 const flattenObject = (obj, sep = ".") =>
   Object.keys(obj).reduce((a, k) => {
     const value = obj[k];
@@ -47,5 +49,6 @@ module.exports = {
   sandbox,
   flattenObject,
   arrayToObject,
+  zipObject,
   all
 }

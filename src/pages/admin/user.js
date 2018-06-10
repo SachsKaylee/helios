@@ -6,6 +6,7 @@ import Form from "../../components/Form";
 import { FormattedMessage } from "react-intl";
 import { get, post, put } from "axios";
 import Icon, { icons } from "../../components/Icon";
+import Router from "next/router";
 
 export default class User extends React.Component {
   static getInitialProps(p) {
@@ -32,16 +33,16 @@ export default class User extends React.Component {
     return data.substr("data:image/".length);
   }
 
-  submitCreate = ({ id, password, bio, avatar }) => {
-    return post("/api/user", { id, password, bio, avatar: avatar ? avatar.data : "" })
-      .then(({ data }) => this.setState({ isNew: false, user: data }))
+  submitCreate = ({ id, password, bio, avatar, permissions }) => {
+    return post("/api/user", { id, password, bio, permissions, avatar: avatar ? avatar.data : "" })
+      .then(({ data }) => Router.push("/admin/users"))
       .catch(error => ({ error: "ERROR TODO" })); // todo: error
   }
 
-  submitUpdate = ({ password, bio, avatar }) => {
+  submitUpdate = ({ password, bio, avatar, permissions }) => {
     const { id } = this.props.user;
-    return put(`/api/user/${id}`, { password, bio, avatar: avatar ? avatar.data : "" })
-      .then(({ data }) => this.setState({ user: data }))
+    return put(`/api/user/${id}`, { password, bio, permissions, avatar: avatar ? avatar.data : "" })
+      .then(({ data }) => Router.push("/admin/users"))
       .catch(error => ({ error: "ERROR TODO" })); // todo: error
   }
 
@@ -90,6 +91,23 @@ const baseElements = () => [
     placeholder: (<FormattedMessage id="account.bio.placeholder" />)
   },
   {
+    key: "permissions",
+    name: "Permissions",
+    type: "taglist",
+    tags: {
+      author: "author"
+    }
+  }
+];
+const newElements = () => [
+  {
+    key: "id",
+    type: "text",
+    name: (<FormattedMessage id="username" />),
+    placeholder: (<FormattedMessage id="username" />)
+  },
+  ...baseElements(),
+  {
     key: "password",
     type: "text",
     name: (<FormattedMessage id="password" />),
@@ -108,23 +126,34 @@ const baseElements = () => [
     mode: "password",
     ignoreData: true,
     placeholder: (<FormattedMessage id="users.password.placeholder" />),
-    validator: (v, d) => ({
-      error: v !== d.password,
+    validator: (passwordConfirm, { password }) => ({
+      error: passwordConfirm !== password,
       message: (<FormattedMessage id="account.changePassword.mismatchError" />)
     })
   }
 ];
-const newElements = () => [
-  {
-    key: "id",
-    type: "text",
-    name: (<FormattedMessage id="username" />),
-    placeholder: (<FormattedMessage id="username" />)
-  },
-  ...baseElements()
-];
 const editElements = () => [
-  ...baseElements()
+  ...baseElements(),
+  {
+    key: "password",
+    type: "text",
+    name: (<FormattedMessage id="account.changePassword.field1" />),
+    mode: "password",
+    ignoreData: true,
+    placeholder: (<FormattedMessage id="users.password.placeholder" />)
+  },
+  {
+    key: "passwordConfirm",
+    type: "text",
+    name: (<FormattedMessage id="account.changePassword.field2" />),
+    mode: "password",
+    ignoreData: true,
+    placeholder: (<FormattedMessage id="users.password.placeholder" />),
+    validator: (passwordConfirm, { password }) => ({
+      error: passwordConfirm !== password,
+      message: (<FormattedMessage id="account.changePassword.mismatchError" />)
+    })
+  }
 ];
 
 const CreateForm = ({ onSubmit }) => (<Form
