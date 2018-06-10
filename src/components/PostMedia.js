@@ -1,21 +1,17 @@
 import A from "./A";
+import Media from "./Media";
 import { render, defaultRules } from "../slate-renderer";
+import { FormattedMessage, FormattedDate } from "react-intl";
 
-const PostMedia = (post) => (
-  // todo: render to a shorter version, not the entire post!
-  <article className="media">
-    <figure className="media-left">
-      <p className="image is-64x64">
-        <img src={`/api/avatar/${post.author}`} />
-      </p>
-    </figure>
-    <div className="media-content">
-      <div className="content">
-        <strong><A href={`/post/${post._id}`}>{post.title}</A></strong> <small>{new Date(post.date).toLocaleString()}</small>
-        <br />
-        {render(defaultRules, post.content)}
-      </div>
-    </div>
-  </article>);
+// todo: render to a shorter version, not the entire post!
+const PostMedia = (post) => (<Media
+  image={`/api/avatar/${post.author}`}
+  title={(<FormattedMessage id="post.mediaTitle" values={{
+    title: (<strong><A href={`/post/${post._id}`}>{post.title}</A></strong>),
+    author: (<A href={`/about/${post.author}`}>{post.author}</A>),
+    date: (<small><FormattedDate value={new Date(post.date)} year="numeric" month="long" day="numeric" weekday="long" /></small>)
+  }} />)}>
+  {render(defaultRules, post.content)}
+</Media>);
 
 export default PostMedia;

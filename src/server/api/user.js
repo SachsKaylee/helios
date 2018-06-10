@@ -20,7 +20,11 @@ const schema = ({ mongoose }) => {
 
 const install = ({ server, models, $send }) => {
   $model = models.user;
-  const $sendUser = (res, { _id, avatar, bio, permissions }) => $send(res, { data: { id: _id, bio, permissions } });
+
+  const filterUserData = ({ _id, avatar, bio, permissions }) => ({ id: _id, avatar, bio, permissions });
+
+  const $sendUser = (res, user) => $send(res, { data: filterUserData(user) });
+  const $sendUsers = (res, users) => $send(res, { data: users.map(filterUserData) });
 
   // todo: handle if no default user exists (is that even reasonable?)
   server.get("/api/user", (req, res) => getUser(config.defaultUser.id)
@@ -31,21 +35,47 @@ const install = ({ server, models, $send }) => {
     .then(user => $sendUser(res, user))
     .catch(error => $send(res, { error })));
 
+  server.get("/api/users", (req, res) => $model
+    .find({})
+    .exec((error, data) => data && !error
+      ? $sendUsers(res, data)
+      : $send(res, { error, data })));
+
   server.post("/api/user", (req, res) => {
     getSessionUser(req)
       .then(user => {
-        if (hasPermission(user, permission.admin)) {
-          const { password, id } = req.body;
+        if (hasPermission(user, "admin")) {
+          const { password, id, bio, avatar } = req.body;
           // todo: Check if new user does not have more permissions than the current one!
           const user = new $model({
-            ...req.body,
+            _id: id,
             password: encrypt(password),
-            _id: id
+            bio, avatar
           });
           user.isNew = true;
           user.save((error, data) => data ? $sendUser(res, data) : $send(res, { error, data }));
         } else {
-          $send.missingPermission(res, permission.admin);
+          $send.missingPermission(res, "admin");
+        }
+      })
+      .catch(error => $send(res, { error }));
+  });
+
+  server.put("/api/user/:id", (req, res) => {
+    getSessionUser(req)
+      .then(user => {
+        if (hasPermission(user, "admin")) {
+          const { password, bio, avatar } = req.body;
+          // todo: Check if new user does not have more permissions than the current one!
+          const user = new $model({
+            _id: req.params.id,
+            password: encrypt(password),
+            bio, avatar
+          });
+          user.isNew = false;
+          user.save((error, data) => data ? $sendUser(res, data) : $send(res, { error, data }));
+        } else {
+          $send.missingPermission(res, "admin");
         }
       })
       .catch(error => $send(res, { error }));
@@ -114,11 +144,11 @@ const createUpdatedModel = (user, { password, avatar, permissions, bio }) => {
   const validBio = bio => {
     if (!bio) return false;
     return true;// todo <<<---- this is broken, serialize is always ""!!!!!!!!!!!!! FIX ME FIX ME
-    try { return Plain.serialize(bio).trim() !== ""; } 
+    try { return Plain.serialize(bio).trim() !== ""; }
     catch (_) { return false; }
   };
 
-  console.log("bio", {bio,plain: Plain.serialize(bio), valid:validBio(bio)})
+  console.log("bio", { bio, plain: Plain.serialize(bio), valid: validBio(bio) })
 
   const newUser = new $model({
     _id: user._id,

@@ -13,12 +13,14 @@ const robots = require("./robots");
 const config = require("../config/server");
 const areIntlLocalesSupported = require("intl-locales-supported");
 const reactIntl = require("react-intl");
+const fa = require("@fortawesome/fontawesome");
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 // We use the domain in the request and not localhost since our certificate is not signed against localhost, 
 // and we don't accept unsigned certs in production.
 axios.defaults.baseURL = `https://${config.client.domains[0]}:${config.client.port.https}`;
+fa.config.autoReplaceSvg = true; // todo: still logging an error -> try '@fortawesome/react-fontawesome'; ?
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = isDevelopment || config.certs.allowUnsigned ? "0" : "1";
 
@@ -38,7 +40,7 @@ if (global.Intl && !areIntlLocalesSupported([config.client.locale.meta.id])) {
 reactIntl.addLocaleData(config.client.locale.meta.intl);
 
 const $send = (res, { error, data, errorCode, successCode }) => {
-  if (isDevelopment) console.info("sending", { error, data, errorCode, successCode })
+  if (isDevelopment) console.info("sending", { error, data, errorCode, successCode });
   if (error) {
     res.status(errorCode || 500);
     res.send(error);
@@ -90,10 +92,11 @@ const installServer = () => {
     }));
 
     // Pages
+    server.get("/admin/user", (req, res) => next.render(req, res, "/admin/user", req.params));
+    server.get("/admin/user/:id", (req, res) => next.render(req, res, "/admin/user", req.params));
     server.get("/admin/post/:id", (req, res) => next.render(req, res, "/admin/post", req.params));
     server.get("/post", (req, res) => next.render(req, res, "/", req.params));
     server.get("/post/:id", (req, res) => next.render(req, res, "/post", req.params));
-    server.get("/about", (req, res) => next.render(req, res, "/about", req.params));
     server.get("/about/:id", (req, res) => next.render(req, res, "/about", req.params));
 
     // APIs

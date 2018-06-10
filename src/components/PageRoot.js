@@ -103,6 +103,10 @@ export default class PageRoot extends React.Component {
                   title: (<FormattedMessage id="navigation.admin.newPost" />),
                   link: "/admin/post"
                 },
+                this.hasPermission("admin") && {
+                  title: (<FormattedMessage id="navigation.admin.overview" />),
+                  link: "/admin"
+                },
                 {
                   title: (<FormattedMessage id="navigation.admin.account" />),
                   link: "/admin/account"

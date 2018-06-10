@@ -8,14 +8,13 @@ import Card from "../components/Card";
 import PostMedia from "../components/PostMedia";
 import { render, defaultRules } from "../slate-renderer";
 import { FormattedMessage } from "react-intl";
+import LatestPosts from "../components/LatestPosts";
 
 class About extends React.Component {
   static getInitialProps({ query: { id } }) {
     // If the user did not specify an ID we will get the default user.
-    return Promise.all([
-      axios.get(id ? `/api/user/${id}` : "/api/user"),
-      axios.get(id ? `/api/posts-of/${id}?limit=3` : "/api/posts-of?limit=3")
-    ]).then(([{ data: user }, { data: posts }]) => ({ user, posts, error: false }))
+    return axios.get(id ? `/api/user/${id}` : "/api/user")
+      .then(({ data: user }) => ({ user, error: false }))
       .catch((error) => ({ error: error.response.data }));
   }
 
@@ -49,7 +48,8 @@ class About extends React.Component {
         <h2 className="subtitle">
           <FormattedMessage id="about.recentPosts" />
         </h2>
-        {posts.map(post => (<PostMedia key={post._id} {...post} />))}
+        
+        <LatestPosts limit={3} byUser={id} />
 
       </Card>
     </PageRoot>);
