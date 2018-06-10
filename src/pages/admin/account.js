@@ -124,7 +124,7 @@ export default class Account extends React.Component {
     const { session } = store;
     return (<Form
       className="margin-2"
-      data={session}
+      data={{ ...session, avatar: undefined }}
       submitText={(<span>
         <Icon>{icons.save}</Icon>
         <FormattedMessage id="save" />
@@ -140,11 +140,11 @@ export default class Account extends React.Component {
         {
           key: "avatar",
           type: "file",
-          name: (<FormattedMessage id="account.changeAvatar" />),
+          name: (<FormattedMessage id="account.avatar.field" />),
           validator: avatar => ({
             error: avatar.size > config.maxAvatarSize,
             // todo: better byte size formatter
-            message: (<FormattedMessage id="account.avatarTooLarge" values={{
+            message: (<FormattedMessage id="account.avatar.errorTooLarge" values={{
               isSize: avatar.size + "B",
               maxSize: config.maxAvatarSize + "B"
             }} />)

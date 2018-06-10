@@ -121,9 +121,14 @@ class Form extends React.Component {
     }
   }
 
-  renderFormElementFile({ key, name, multiple }) {
+  renderFormElementFile({ key, name, multiple, ignoreData }) {
     const { waiting } = this.state;
     const meta = this.getFieldMeta(key);
+    const data = ignoreData
+      ? undefined 
+      : multiple
+        ? this.getData(key)
+        : this.getData(key) ? [this.getData(key)] : undefined;
     return (<div className="field" key={key}>
       <label className="label">{name}</label>
       <div className="contol">
@@ -140,7 +145,7 @@ class Form extends React.Component {
               <span className="file-icon"><Icon>{icons.upload}</Icon></span>
               <span className="file-label">Choose a file…</span>
             </span>
-            <span className="file-name">{this.renderFileList(meta)}</span>
+            <span className="file-name">{this.renderFileList(meta || data ? data.map(d => d.name) : [])}</span>
           </label>
         </div>
       </div>
