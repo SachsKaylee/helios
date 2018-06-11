@@ -1,14 +1,11 @@
-import PageRoot from "../../components/PageRoot";
 import SidebarLayout from "../../components/SidebarLayout";
 import EditorToolbar from "../../components/EditorToolbar";
 import A from "../../components/A";
 import { Value } from "slate";
-import fp from "../../fp";
 import Plain from 'slate-plain-serializer';
 import React from "react";
 import Card from "../../components/Card"
 import Post from "../../components/Post";
-import dynamic from 'next/dynamic'
 import axios from "axios";
 import NotificationProvider from "../../components/NotificationProvider"
 import Icon, { icons } from "../../components/Icon";
@@ -26,6 +23,17 @@ export default class extends React.PureComponent {
 
   static async getInitialProps({ query: { id } }) {
     return { id };
+  }
+
+  getTitle() {
+    const { state } = this.state;
+    switch (state) {
+      case "loaded": return isNew
+        ? (<FormattedMessage id="post.title.new" values={{ title: this.valueToString(title) }} />)
+        : (<FormattedMessage id="post.title.edit" values={{ title: this.valueToString(title) }} />);
+      case "loading": return (<FormattedMessage id="loading" />);
+      case "error": return (<FormattedMessage id="error" />);
+    }
   }
 
   componentDidMount() {
@@ -188,58 +196,52 @@ export default class extends React.PureComponent {
   }
 
   renderLoading() {
-    return (<PageRoot title={<FormattedMessage id="loading" />}>
-      <Card title={(<p><FormattedMessage id="loading" /></p>)}>
-        <Icon spin size="4x">{icons.spinner}</Icon></Card>
-    </PageRoot>);
+    return (<Card title={(<p><FormattedMessage id="loading" /></p>)}>
+      <Icon spin size="4x">{icons.spinner}</Icon>
+    </Card>);
   }
 
   renderError() {
     // todo: error renderer
     const { error } = this.state;
-    return (<PageRoot title={<FormattedMessage id="error" />}>
-      <Card title={(<p><FormattedMessage id="error" /></p>)} >
-        <p>
-          <FormattedMessage id="errorMessages.generic" />
-        </p>
-        <p><code>{JSON.stringify(error)}</code></p>
-      </Card>
-    </PageRoot>);
+    return (<Card title={(<p><FormattedMessage id="error" /></p>)} >
+      <p>
+        <FormattedMessage id="errorMessages.generic" />
+      </p>
+      <p>
+        <code>{JSON.stringify(error)}</code>
+      </p>
+    </Card>);
   }
 
   renderLoaded() {
     const { id, title, content, isNew, date, author, lastChanged } = this.state;
-    const titleComponent = isNew
-      ? <FormattedMessage id="post.title.new" values={{ title: this.valueToString(title) }} />
-      : <FormattedMessage id="post.title.edit" values={{ title: this.valueToString(title) }} />;
     return (
-      <PageRoot title={titleComponent}>
-        <SidebarLayout size={3} sidebar={<Card>
-          <EditorToolbar
-            stylesChooser={lastChanged === "content"}
-            value={content}
-            onChange={this.onChange(false)("content")}
-            onSave={this.onPublish}
-            onDelete={this.onDelete(false)}
-            buttons={{
-              publish: true,
-              discard: true,
-              delete: !isNew
-            }} />
-          <NotificationProvider ref={ref => this.notifications = ref} />
-        </Card>}>
-          <Post
-            edit={["allow-content-editing"]}
-            author={author}
-            avatar={`/api/avatar/${author}`}
-            content={content}
-            date={date}
-            id={id}
-            title={title}
-            onChange={this.onChange(true)}
-          />
-        </SidebarLayout>
-      </PageRoot>
+      <SidebarLayout size={3} sidebar={<Card>
+        <EditorToolbar
+          stylesChooser={lastChanged === "content"}
+          value={content}
+          onChange={this.onChange(false)("content")}
+          onSave={this.onPublish}
+          onDelete={this.onDelete(false)}
+          buttons={{
+            publish: true,
+            discard: true,
+            delete: !isNew
+          }} />
+        <NotificationProvider ref={ref => this.notifications = ref} />
+      </Card>}>
+        <Post
+          edit={["allow-content-editing"]}
+          author={author}
+          avatar={`/api/avatar/${author}`}
+          content={content}
+          date={date}
+          id={id}
+          title={title}
+          onChange={this.onChange(true)}
+        />
+      </SidebarLayout>
     );
   }
 

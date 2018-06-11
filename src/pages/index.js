@@ -1,4 +1,3 @@
-import PageRoot from "../components/PageRoot";
 import SidebarLayout from "../components/SidebarLayout";
 import Posts from "../components/Posts";
 import Card from "../components/Card";
@@ -30,10 +29,14 @@ export default class extends React.Component {
     };
   }
 
+  getTitle() {
+    return locale.pages.blog.title;
+  }
+
   render() {
     // todo: pagination
     const { posts } = this.props;
-    return (<PageRoot title={locale.pages.blog.title}>
+    return (<>
       <Head>
         <link key="canonical" rel="canonical" href={`https://${config.domains[0]}:${config.port.https}/`} />
       </Head>
@@ -45,6 +48,6 @@ export default class extends React.Component {
           date: new Date(p.date)
         }))} />
       </SidebarLayout>
-    </PageRoot>);
+    </>);
   }
 };

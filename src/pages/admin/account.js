@@ -1,5 +1,4 @@
 import React from "react";
-import PageRoot from "../../components/PageRoot";
 import Card from "../../components/Card";
 import Form from "../../components/Form";
 import A from "../../components/A";
@@ -13,13 +12,11 @@ export default class Account extends React.Component {
     super(p);
   }
 
-  render() {
-    return (<PageRoot title={<FormattedMessage id="account.title" />}>
-      {this.renderContent()}
-    </PageRoot>)
+  getTitle() {
+    return (<FormattedMessage id="account.title" />);
   }
 
-  renderContent() {
+  render() {
     return (<Store.Consumer>
       {store => store.session
         ? this.renderLogOut(store)
@@ -28,7 +25,8 @@ export default class Account extends React.Component {
   }
 
   renderLogIn(store) {
-    return (<Card><Form
+    return (<Card>
+      <Form
       submitText={(<span>
         <Icon>{icons.signIn}</Icon>
         <FormattedMessage id="account.signIn" />
@@ -73,7 +71,8 @@ export default class Account extends React.Component {
             message: <FormattedMessage id="account.cookieRequired" />
           })
         }
-      ]} /></Card>);
+      ]} />
+      </Card>);
   }
 
   renderLogOut(store) {

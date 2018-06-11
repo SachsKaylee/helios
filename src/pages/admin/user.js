@@ -1,5 +1,4 @@
 import React from "react";
-import PageRoot from "../../components/PageRoot";
 import Card from "../../components/Card";
 import config from "../../config/client";
 import Form from "../../components/Form";
@@ -35,30 +34,32 @@ export default class User extends React.Component {
 
   submitCreate = ({ id, password, bio, avatar, permissions }) => {
     return post("/api/user", { id, password, bio, permissions, avatar: avatar ? avatar.data : "" })
-      .then(({ data }) => Router.push("/admin/users"))
+      .then(() => Router.push("/admin/users"))
       .catch(error => ({ error: "ERROR TODO" })); // todo: error
   }
 
   submitUpdate = ({ password, bio, avatar, permissions }) => {
     const { id } = this.props.user;
     return put(`/api/user/${id}`, { password, bio, permissions, avatar: avatar ? avatar.data : "" })
-      .then(({ data }) => Router.push("/admin/users"))
+      .then(() => Router.push("/admin/users"))
       .catch(error => ({ error: "ERROR TODO" })); // todo: error
+  }
+
+  getTitle() {
+    const { isNew } = this.props;
+    return isNew ? (<FormattedMessage id="users.createUser" />) : (<FormattedMessage id="users.updateUser" />);
   }
 
   render() {
     const { isNew, user } = this.props;
-    const title = isNew ? (<FormattedMessage id="users.createUser" />) : (<FormattedMessage id="users.updateUser" />);
-    return (<PageRoot title={title}>
-      <Card
-        image={this.avatarOf(user)}
-        title={title}
-        subtitle={!isNew && user && (<FormattedMessage id="users.updateUserSubtitle" values={{ id: user.id }} />)}>
-        {isNew
-          ? (<CreateForm onSubmit={this.submitCreate} />)
-          : (<UpdateForm onSubmit={this.submitUpdate} data={{ ...user, avatar: this.blobToFile(user.avatar) }} />)}
-      </Card>
-    </PageRoot>);
+    return (<Card
+      image={this.avatarOf(user)}
+      title={isNew ? (<FormattedMessage id="users.createUser" />) : (<FormattedMessage id="users.updateUser" />)}
+      subtitle={!isNew && user && (<FormattedMessage id="users.updateUserSubtitle" values={{ id: user.id }} />)}>
+      {isNew
+        ? (<CreateForm onSubmit={this.submitCreate} />)
+        : (<UpdateForm onSubmit={this.submitUpdate} data={{ ...user, avatar: this.blobToFile(user.avatar) }} />)}
+    </Card>);
   }
 
   avatarOf(user) {

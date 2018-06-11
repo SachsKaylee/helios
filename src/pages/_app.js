@@ -1,5 +1,6 @@
+import App, { Container } from "next/app";
 import Head from "next/head";
-import Navbar from "./Navbar";
+import Navbar from "./../components/Navbar";
 import config from "../config/client";
 import textContent from "react-addons-text-content";
 import { IntlProvider, addLocaleData, FormattedMessage } from "react-intl";
@@ -26,8 +27,14 @@ const {
   ...localeMessages
 } = config.locale;
 
+export default class _App extends App {
+  static async getInitialProps({ Component, ctx }) {
+    const pageProps = Component.getInitialProps
+      ? await Component.getInitialProps(ctx)
+      : {};
+    return { pageProps };
+  }
 
-export default class PageRoot extends React.Component {
   constructor(p) {
     super(p);
     this.state = {
@@ -75,9 +82,10 @@ export default class PageRoot extends React.Component {
   }
 
   render() {
-    const { title, children } = this.props;
+    const { Component, pageProps } = this.props;
     const { session } = this.state;
-    return (
+    const title = Component.getTitle && Component.getTitle();
+    return (<Container>
       <IntlProvider
         locale={localeMeta.id}
         messages={flattenObject(localeMessages)}>
@@ -115,10 +123,11 @@ export default class PageRoot extends React.Component {
             }]} />
           <div className="section">
             <div className="container">
-              {children}
+              <Component {...pageProps} />
             </div>
           </div>
         </Store.Provider>
-      </IntlProvider>);
+      </IntlProvider>
+    </Container>);
   }
-};
+}

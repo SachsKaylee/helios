@@ -1,11 +1,9 @@
 import React from "react";
-import PageRoot from "../components/PageRoot";
 import config from "../config/client";
 import axios from "axios";
 import Head from "next/head";
 import Tag from "../components/Tag";
 import Card from "../components/Card";
-import PostMedia from "../components/PostMedia";
 import { render, defaultRules } from "../slate-renderer";
 import { FormattedMessage } from "react-intl";
 import LatestPosts from "../components/LatestPosts";
@@ -18,11 +16,18 @@ class About extends React.Component {
       .catch((error) => ({ error: error.response.data }));
   }
 
+  getTitle() {
+    const { error, user } = this.props;
+    return error
+      ? (<FormattedMessage id="error" />)
+      : (<FormattedMessage id="about.title" values={{ id }} />);
+  }
+
   renderUser() {
-    const { user: { id, permissions, bio }, posts } = this.props;
+    const { user: { id, permissions, bio } } = this.props;
     // We need a canonical URL since the ID of the user can be inferred by accessing 
     // the /about page, which resolved to the default user.
-    return (<PageRoot title={<FormattedMessage id="about.title" values={{ id }} />}>
+    return (<>
       <Head>
         <link key="canonical" rel="canonical" href={`https://${config.domains[0]}:${config.port.https}/about/${id}`} />
         <meta key="author" name="author" content={id} />
@@ -48,20 +53,20 @@ class About extends React.Component {
         <h2 className="subtitle">
           <FormattedMessage id="about.recentPosts" />
         </h2>
-        
+
         <LatestPosts limit={3} byUser={id} />
 
       </Card>
-    </PageRoot>);
+    </>);
   }
 
   renderError() {
     // todo: implement a proper error rendering component
     // todo: implement a better translation of mongo errors on server side
     const { error } = this.props;
-    return (<PageRoot title={<FormattedMessage id="error" />}>
+    return (<>
       {JSON.stringify(error)}
-    </PageRoot>);
+    </>);
   }
 
   render() {
