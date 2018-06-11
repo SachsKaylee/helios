@@ -8,7 +8,7 @@ import { IconLayers, icons } from "./Icon";
 
 const DEFAULT_NODE = "line";
 
-export default class extends React.Component {
+export default class EditorToolbar extends React.Component {
   hasMark = type => {
     const { value } = this.props;
     return value.activeMarks.some(mark => mark.type == type)

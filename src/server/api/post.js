@@ -31,6 +31,7 @@ const install = ({ server, models, $send }) => {
       .exec((error, data) => $send(res, { error, data })));
 
   server.post("/api/post", (req, res) => {
+    // todo: permission check
     const { title } = req.body;
     const post = new models.post({ ...req.body, _id: niceUri(title) });
     post.isNew = true;
@@ -48,6 +49,7 @@ const install = ({ server, models, $send }) => {
   });
 
   server.put("/api/post/:id", (req, res) => {
+    // todo: permission check
     const post = new models.post({ ...req.body, _id: req.params.id });
     post.isNew = false;
     post.save((error, data) => {
@@ -61,7 +63,11 @@ const install = ({ server, models, $send }) => {
     });
   });
 
-  // todo: limit
+  server.get("/api/post-count", (req, res) =>
+    models.post
+      .count({})
+      .exec((error, data) => $send(res, { error, data: { count: data } })));
+
   server.get("/api/posts-of", (req, res) =>
     models.post
       .find({ author: config.defaultUser.id })

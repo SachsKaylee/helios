@@ -3,7 +3,9 @@ import Card from "./Card";
 import { render, defaultRules } from "../slate-renderer";
 import { FormattedMessage } from "react-intl";
 
-export default ({ id, author, date, title, content, edit, onChange }) => (
+const buttons = (edit) => edit ? !edit.indexOf("show-admin-buttons") : false;
+
+const ReadOnlyPost = ({ id, author, date, title, content, edit }) => (
   <Card
     image={`/api/avatar/${author}`}
     title={<A href={`/post/${id}`}>{title}</A>}
@@ -20,4 +22,4 @@ export default ({ id, author, date, title, content, edit, onChange }) => (
   </Card>
 );
 
-const buttons = (edit) => edit ? !edit.indexOf("show-admin-buttons") : false;
+export default ReadOnlyPost;

@@ -3,9 +3,6 @@ import PageRoot from "../../components/PageRoot";
 import Card from "../../components/Card";
 import Form from "../../components/Form";
 import A from "../../components/A";
-import SidebarLayout from "../../components/SidebarLayout";
-import Tag from "../../components/Tag";
-import NotificationProvider from "../../components/NotificationProvider";
 import Icon, { icons } from "../../components/Icon";
 import config from "../../config/client";
 import { FormattedMessage } from "react-intl";
@@ -18,7 +15,7 @@ export default class Account extends React.Component {
 
   render() {
     return (<PageRoot title={<FormattedMessage id="account.title" />}>
-      <Card>{this.renderContent()}</Card>
+      {this.renderContent()}
     </PageRoot>)
   }
 
@@ -31,7 +28,7 @@ export default class Account extends React.Component {
   }
 
   renderLogIn(store) {
-    return (<Form
+    return (<Card><Form
       submitText={(<span>
         <Icon>{icons.signIn}</Icon>
         <FormattedMessage id="account.signIn" />
@@ -76,55 +73,49 @@ export default class Account extends React.Component {
             message: <FormattedMessage id="account.cookieRequired" />
           })
         }
-      ]} />);
+      ]} /></Card>);
   }
 
   renderLogOut(store) {
     const { session } = store;
-    const { id, permissions } = session;
-    return (<div>
-      <div className="media">
-        <div className="media-left">
-          <figure className="image is-64x64">
-            <img src={`/api/avatar/${id}`} />
-          </figure>
-        </div>
-        <div className="media-content">
-          <h1 className="title"><FormattedMessage id="account.welcome" values={{ id }} /></h1>
-          <p><FormattedMessage id="account.permissions" /> {permissions.length
-            ? permissions.map(p => (<Tag key={p}>{p}</Tag>))
-            : <FormattedMessage id="none" />}</p>
-        </div>
+    const { id, permissions, avatar } = session;
+    return (<Card
+      title={<FormattedMessage id="account.welcome" values={{ id }} />}
+      subtitle={<span><FormattedMessage id="account.permissions" /> {permissions.length
+        ? permissions.map(p => (<span className="tag" style={{ marginRight: 2 }} key={p}>{p}</span>))
+        : <FormattedMessage id="none" />}</span>}
+      image={avatar || `/api/avatar/${id}`}>
+      <div>
+        <h2 className="subtitle">
+          <FormattedMessage id="account.updateProfile" />
+        </h2>
+        {this.renderUpdateForm(store)}
+        <h2 className="subtitle">
+          <FormattedMessage id="actions" />
+        </h2>
+        <a className="margin-2 button is-primary" onClick={() => store.actions.signOut()
+          .then(() => ({}))
+          .catch(error => errorToMessage(error))}>
+          <Icon>{icons.signOut}</Icon>
+          <FormattedMessage id="account.signOut" />
+        </a>
+        <A className="margin-2 button is-link" href={`/about/${id}`}>
+          <Icon>{icons.eye}</Icon>
+          <FormattedMessage id="account.viewPublic" />
+        </A>
+        <a className="margin-2 button is-danger">
+          <Icon>{icons.trash}</Icon>
+          <FormattedMessage id="account.delete" />
+        </a>
       </div>
-      <h2 className="subtitle">
-        <FormattedMessage id="account.updateProfile" />
-      </h2>
-      {this.renderUpdateForm(store)}
-      <h2 className="subtitle">
-        <FormattedMessage id="actions" />
-      </h2>
-      <a className="margin-2 button is-primary" onClick={() => store.actions.signOut()
-        .then(() => ({}))
-        .catch(error => errorToMessage(error))}>
-        <Icon>{icons.signOut}</Icon>
-        <FormattedMessage id="account.signOut" />
-      </a>
-      <A className="margin-2 button is-link" href={`/about/${id}`}>
-        <Icon>{icons.eye}</Icon>
-        <FormattedMessage id="account.viewPublic" />
-      </A>
-      <a className="margin-2 button is-danger">
-        <Icon>{icons.trash}</Icon>
-        <FormattedMessage id="account.delete" />
-      </a>
-    </div>);
+    </Card>);
   }
 
   renderUpdateForm(store) {
     const { session } = store;
     return (<Form
       className="margin-2"
-      data={session}
+      data={{ ...session, avatar: undefined }}
       submitText={(<span>
         <Icon>{icons.save}</Icon>
         <FormattedMessage id="save" />
@@ -140,11 +131,11 @@ export default class Account extends React.Component {
         {
           key: "avatar",
           type: "file",
-          name: (<FormattedMessage id="account.changeAvatar" />),
+          name: (<FormattedMessage id="account.avatar.field" />),
           validator: avatar => ({
             error: avatar.size > config.maxAvatarSize,
             // todo: better byte size formatter
-            message: (<FormattedMessage id="account.avatarTooLarge" values={{
+            message: (<FormattedMessage id="account.avatar.errorTooLarge" values={{
               isSize: avatar.size + "B",
               maxSize: config.maxAvatarSize + "B"
             }} />)

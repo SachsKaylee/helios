@@ -22,14 +22,33 @@ module.exports = {
     home: "Startseite",
     admin: {
       menu: "Administration",
+      overview: "Übersicht",
       account: "Benutzerkonto",
       newPost: "Neuer Post"
+    }
+  },
+  // Admin page
+  admin: {
+    title: "Übersicht",
+    posts: "Posts",
+    users: "Benutzer",
+  },
+  // Admin accounts overview page
+  users: {
+    title: "Benutzer",
+    createUser: "Benutzer erstellen",
+    updateUser: "Benutzer aktualisieren",
+    updateUserSubtitle: "Benutzername: {id}",
+    password: {
+      placeholder: "Passwort des Nutzers",
+      confirm: "Passwort bestätigen"
     }
   },
   // Strings used for displaying and editing posts
   post: {
     subtitle: "{author} am {date, date, medium}",
     edit: "Post bearbeiten",
+    mediaTitle: "{title} von {author}, {date}",
     editor: {
       notification: {
         deleted: {
@@ -70,7 +89,7 @@ module.exports = {
       field2: "Passwort ändern (erneut eingeben)",
       field1Placeholder: "Ihr neues Passwort (optional)",
       field2Placeholder: "Ihr neues Passwort (optional)",
-      mismatchError: "Beide Passwörter müssen übereinstimmen. Falls Sie Ihr Passwort nicht ändern möchten, lassen Sie beide Felder frei."
+      mismatchError: "Beide Passwörter müssen übereinstimmen. Falls Sie das Passwort nicht ändern möchten, lassen Sie beide Felder frei."
     },
     confirmPassword: {
       field: "Aktuelles Passwort",
@@ -80,12 +99,14 @@ module.exports = {
       field: "Informationen über Sie",
       placeholder: "Der hier eingegebene Text ist auf Ihrer Profilseite für Besucher der Webseite sichtbar."
     },
+    avatar: {
+      field: "Avatar ändern",
+      errorTooLarge: "Der Avatar darf nicht größer als {maxSize} sein. (Gewählte Größe: {isSize})",
+    },
     permissions: "Berechtigungen:",
     welcome: "Willkommen, {id}!",
     viewPublic: "Öffentliches Profil ansehen",
-    updateProfile: "Benutzerprofil löschen",
-    changeAvatar: "Avatar ändern",
-    avatarTooLarge: "Der Avatar darf nicht größer als {maxSize} sein. (Gewählte Größe: {isSize})",
+    updateProfile: "Benutzerprofil aktualisieren",
     delete: "Benutzerkonto löschen",
     usernamePlaceholder: "ihr-username",
     passwordPlaceholder: "Ihr Passwort",

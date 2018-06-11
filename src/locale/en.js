@@ -26,10 +26,17 @@ module.exports = {
       newPost: "New Post"
     }
   },
+  // Admin page
+  admin: {
+    title: "Overview",
+    posts: "Posts",
+    users: "Users"
+  },
   // Strings used for displaying and editing posts
   post: {
     subtitle: "{author} on {date, date, medium}",
     edit: "Edit post",
+    mediaTitle: "{title} by {author}, {date, date, medium}",
     editor: {
       notification: {
         deleted: {

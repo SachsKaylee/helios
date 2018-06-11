@@ -47,7 +47,14 @@ const sizeClass = size => size && "fa-" + size;
 
 const iconClass = iconName => "fa-" + iconName;
 
-const Icon = ({ children: { prefix, iconName } }, spin, size) => (<i className={classnames(prefix, iconClass(iconName), spinnerClass(spin), sizeClass(size))} />);
+const Icon = ({ children: { prefix, iconName }, spin, size, style }) => (<i
+  style={style}
+  className={classnames(
+    prefix,
+    iconClass(iconName),
+    spinnerClass(spin),
+    sizeClass(size)
+  )} />);
 export default Icon;
 
 export const IconLayers = ({ children, counter }) => (<span className="fa-layers fa-fw">
@@ -55,5 +62,5 @@ export const IconLayers = ({ children, counter }) => (<span className="fa-layers
   {counter && (<span className="fa-layers-counter">{counter}</span>)}
 </span>);
 
-fa.config.autoReplaceSvg = "nest";
+fa.config.autoReplaceSvg = true;
 Object.keys(icons).forEach(key => fa.library.add(icons[key]));

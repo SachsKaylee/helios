@@ -4,7 +4,8 @@ import Posts from "../components/Posts";
 import Card from "../components/Card";
 import React from "react";
 import axios from "axios";
-import { locale } from "../config/client";
+import config, { locale } from "../config/client";
+import Head from "next/head";
 
 export default class extends React.Component {
   static async getInitialProps() {
@@ -33,6 +34,9 @@ export default class extends React.Component {
     // todo: pagination
     const { posts } = this.props;
     return (<PageRoot title={locale.pages.blog.title}>
+      <Head>
+        <link key="canonical" rel="canonical" href={`https://${config.domains[0]}:${config.port.https}/`} />
+      </Head>
       <SidebarLayout size={3} sidebar={<Card>{"Lorem Ipsum"}</Card>}>
         <Posts posts={posts.map(p => ({
           ...p,

@@ -118,12 +118,51 @@ class Form extends React.Component {
       case "text": return this.renderFormElementText(element);
       case "checkbox": return this.renderFormElementCheckbox(element);
       case "file": return this.renderFormElementFile(element);
+      case "taglist": return this.renderFormElementTagList(element);
     }
   }
 
-  renderFormElementFile({ key, name, multiple }) {
+  renderFormElementTagList({ key, name, ignoreData, tags, types }) {
+    const meta = this.getFieldMeta(key);
+    const data = ignoreData ? undefined : this.getData(key);
+    const activeTags = meta || data || [];
+    return (<div className="field" key={key}>
+      <label className="label">{name}</label>
+      <div className="contol">
+        <div className="tags">
+          {Object.keys(tags).map(tag => this.renderSingleTag({
+            key,
+            activeTags,
+            types,
+            tags,
+            tag
+          }))}
+        </div>
+      </div>
+      {this.renderValidationResult(this.getValidationResult(key))}
+    </div>);
+  }
+
+  renderSingleTag({ key, tag, tags, activeTags, types }) {
+    const isActive = activeTags.indexOf(tag) !== -1;
+    const tagType = isActive ? ((types && types["active"]) || "is-link") : (types && types["inactive"]);
+    return (<a key={tag} className={classnames("tag", tagType)} onClick={() =>
+      this.setFieldMeta(key, isActive
+        ? activeTags.filter(t => t !== tag)
+        : [...activeTags, tag])}>
+      {tags[tag]}
+    </a>);
+  }
+
+  renderFormElementFile({ key, name, multiple, ignoreData }) {
     const { waiting } = this.state;
     const meta = this.getFieldMeta(key);
+    const rawData = this.getData(key);
+    const data = ignoreData
+      ? undefined
+      : multiple
+        ? rawData
+        : rawData && rawData.name ? [rawData] : undefined;
     return (<div className="field" key={key}>
       <label className="label">{name}</label>
       <div className="contol">
@@ -140,7 +179,7 @@ class Form extends React.Component {
               <span className="file-icon"><Icon>{icons.upload}</Icon></span>
               <span className="file-label">Choose a file…</span>
             </span>
-            <span className="file-name">{this.renderFileList(meta)}</span>
+            <span className="file-name">{this.renderFileList(meta || (data ? data.map(d => d.name) : []))}</span>
           </label>
         </div>
       </div>
@@ -263,7 +302,6 @@ class Form extends React.Component {
     switch (element.type) {
       case "richtext": {
         const meta = this.getFieldMeta(element.key);
-        console.log("meta", meta, element)
         if (meta) return meta.value;
         return value;
       }
@@ -286,6 +324,12 @@ class Form extends React.Component {
         if (value !== undefined) return value;
         if (element.multiple) return [];
         return { name: "", size: 0, type: "", data: "" };
+      }
+      case "taglist": {
+        const meta = this.getFieldMeta(element.key);
+        if (meta) return meta;
+        if (value) return value;
+        return [];
       }
     }
   }

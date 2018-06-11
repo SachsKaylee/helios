@@ -25,7 +25,7 @@ module.exports = {
   },
 
   // The locale of the CMS. Create a new .js file in /src/locale and then add its ID here.
-  locale: require("../locale/en"),
+  locale: require("../locale/de"),
 
   // The max size in bytes for user avatars.
   maxAvatarSize: 200 * 1024
