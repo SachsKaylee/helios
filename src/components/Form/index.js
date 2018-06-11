@@ -73,9 +73,9 @@
 import React from "react";
 import fp from "../../fp";
 import classnames from "classnames";
-import Icon, { icons } from "../Icon";
 import dynamic from "next/dynamic";
 import textContent from "react-addons-text-content";
+import { UploadIcon, AlertCircleOutlineIcon, AlertCircleIcon } from "mdi-react";
 const FormFieldRichText = dynamic(import("./FormFieldRichText"))
 
 class Form extends React.Component {
@@ -176,7 +176,7 @@ class Form extends React.Component {
               multiple={multiple}
               onChange={(e) => this.setFieldMeta(key, [...e.currentTarget.files].map(f => f.name))} />
             <span className="file-cta">
-              <span className="file-icon"><Icon>{icons.upload}</Icon></span>
+              <span className="file-icon"><UploadIcon /></span>
               <span className="file-label">Choose a file…</span>
             </span>
             <span className="file-name">{this.renderFileList(meta || (data ? data.map(d => d.name) : []))}</span>
@@ -235,8 +235,8 @@ class Form extends React.Component {
   }
 
   renderValidationResult(result) {
-    if (result && result.error) return (<span className="tag is-danger"><Icon>{icons.exclamation}</Icon>&nbsp;{result.message}</span>);
-    if (result && result.forceDisplay) return (<span className="tag is-info"><Icon>{icons.info}</Icon>&nbsp;{result.message}</span>);;
+    if (result && result.error) return (<span className="tag is-danger"><AlertCircleIcon className="mdi-icon-spacer" />{result.message}</span>);
+    if (result && result.forceDisplay) return (<span className="tag is-info"><AlertCircleOutlineIcon className="mdi-icon-spacer" />{result.message}</span>);;
     return null;
   }
 

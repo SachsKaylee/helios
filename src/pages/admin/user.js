@@ -4,8 +4,8 @@ import config from "../../config/client";
 import Form from "../../components/Form";
 import { FormattedMessage } from "react-intl";
 import { get, post, put } from "axios";
-import Icon, { icons } from "../../components/Icon";
 import Router from "next/router";
+import { ContentSaveIcon } from "mdi-react";
 
 export default class User extends React.Component {
   static getInitialProps(p) {
@@ -160,14 +160,14 @@ const editElements = () => [
 const CreateForm = ({ onSubmit }) => (<Form
   elements={newElements()}
   submitText={(<span>
-    <Icon style={{ marginRight: 2 }}>{icons.save}</Icon>
+    <ContentSaveIcon className="mdi-icon-spacer" />
     <FormattedMessage id="users.createUser" />
   </span>)}
   onSubmit={onSubmit} />);
 const UpdateForm = ({ onSubmit, data }) => (<Form
   elements={editElements()}
   submitText={(<span>
-    <Icon style={{ marginRight: 2 }}>{icons.save}</Icon>
+    <ContentSaveIcon className="mdi-icon-spacer" />
     <FormattedMessage id="users.updateUser" />
   </span>)}
   onSubmit={onSubmit}
