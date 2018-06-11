@@ -3,7 +3,6 @@ import PageRoot from "../../components/PageRoot";
 import { FormattedMessage, FormattedNumber } from "react-intl";
 import Card from "../../components/Card";
 import config from "../../config/client";
-import LatestPosts from "../../components/LatestPosts";
 import A from "../../components/A";
 import { get } from "axios";
 import async from "../../async";
