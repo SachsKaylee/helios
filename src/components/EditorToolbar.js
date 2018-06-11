@@ -1,10 +1,7 @@
-import { Editor } from 'slate-react'
-import { Value } from 'slate'
-import classNames from "classnames";
 import React from 'react'
 import ReactTooltip from 'react-tooltip';
 import Tag from "./Tag";
-import { IconLayers, icons } from "./Icon";
+import { FormatBoldIcon, FormatItalicIcon, FormatUnderlineIcon, CodeBracesIcon, FormatHeader1Icon, FormatHeader2Icon, FormatQuoteOpenIcon, FormatListBulletedIcon, FormatListNumberedIcon } from 'mdi-react';
 
 const DEFAULT_NODE = "line";
 
@@ -77,18 +74,18 @@ export default class EditorToolbar extends React.Component {
       <ReactTooltip id="editor-toolbar" effect="solid" />
       {stylesChooser && (<div>
         <div className="margin-2"><Tag type="info">Format Selection</Tag></div>
-        {this.renderMarkButton('bold', icons.bold, "Bold")}
-        {this.renderMarkButton('italic', icons.italic, "Italic")}
-        {this.renderMarkButton('underlined', icons.underline, "Underlined")}
-        {this.renderMarkButton('code', icons.code, "Inline Code")}
+        {this.renderMarkButton('bold', <FormatBoldIcon className="mdi-icon-medium" />, "Bold")}
+        {this.renderMarkButton('italic', <FormatItalicIcon className="mdi-icon-medium" />, "Italic")}
+        {this.renderMarkButton('underlined', <FormatUnderlineIcon className="mdi-icon-medium" />, "Underlined")}
+        {this.renderMarkButton('code', <CodeBracesIcon className="mdi-icon-medium" />, "Inline Code")}
       </div>)}
       {stylesChooser && (<div>
         <div className="margin-2"><Tag type="info">Format Paragraph</Tag></div>
-        {this.renderBlockButton('heading-one', icons.heading, "Headline 1", "H1")}
-        {this.renderBlockButton('heading-two', icons.heading, "Headline 2", "H2")}
-        {this.renderBlockButton('block-quote', icons.quoteRight, "Quote")}
-        {this.renderBlockButton('numbered-list', icons.listOl, "Numbered List")}
-        {this.renderBlockButton('bulleted-list', icons.listUl, "Bulleted List")}
+        {this.renderBlockButton('heading-one', <FormatHeader1Icon className="mdi-icon-medium" />, "Headline 1")}
+        {this.renderBlockButton('heading-two', <FormatHeader2Icon className="mdi-icon-medium" />, "Headline 2")}
+        {this.renderBlockButton('block-quote', <FormatQuoteOpenIcon className="mdi-icon-medium" />, "Quote")}
+        {this.renderBlockButton('numbered-list', <FormatListBulletedIcon className="mdi-icon-medium" />, "Numbered List")}
+        {this.renderBlockButton('bulleted-list', <FormatListNumberedIcon className="mdi-icon-medium" />, "Bulleted List")}
       </div>)}
       {buttons && (<div>
         <div className="margin-2"><Tag type="info">Post Actions</Tag></div>
@@ -99,19 +96,19 @@ export default class EditorToolbar extends React.Component {
     </div>)
   }
 
-  renderMarkButton = (type, icon, tooltip, details) => {
+  renderMarkButton = (type, icon, tooltip) => {
     const isActive = this.hasMark(type)
     const onMouseDown = event => this.onClickMark(event, type)
 
     return (
       <span className="icon" onMouseDown={onMouseDown} data-active={isActive} data-tip={tooltip} data-for="editor-toolbar"
         style={isActive ? { border: "1px solid", borderRadius: 1, margin: 1 } : { margin: 1 }}>
-        <IconLayers counter={details}>{icon}</IconLayers>
+        {icon}
       </span>
     )
   }
 
-  renderBlockButton = (type, icon, tooltip, details) => {
+  renderBlockButton = (type, icon, tooltip) => {
     let isActive = this.hasBlock(type)
 
     if (['numbered-list', 'bulleted-list'].includes(type)) {
@@ -124,7 +121,7 @@ export default class EditorToolbar extends React.Component {
     return (
       <span className="icon" onMouseDown={onMouseDown} data-active={isActive} data-tip={tooltip} data-for="editor-toolbar"
         style={isActive ? { border: "1px solid", borderRadius: 1, margin: 1 } : { margin: 1 }}>
-        <IconLayers counter={details}>{icon}</IconLayers>
+        {icon}
       </span>
     )
   }

@@ -15,8 +15,6 @@
     "uglifyjs-webpack-plugin": "^1.2.5"
   },
   "dependencies": {
-    "@fortawesome/fontawesome": "^1.1.8",
-    "@fortawesome/fontawesome-free-solid": "^5.0.13",
     "@zeit/next-sass": "^0.2.0",
     "axios": "^0.18.0",
     "babel-plugin-module-resolver": "^3.1.1",
@@ -33,6 +31,7 @@
     "immutable": "^3.8.2",
     "intl": "^1.2.5",
     "intl-locales-supported": "^1.0.0",
+    "mdi-react": "^3.4.0",
     "mongoose": "^5.1.1",
     "next": "^6.0.3",
     "node-sass": "^4.9.0",

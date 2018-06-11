@@ -8,9 +8,9 @@ import Card from "../../components/Card"
 import Post from "../../components/Post";
 import axios from "axios";
 import NotificationProvider from "../../components/NotificationProvider"
-import Icon, { icons } from "../../components/Icon";
 import { FormattedMessage } from "react-intl";
 import config from "../../config/client";
+import { DeleteIcon, WarningIcon, LoadingIcon, ErrorIcon, CakeIcon } from "mdi-react";
 
 export default class extends React.PureComponent {
   constructor(p) {
@@ -141,7 +141,7 @@ export default class extends React.PureComponent {
   renderDeleteSuccessNotification() {
     return (<div>
       <p className="subtitle">
-        <Icon>{icons.trash}</Icon>
+        <DeleteIcon className="mdi-icon-spacer" />
         <FormattedMessage id="post.editor.notification.deleted.title" />
       </p>
       <p>
@@ -153,7 +153,7 @@ export default class extends React.PureComponent {
   renderDeleteConfirmNotification() {
     return (<div>
       <p className="subtitle">
-        <Icon>{icons.exclamation}</Icon>
+        <WarningIcon className="mdi-icon-spacer" />
         <FormattedMessage id="post.editor.notification.delete.title" />
       </p>
       <p>
@@ -172,7 +172,7 @@ export default class extends React.PureComponent {
     };
     return (<div>
       <p className="subtitle">
-        <Icon>{icons.cake}</Icon>
+        <CakeIcon className="mdi-icon-spacer" />
         <FormattedMessage id="post.editor.notification.published.title" values={args} />
       </p>
       <p>
@@ -185,7 +185,7 @@ export default class extends React.PureComponent {
     // todo: error renderer
     return (<div>
       <p className="subtitle">
-        <Icon>{icons.exclamation}</Icon>
+        <ErrorIcon className="mdi-icon-spacer" />
         <FormattedMessage id="error" />
       </p>
       <p>
@@ -196,8 +196,9 @@ export default class extends React.PureComponent {
   }
 
   renderLoading() {
+    // todo: spinner
     return (<Card title={(<p><FormattedMessage id="loading" /></p>)}>
-      <Icon spin size="4x">{icons.spinner}</Icon>
+      <LoadingIcon className="mdi-icon-titanic" />
     </Card>);
   }
 

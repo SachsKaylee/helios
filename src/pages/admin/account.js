@@ -2,10 +2,10 @@ import React from "react";
 import Card from "../../components/Card";
 import Form from "../../components/Form";
 import A from "../../components/A";
-import Icon, { icons } from "../../components/Icon";
 import config from "../../config/client";
 import { FormattedMessage } from "react-intl";
 import Store from "../../store";
+import { LoginIcon, LogoutIcon, EarthIcon, DeleteIcon, ContentSaveIcon, ErrorOutlineIcon } from "mdi-react";
 
 export default class Account extends React.Component {
   constructor(p) {
@@ -18,7 +18,7 @@ export default class Account extends React.Component {
 
   render() {
     return (<Store.Consumer>
-      {store => store.session
+      {store => store && store.session
         ? this.renderLogOut(store)
         : this.renderLogIn(store)}
     </Store.Consumer>);
@@ -27,52 +27,52 @@ export default class Account extends React.Component {
   renderLogIn(store) {
     return (<Card>
       <Form
-      submitText={(<span>
-        <Icon>{icons.signIn}</Icon>
-        <FormattedMessage id="account.signIn" />
-      </span>)}
-      onSubmit={values => store.actions
-        .signIn(values)
-        .then(session => ({}))
-        .catch(error => errorToMessage(error))}
-      elements={[
-        {
-          key: "id",
-          type: "text",
-          name: <FormattedMessage id="username" />,
-          validator: (name) => ({
-            error: !name,
-            message: <FormattedMessage id="formValueRequired" values={{
-              field: <FormattedMessage id="username" />
-            }} />
-          }),
-          placeholder: <FormattedMessage id="account.usernamePlaceholder" />
-        },
-        {
-          key: "password",
-          type: "text",
-          name: <FormattedMessage id="password" />,
-          mode: "password",
-          ignoreData: true,
-          validator: (pw) => ({
-            error: !pw,
-            message: <FormattedMessage id="formValueRequired" values={{
-              field: <FormattedMessage id="password" />
-            }} />
-          }),
-          placeholder: <FormattedMessage id="account.passwordPlaceholder" />
-        },
-        {
-          key: "cookie",
-          type: "checkbox",
-          name: <FormattedMessage id="account.acceptCookie" />,
-          validator: (cookie) => ({
-            error: !cookie,
-            message: <FormattedMessage id="account.cookieRequired" />
-          })
-        }
-      ]} />
-      </Card>);
+        submitText={(<span>
+          <LoginIcon className="mdi-icon-spacer" />
+          <FormattedMessage id="account.signIn" />
+        </span>)}
+        onSubmit={values => store.actions
+          .signIn(values)
+          .then(session => ({}))
+          .catch(error => errorToMessage(error))}
+        elements={[
+          {
+            key: "id",
+            type: "text",
+            name: <FormattedMessage id="username" />,
+            validator: (name) => ({
+              error: !name,
+              message: <FormattedMessage id="formValueRequired" values={{
+                field: <FormattedMessage id="username" />
+              }} />
+            }),
+            placeholder: <FormattedMessage id="account.usernamePlaceholder" />
+          },
+          {
+            key: "password",
+            type: "text",
+            name: <FormattedMessage id="password" />,
+            mode: "password",
+            ignoreData: true,
+            validator: (pw) => ({
+              error: !pw,
+              message: <FormattedMessage id="formValueRequired" values={{
+                field: <FormattedMessage id="password" />
+              }} />
+            }),
+            placeholder: <FormattedMessage id="account.passwordPlaceholder" />
+          },
+          {
+            key: "cookie",
+            type: "checkbox",
+            name: <FormattedMessage id="account.acceptCookie" />,
+            validator: (cookie) => ({
+              error: !cookie,
+              message: <FormattedMessage id="account.cookieRequired" />
+            })
+          }
+        ]} />
+    </Card>);
   }
 
   renderLogOut(store) {
@@ -95,15 +95,15 @@ export default class Account extends React.Component {
         <a className="margin-2 button is-primary" onClick={() => store.actions.signOut()
           .then(() => ({}))
           .catch(error => errorToMessage(error))}>
-          <Icon>{icons.signOut}</Icon>
+          <LogoutIcon className="mdi-icon-spacer" />
           <FormattedMessage id="account.signOut" />
         </a>
         <A className="margin-2 button is-link" href={`/about/${id}`}>
-          <Icon>{icons.eye}</Icon>
+          <EarthIcon className="mdi-icon-spacer" />
           <FormattedMessage id="account.viewPublic" />
         </A>
         <a className="margin-2 button is-danger">
-          <Icon>{icons.trash}</Icon>
+          <DeleteIcon className="mdi-icon-spacer" />
           <FormattedMessage id="account.delete" />
         </a>
       </div>
@@ -116,7 +116,7 @@ export default class Account extends React.Component {
       className="margin-2"
       data={{ ...session, avatar: undefined }}
       submitText={(<span>
-        <Icon>{icons.save}</Icon>
+        <ContentSaveIcon className="mdi-icon-spacer" />
         <FormattedMessage id="save" />
       </span>)}
       onSubmit={values => store.actions.updateProfile({
@@ -170,7 +170,7 @@ export default class Account extends React.Component {
           key: "password",
           type: "text",
           name: (<span>
-            <Icon>{icons.exclamation}</Icon>
+            <ErrorOutlineIcon className="mdi-icon-spacer" />
             <FormattedMessage id="account.confirmPassword.field" />
           </span>),
           mode: "password",
