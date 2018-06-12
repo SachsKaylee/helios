@@ -90,14 +90,6 @@ const installServer = () => {
       secret: config.cookieSecret
     }));
 
-    // Pages
-    /*server.get("/admin/user", (req, res) => next.render(req, res, "/admin/user", req.params));
-    server.get("/admin/user/:id", (req, res) => next.render(req, res, "/admin/user", req.params));
-    server.get("/admin/post/:id", (req, res) => next.render(req, res, "/admin/post", req.params));
-    server.get("/post", (req, res) => next.render(req, res, "/", req.params));
-    server.get("/post/:id", (req, res) => next.render(req, res, "/post", req.params));
-    server.get("/about/:id", (req, res) => next.render(req, res, "/about", req.params));
-*/
     // APIs
     const installData = { ...dbResolved, server, $send };
     robots.install(installData);
