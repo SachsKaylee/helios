@@ -22,6 +22,7 @@ module.exports = {
     home: "Home",
     admin: {
       menu: "Admin",
+      overview: "Overview",
       account: "Account",
       newPost: "New Post"
     }
@@ -31,6 +32,17 @@ module.exports = {
     title: "Overview",
     posts: "Posts",
     users: "Users"
+  },
+  // Admin accounts overview page
+  users: {
+    title: "Users",
+    createUser: "Create users",
+    updateUser: "Update users",
+    updateUserSubtitle: "Username: {id}",
+    password: {
+      placeholder: "User password",
+      confirm: "Confirm user password"
+    }
   },
   // Strings used for displaying and editing posts
   post: {
@@ -87,12 +99,14 @@ module.exports = {
       field: "Bio",
       placeholder: "Text entered here will be displayed on your public profile page."
     },
+    avatar: {
+      field: "Change avatar",
+      errorTooLarge: "The avatar may not be larger than {maxSize}. (Selected size: {isSize})",
+    },
     permissions: "Permissions:",
     welcome: "Welcome, {id}!",
     viewPublic: "View public profile",
     updateProfile: "Update account",
-    changeAvatar: "Change avatar",
-    avatarTooLarge: "The avatar may not be larger than {maxSize}. (Selected size: {isSize})",
     delete: "Delete account",
     usernamePlaceholder: "your-username",
     passwordPlaceholder: "Your password",
