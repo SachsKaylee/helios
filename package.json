@@ -11,7 +11,7 @@
     "build": "next build src"
   },
   "devDependencies": {
-    "cross-env": "^5.1.6",
+    "cross-env": "^5.2.0",
     "uglifyjs-webpack-plugin": "^1.2.5"
   },
   "dependencies": {
@@ -20,7 +20,7 @@
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-plugin-wrap-in-js": "^1.1.1",
     "bulma": "^0.7.1",
-    "classnames": "^2.2.5",
+    "classnames": "^2.2.6",
     "compression": "^1.7.2",
     "deep-equal": "^1.0.1",
     "dotenv": "^5.0.1",
@@ -32,7 +32,7 @@
     "intl": "^1.2.5",
     "intl-locales-supported": "^1.0.0",
     "mdi-react": "^3.4.0",
-    "mongoose": "^5.1.1",
+    "mongoose": "^5.1.5",
     "next": "^6.0.3",
     "next-routes": "^1.4.2",
     "node-sass": "^4.9.0",
@@ -43,9 +43,9 @@
     "react-addons-text-content": "0.0.4",
     "react-dom": "^16.3.2",
     "react-intl": "^2.4.0",
-    "react-tooltip": "^3.6.0",
-    "slate": "^0.33.6",
-    "slate-react": "^0.12.6",
+    "react-tooltip": "^3.6.1",
+    "slate": "^0.33.7",
+    "slate-react": "^0.12.7",
     "spdy": "^3.4.7"
   }
 }
