@@ -76,10 +76,11 @@ import classnames from "classnames";
 import dynamic from "next/dynamic";
 import textContent from "react-addons-text-content";
 import { UploadIcon, AlertCircleOutlineIcon, AlertCircleIcon } from "mdi-react";
+import { FormattedMessage } from "react-intl";
 // Requires manual implementaion - See https://github.com/zeit/next.js/issues/3775
 //const FormFieldRichText = dynamic(import("./FormFieldRichText"));
 const FormFieldRichText = dynamic({
-  modules: () => {console.log("FormFieldRichText -> IMPORT"); return ({ FormFieldRichText: import("./FormFieldRichText") })},
+  modules: () => ({ FormFieldRichText: import("./FormFieldRichText") }),
   render: (props, { FormFieldRichText }) => (<FormFieldRichText {...props} />)
 });
 
@@ -113,7 +114,7 @@ class Form extends React.Component {
     const { submitText } = this.props;
     const { waiting } = this.state;
     return (<a disabled={waiting} className={classnames("button", "is-primary", waiting && "is-loading")} onClick={this.onSubmit}>
-      {submitText || "Submit"}
+      {submitText || (<FormattedMessage id="form.submit" />)}
     </a>);
   }
 
@@ -182,7 +183,7 @@ class Form extends React.Component {
               onChange={(e) => this.setFieldMeta(key, [...e.currentTarget.files].map(f => f.name))} />
             <span className="file-cta">
               <span className="file-icon"><UploadIcon /></span>
-              <span className="file-label">Choose a file…</span>
+              <span className="file-label"><FormattedMessage id="form.chooseFile" /></span>
             </span>
             <span className="file-name">{this.renderFileList(meta || (data ? data.map(d => d.name) : []))}</span>
           </label>
@@ -193,14 +194,13 @@ class Form extends React.Component {
   }
 
   renderFileList(files) {
-    if (!files || !files.length) return "No files selected…";
-    if (files.length !== 1) return `${files.length} files selected.`;
+    if (!files || !files.length) return (<FormattedMessage id="form.noFilesSelected" />);
+    if (files.length !== 1) return (<FormattedMessage id="form.filesSelected" values={{ n: files.length }} />);
     return files[0];
   }
 
   renderFormElementRichText({ key, ...props }) {
     const { waiting } = this.state;
-    // todo : dynamic laod!!!
     return (<FormFieldRichText {...props} key={key} keyName={key} waiting={waiting} form={this} />);
   }
 
@@ -251,7 +251,7 @@ class Form extends React.Component {
     this.setState({ waiting: true });
     this.getValidatedValues()
       .then(({ result, values }) => {
-        console.log("Form submit!", "result", result, "values", values);
+        console.log("Form submit!", { result, values });
         Promise.resolve(onSubmit(values))
           .then(res => this.mounted && this.setState({
             waiting: false,
@@ -263,7 +263,7 @@ class Form extends React.Component {
           }));
       })
       .catch(error => {
-        console.error("Form submit!", "error", error);
+        console.error("Form submit!", { error });
         if (this.mounted) this.setState({ result: error, waiting: false });
       });
   }

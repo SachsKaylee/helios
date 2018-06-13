@@ -2,7 +2,7 @@ import A from "./A";
 import classnames from "classnames";
 import React from "react";
 
-export default class extends React.Component {
+export default class Navbar extends React.Component {
   constructor(p) {
     super(p);
     this.state = {

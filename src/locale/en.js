@@ -4,7 +4,7 @@ module.exports = {
     name: "English",
     intl: require("react-intl/locale-data/en")
   },
-  loading: "Loading...",
+  loading: "Loading…",
   error: "Error",
   errorMessages: {
     generic: "Some general error thing occurred. Maybe you can find more details somewhere on this page."
@@ -17,6 +17,16 @@ module.exports = {
   none: "None",
   actions: "Actions",
   formValueRequired: "\"{field}\" is required!",
+  form: {
+    submit: "Submit",
+    chooseFile: "Choose a file…",
+    noFilesSelected: "No files selected…",
+    filesSelected: "{n} files selected."
+  },
+  editor: {
+    formatSelection: "Format selection",
+    formatParagraph: "Format paragraph"
+  },
   // Navigation
   navigation: {
     home: "Home",
@@ -67,7 +77,7 @@ module.exports = {
       }
     },
     title: {
-      new: "Composing post...",
+      new: "Composing post…",
       edit: "Editing {title}"
     },
     defaults: {
@@ -76,7 +86,7 @@ module.exports = {
     }
   },
   about: {
-    title: "About {id}...",
+    title: "About {id}…",
     permissions: "Permissions:",
     recentPosts: "Latest posts"
   },

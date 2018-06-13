@@ -4,7 +4,7 @@ module.exports = {
     name: "Deutsch",
     intl: require("react-intl/locale-data/de")
   },
-  loading: "Lädt...",
+  loading: "Lädt…",
   error: "Fehler",
   errorMessages: {
     generic: "Ein allgemeiner Fehler ist aufgetreten! Vielleicht finden Sie vage Details weiter unten!"
@@ -17,6 +17,16 @@ module.exports = {
   none: "Keine",
   actions: "Aktionen",
   formValueRequired: "\"{field}\" muss angegeben werden!",
+  form: {
+    submit: "Senden",
+    chooseFile: "Datei auswählen…",
+    noFilesSelected: "Keine Dateien ausgewählt…",
+    filesSelected: "{n} Dateien ausgewählt."
+  },
+  editor: {
+    formatSelection: "Selektion formatieren",
+    formatParagraph: "Absatz formatieren"
+  },
   // Navigation
   navigation: {
     home: "Startseite",
@@ -49,6 +59,7 @@ module.exports = {
     subtitle: "{author} am {date, date, medium}",
     edit: "Post bearbeiten",
     mediaTitle: "{title} von {author}, {date}",
+    noneFound: "Es konnten keine Posts gefunden werden. Bitte versuchen Sie es später erneut.",
     editor: {
       notification: {
         deleted: {
@@ -67,7 +78,7 @@ module.exports = {
       }
     },
     title: {
-      new: "Post verfassen...",
+      new: "Post verfassen…",
       edit: "Bearbeite {title}"
     },
     defaults: {
@@ -76,7 +87,7 @@ module.exports = {
     }
   },
   about: {
-    title: "Über {id}...",
+    title: "Über {id}…",
     permissions: "Berechtigungen:",
     recentPosts: "Neueste Posts"
   },

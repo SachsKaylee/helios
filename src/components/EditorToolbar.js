@@ -2,6 +2,7 @@ import React from 'react'
 import ReactTooltip from 'react-tooltip';
 import Tag from "./Tag";
 import { FormatBoldIcon, FormatItalicIcon, FormatUnderlineIcon, CodeBracesIcon, FormatHeader1Icon, FormatHeader2Icon, FormatQuoteOpenIcon, FormatListBulletedIcon, FormatListNumberedIcon } from 'mdi-react';
+import { FormattedMessage } from 'react-intl';
 
 const DEFAULT_NODE = "line";
 
@@ -73,14 +74,14 @@ export default class EditorToolbar extends React.Component {
     return (<div>
       <ReactTooltip id="editor-toolbar" effect="solid" />
       {stylesChooser && (<div>
-        <div className="margin-2"><Tag type="info">Format Selection</Tag></div>
+        <div className="margin-2"><Tag type="info"><FormattedMessage id="editor.formatSelection" /></Tag></div>
         {this.renderMarkButton('bold', <FormatBoldIcon className="mdi-icon-medium" />, "Bold")}
         {this.renderMarkButton('italic', <FormatItalicIcon className="mdi-icon-medium" />, "Italic")}
         {this.renderMarkButton('underlined', <FormatUnderlineIcon className="mdi-icon-medium" />, "Underlined")}
         {this.renderMarkButton('code', <CodeBracesIcon className="mdi-icon-medium" />, "Inline Code")}
       </div>)}
       {stylesChooser && (<div>
-        <div className="margin-2"><Tag type="info">Format Paragraph</Tag></div>
+        <div className="margin-2"><Tag type="info"><FormattedMessage id="editor.formatParagraph" /></Tag></div>
         {this.renderBlockButton('heading-one', <FormatHeader1Icon className="mdi-icon-medium" />, "Headline 1")}
         {this.renderBlockButton('heading-two', <FormatHeader2Icon className="mdi-icon-medium" />, "Headline 2")}
         {this.renderBlockButton('block-quote', <FormatQuoteOpenIcon className="mdi-icon-medium" />, "Quote")}
@@ -88,12 +89,12 @@ export default class EditorToolbar extends React.Component {
         {this.renderBlockButton('bulleted-list', <FormatListNumberedIcon className="mdi-icon-medium" />, "Bulleted List")}
       </div>)}
       {buttons && (<div>
-        <div className="margin-2"><Tag type="info">Post Actions</Tag></div>
+        <div className="margin-2"><Tag type="info"><FormattedMessage id="actions" /></Tag></div>
         {buttons.publish && (<a className="margin-2 button is-primary" onClick={this.props.onSave}>Publish</a>)}
         {buttons.discard && (<a className="margin-2 button is-danger" onClick={this.props.onCancel}>Discard</a>)}
         {buttons.delete && (<a className="margin-2 button is-danger" onClick={this.props.onDelete}>Delete</a>)}
-      </div>)}
-    </div>)
+      </div>)} 
+    </div>); // todo: make this more modular! we may wish to provide different action buttons
   }
 
   renderMarkButton = (type, icon, tooltip) => {

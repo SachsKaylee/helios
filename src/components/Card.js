@@ -1,6 +1,4 @@
-const classNames = require("classnames");
-
-export default ({ spacing: { top, inner } = {}, image, title, subtitle, children }) => (
+const Card = ({ spacing: { top, inner } = {}, image, title, subtitle, children }) => (
   <div className="card" style={{ marginTop: top || "2rem" }}>
     <div className="card-content">
       <div className="media">
@@ -48,3 +46,4 @@ export default ({ spacing: { top, inner } = {}, image, title, subtitle, children
     }`}
     </style>
   </div>);
+export default Card;

@@ -1,6 +1,7 @@
 import A from "./A";
 import Card from "./Card";
 import Editor from './EditorRichText';
+import { FormattedMessage } from "react-intl";
 
 const createEditor = ({ edit, value, name, onChange }) => (<Editor
   readOnly={readonly(edit)}
@@ -15,7 +16,7 @@ export default ({ id, author, date, title, content, edit, onChange }) => (
     <div>
       {createEditor({ edit, onChange, value: content, name: "content" })}
       {buttons(edit) && (<div className="push-12">
-        <A className="button is-link" href={`/admin/post/${id}`}>Edit Post</A>
+        <A className="button is-link" href={`/admin/post/${id}`}><FormattedMessage id="post.edit" /></A>
       </div>)}
     </div>
   </Card>
