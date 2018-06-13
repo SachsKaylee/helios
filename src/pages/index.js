@@ -1,6 +1,4 @@
-import SidebarLayout from "../components/SidebarLayout";
 import Posts from "../components/Posts";
-import Card from "../components/Card";
 import React from "react";
 import axios from "axios";
 import config, { locale } from "../config/client";
@@ -40,14 +38,12 @@ export default class extends React.Component {
       <Head>
         <link key="canonical" rel="canonical" href={`https://${config.domains[0]}:${config.port.https}/`} />
       </Head>
-      <SidebarLayout size={3} sidebar={<Card>{"Lorem Ipsum"}</Card>}>
-        <Posts posts={posts.map(p => ({
-          ...p,
-          title: p.title,
-          content: p.content,
-          date: new Date(p.date)
-        }))} />
-      </SidebarLayout>
+      <Posts posts={posts.map(p => ({
+        ...p,
+        title: p.title,
+        content: p.content,
+        date: new Date(p.date)
+      }))} />
     </>);
   }
 };
