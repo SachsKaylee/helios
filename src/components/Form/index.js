@@ -76,7 +76,12 @@ import classnames from "classnames";
 import dynamic from "next/dynamic";
 import textContent from "react-addons-text-content";
 import { UploadIcon, AlertCircleOutlineIcon, AlertCircleIcon } from "mdi-react";
-const FormFieldRichText = dynamic(import("./FormFieldRichText"))
+// Requires manual implementaion - See https://github.com/zeit/next.js/issues/3775
+//const FormFieldRichText = dynamic(import("./FormFieldRichText"));
+const FormFieldRichText = dynamic({
+  modules: () => {console.log("FormFieldRichText -> IMPORT"); return ({ FormFieldRichText: import("./FormFieldRichText") })},
+  render: (props, { FormFieldRichText }) => (<FormFieldRichText {...props} />)
+});
 
 class Form extends React.Component {
   constructor(p) {
