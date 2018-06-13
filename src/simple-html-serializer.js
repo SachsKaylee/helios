@@ -18,7 +18,8 @@ export const textRule = {
   },
 }
 
-export const serialize = (rules, value, options = {}) => {
+export const serialize = (rules, value) => {
+  if (!value) return undefined;
   const { document } = value;
   const elements = document.nodes.map(node => serializeNode(rules, node)).filter(el => el);
   return elements;
