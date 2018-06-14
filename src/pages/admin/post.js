@@ -99,7 +99,7 @@ export default class extends React.PureComponent {
       }).catch(error => {
         this.notifications.push({
           canClose: true,
-          type: "error",
+          type: "danger",
           children: this.renderErrorNotification({ error })
         });
       });

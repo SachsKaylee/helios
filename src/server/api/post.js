@@ -21,7 +21,7 @@ const niceUri = text =>
     + "-" + uuid.uuidSection())        // Append a UUID to it, in case someone writes two posts with the same title
     .replace(/-+/g, "-");              // Avoid having URIs with multiple "-"s after another
 
-const install = ({ server, models, $send }) => {
+const install = ({ server, models, $send, api }) => {
   // https://stackoverflow.com/questions/5830513/how-do-i-limit-the-number-of-returned-items
   server.get("/api/post", (req, res) =>
     models.post
@@ -30,15 +30,18 @@ const install = ({ server, models, $send }) => {
       .limit(intOr(parseInt(req.query.limit), undefined))
       .exec((error, data) => $send(res, { error, data })));
 
-  server.post("/api/post", (req, res) => {
-    // todo: permission check
-    const { title } = req.body;
-    const post = new models.post({ ...req.body, _id: niceUri(title) });
-    post.isNew = true;
-    post.save((error, data) => {
-      $send(res, { error, data })
-    });
-  });
+  server.post("/api/post", (req, res) =>
+    api.user.getSessionUser(req)
+      .then(user => {
+        if (!api.user.hasPermission(user, "author")) {
+          return $send.missingPermission(res, "author");
+        }
+        const { title } = req.body;
+        const post = new models.post({ ...req.body, _id: niceUri(title) });
+        post.isNew = true;
+        post.save((error, data) => $send(res, { error, data }));
+      })
+      .catch(error => $send(res, { error })));
 
   server.get("/api/post/:id", (req, res) => {
     // We use a reg exp to find the post to allow users to potentially omit the UUID from the URL.
@@ -48,14 +51,17 @@ const install = ({ server, models, $send }) => {
     });
   });
 
-  server.put("/api/post/:id", (req, res) => {
-    // todo: permission check
-    const post = new models.post({ ...req.body, _id: req.params.id });
-    post.isNew = false;
-    post.save((error, data) => {
-      $send(res, { error, data })
-    });
-  });
+  server.put("/api/post/:id", (req, res) =>
+    api.user.getSessionUser(req)
+      .then(user => {
+        if (!api.user.hasPermission(user, "author")) {
+          return $send.missingPermission(res, "author");
+        }
+        const post = new models.post({ ...req.body, _id: req.params.id });
+        post.isNew = false;
+        post.save((error, data) => $send(res, { error, data }));
+      })
+      .catch(error => $send(res, { error })));
 
   server.delete("/api/post/:id", (req, res) => {
     models.post.remove({ _id: req.params.id }, (error, data) => {
