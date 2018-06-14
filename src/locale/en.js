@@ -16,6 +16,10 @@ module.exports = {
   save: "Save",
   none: "None",
   actions: "Actions",
+  edit: "Edit",
+  publish: "Publish",
+  delete: "Delete",
+  discard: "Discard",
   formValueRequired: "\"{field}\" is required!",
   form: {
     submit: "Submit",
@@ -57,7 +61,6 @@ module.exports = {
   // Strings used for displaying and editing posts
   post: {
     subtitle: "{author} on {date, date, medium}",
-    edit: "Edit post",
     mediaTitle: "{title} by {author}, {date, date, medium}",
     editor: {
       notification: {

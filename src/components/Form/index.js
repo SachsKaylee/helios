@@ -81,7 +81,8 @@ import { FormattedMessage } from "react-intl";
 //const FormFieldRichText = dynamic(import("./FormFieldRichText"));
 const FormFieldRichText = dynamic({
   modules: () => ({ FormFieldRichText: import("./FormFieldRichText") }),
-  render: (props, { FormFieldRichText }) => (<FormFieldRichText {...props} />)
+  render: (props, { FormFieldRichText }) => (<FormFieldRichText {...props} />),
+  ssr: false
 });
 
 class Form extends React.Component {

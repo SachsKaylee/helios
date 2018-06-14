@@ -16,6 +16,10 @@ module.exports = {
   save: "Speichern",
   none: "Keine",
   actions: "Aktionen",
+  edit: "Bearbeiten",
+  publish: "Veröffentlichen",
+  delete: "Löschen",
+  discard: "Verwerfen",
   formValueRequired: "\"{field}\" muss angegeben werden!",
   form: {
     submit: "Senden",
@@ -57,7 +61,6 @@ module.exports = {
   // Strings used for displaying and editing posts
   post: {
     subtitle: "{author} am {date, date, medium}",
-    edit: "Post bearbeiten",
     mediaTitle: "{title} von {author}, {date}",
     noneFound: "Es konnten keine Posts gefunden werden. Bitte versuchen Sie es später erneut.",
     editor: {

@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactTooltip from 'react-tooltip';
 import Tag from "./Tag";
+import classnames from "classnames";
 import { FormatBoldIcon, FormatItalicIcon, FormatUnderlineIcon, CodeBracesIcon, FormatHeader1Icon, FormatHeader2Icon, FormatQuoteOpenIcon, FormatListBulletedIcon, FormatListNumberedIcon } from 'mdi-react';
 import { FormattedMessage } from 'react-intl';
 
@@ -88,13 +89,11 @@ export default class EditorToolbar extends React.Component {
         {this.renderBlockButton('numbered-list', <FormatListBulletedIcon className="mdi-icon-medium" />, "Numbered List")}
         {this.renderBlockButton('bulleted-list', <FormatListNumberedIcon className="mdi-icon-medium" />, "Bulleted List")}
       </div>)}
-      {buttons && (<div>
+      {buttons && buttons.length && (<div>
         <div className="margin-2"><Tag type="info"><FormattedMessage id="actions" /></Tag></div>
-        {buttons.publish && (<a className="margin-2 button is-primary" onClick={this.props.onSave}>Publish</a>)}
-        {buttons.discard && (<a className="margin-2 button is-danger" onClick={this.props.onCancel}>Discard</a>)}
-        {buttons.delete && (<a className="margin-2 button is-danger" onClick={this.props.onDelete}>Delete</a>)}
-      </div>)} 
-    </div>); // todo: make this more modular! we may wish to provide different action buttons
+        {buttons.map(button => (button && <a key={button.key} className={classnames("margin-2 button", button.type)} onClick={button.action}>{button.text}</a>))}
+      </div>)}
+    </div>);
   }
 
   renderMarkButton = (type, icon, tooltip) => {

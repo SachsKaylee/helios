@@ -5,12 +5,12 @@ import { Value } from "slate";
 import Plain from 'slate-plain-serializer';
 import React from "react";
 import Card from "../../components/Card"
-import Post from "../../components/Post";
+import EditablePost from "../../components/EditablePost";
 import axios from "axios";
 import NotificationProvider from "../../components/NotificationProvider"
 import { FormattedMessage } from "react-intl";
 import config from "../../config/client";
-import { DeleteIcon, WarningIcon, LoadingIcon, ErrorIcon, CakeIcon } from "mdi-react";
+import { DeleteIcon, WarningIcon, LoadingIcon, ErrorIcon, CakeIcon, PublishIcon, FileUndoIcon } from "mdi-react";
 
 export default class extends React.PureComponent {
   constructor(p) {
@@ -216,29 +216,39 @@ export default class extends React.PureComponent {
   }
 
   renderLoaded() {
-    const { id, title, content, isNew, date, author, lastChanged } = this.state;
+    const { title, content, isNew, date, author, lastChanged } = this.state;
     return (
       <SidebarLayout size={3} sidebar={<Card>
         <EditorToolbar
           stylesChooser={lastChanged === "content"}
           value={content}
           onChange={this.onChange(false)("content")}
-          onSave={this.onPublish}
-          onDelete={this.onDelete(false)}
-          buttons={{
-            publish: true,
-            discard: true,
-            delete: !isNew
-          }} />
+          buttons={[
+            {
+              key: "publish",
+              type: "is-primary",
+              text: (<><PublishIcon className="mdi-icon-spacer" /> <FormattedMessage id="publish" /></>),
+              action: this.onPublish
+            },
+            {
+              key: "publish",
+              type: "is-danger",
+              text: (<><FileUndoIcon className="mdi-icon-spacer" /> <FormattedMessage id="discard" /></>)
+            },
+            !isNew && {
+              key: "delete",
+              type: "is-danger",
+              text: (<><DeleteIcon className="mdi-icon-spacer" /> <FormattedMessage id="delete" /></>),
+              action: this.onDelete(false)
+            }
+          ]} />
         <NotificationProvider ref={ref => this.notifications = ref} />
       </Card>}>
-        <Post
-          edit={["allow-content-editing"]}
+        <EditablePost
           author={author}
           avatar={`/api/avatar/${author}`}
           content={content}
           date={date}
-          id={id}
           title={title}
           onChange={this.onChange(true)}
         />

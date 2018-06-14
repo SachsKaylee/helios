@@ -16,7 +16,7 @@ const ReadOnlyPost = ({ id, author, date, title, content, edit }) => (
     <div>
       <div>{render(defaultRules, content)}</div>
       {buttons(edit) && (<div className="push-12">
-        <A className="button is-link" href={`/admin/post/${id}`}><FormattedMessage id="post.edit" /></A>
+        <A className="button is-link" href={`/admin/post/${id}`}><FormattedMessage id="edit" /></A>
       </div>)}
     </div>
   </Card>

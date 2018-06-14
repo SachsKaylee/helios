@@ -11,6 +11,7 @@
     "build": "next build src"
   },
   "devDependencies": {
+    "@types/react-intl": "^2.3.8",
     "cross-env": "^5.2.0",
     "uglifyjs-webpack-plugin": "^1.2.5"
   },
