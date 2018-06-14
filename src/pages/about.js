@@ -54,7 +54,7 @@ class About extends React.Component {
           <FormattedMessage id="about.recentPosts" />
         </h2>
 
-        <LatestPosts limit={3} byUser={id} />
+        <LatestPosts limit={3} ofUser={id} />
 
       </Card>
     </>);

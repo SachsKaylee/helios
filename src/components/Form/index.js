@@ -73,7 +73,7 @@
 import React from "react";
 import fp from "../../fp";
 import classnames from "classnames";
-import Dynamic from "./Dynamic";
+import Dynamic from "./../Dynamic";
 import textContent from "react-addons-text-content";
 import { UploadIcon, AlertCircleOutlineIcon, AlertCircleIcon } from "mdi-react";
 import { FormattedMessage } from "react-intl";
