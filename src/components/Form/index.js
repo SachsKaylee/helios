@@ -73,17 +73,10 @@
 import React from "react";
 import fp from "../../fp";
 import classnames from "classnames";
-import dynamic from "next/dynamic";
+import Dynamic from "./Dynamic";
 import textContent from "react-addons-text-content";
 import { UploadIcon, AlertCircleOutlineIcon, AlertCircleIcon } from "mdi-react";
 import { FormattedMessage } from "react-intl";
-// Requires manual implementaion - See https://github.com/zeit/next.js/issues/3775
-//const FormFieldRichText = dynamic(import("./FormFieldRichText"));
-const FormFieldRichText = dynamic({
-  modules: () => ({ FormFieldRichText: import("./FormFieldRichText") }),
-  render: (props, { FormFieldRichText }) => (<FormFieldRichText {...props} />),
-  ssr: false
-});
 
 class Form extends React.Component {
   constructor(p) {
@@ -202,7 +195,9 @@ class Form extends React.Component {
 
   renderFormElementRichText({ key, ...props }) {
     const { waiting } = this.state;
-    return (<FormFieldRichText {...props} key={key} keyName={key} waiting={waiting} form={this} />);
+    return (<Dynamic
+      dynamic={{ loader: () => import("./FormFieldRichText") }}
+      {...props} key={key} keyName={key} waiting={waiting} form={this} />)
   }
 
   renderFormElementText({ key, name, ignoreData, mode, placeholder }) {
