@@ -6,14 +6,14 @@ class Dynamic extends React.Component {
     super(p);
     this.state = {
       state: "loading",
-      Loaded: undefined
+      loaded: undefined
     }
   }
 
   componentDidMount() {
     const { loader } = this.props.dynamic;
-    loader
-      .then(Loaded => this.setState({ Loaded, state: "loaded" }))
+    loader()
+      .then(loaded => this.setState({ loaded, state: "loaded" }))
       .catch(error => this.setState({ error, state: "error" }));
   }
 
@@ -27,8 +27,9 @@ class Dynamic extends React.Component {
   }
 
   renderLoaded() {
-    const { dynamic, props } = this.props;
-    const { Loaded } = this.state;
+    const { dynamic, ...props } = this.props;
+    const { loaded } = this.state;
+    const Loaded = loaded.default || loaded._default || loaded;
     return dynamic.render
       ? dynamic.render(Loaded)
       : (<Loaded {...props} />);
