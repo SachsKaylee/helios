@@ -1,4 +1,4 @@
-const config = require("../config/server");
+const config = require("../../config/server");
 
 const install = ({ server, $send }) => {
   server.get("/manifest.json", (req, res) => {

@@ -2,6 +2,8 @@ const mapObject = (obj, fn) => Object.keys(obj).reduce((a, k) => ({ ...a, [k]: f
 const mapObjectKeys = (obj, fn) => Object.keys(obj).reduce((a, k) => ({ ...a, [fn(k, obj[k])]: obj[k] }), {});
 const arrayToObject = (array, processor) => array.reduce((a, c) => ({ ...a, ...processor ? processor(c) : c }), {});
 
+const reduceObject = (object, fn, a) => Object.keys(object).reduce((a, k) => fn(a, object[k], k), a);
+
 // https://gist.github.com/YuCJ/0a42afc1b578b2545195a7b688dcbab6
 const splice = (array, start, deleteCount, items = []) => {
   deleteCount = (deleteCount < 0) ? 0 : deleteCount;
@@ -45,6 +47,7 @@ const flattenObject = (obj, sep = ".") =>
 module.exports = {
   mapObject,
   mapObjectKeys,
+  reduceObject,
   splice,
   sandbox,
   flattenObject,

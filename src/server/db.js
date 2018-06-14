@@ -12,7 +12,7 @@ mongoose.connection.on("error", err => console.error("Mongoose Error", err));
 const $makeModel = (source, name) => mongoose.model(name, source.schema({ mongoose, name }));
 
 const connected = new Promise(res => mongoose.connection.once('open', () => {
-  const models = fp.mapObject(api, $makeModel);
+  const models = fp.mapObject(api, (source, name) => source.schema && $makeModel(source, name));
   console.log("DB Connected!", "APIs:", Object.keys(api));
   res({ models, mongoose });
 }));

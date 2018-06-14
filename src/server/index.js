@@ -9,7 +9,7 @@ const greenlock = require("greenlock-express");
 const compression = require("compression");
 const api = require("./api");
 const db = require("./db");
-const robots = require("./robots");
+const fp = require("../fp");
 const routes = require("../routes");
 const config = require("../config/server");
 const areIntlLocalesSupported = require("intl-locales-supported");
@@ -90,10 +90,13 @@ const installServer = () => {
       secret: config.cookieSecret
     }));
 
-    // APIs
-    const installData = { ...dbResolved, server, $send };
-    robots.install(installData);
-    Object.keys(api).forEach(k => !api[k].doNotInstall && api[k].install(installData));
+    // APIs - APIs can only access APIs ranked "lower"
+    const apiData = fp.reduceObject(api, (apiData, currentApi, key) => {
+      console.log("📡", "Installing an API ...", key);
+      const data = currentApi.install && currentApi.install({ ...dbResolved, server, $send, api: apiData });
+      return { ...apiData, [key]: data };
+    }, {});
+    console.log("📡", "All APIs:", apiData);
 
     // Fallback
     server.get("*", routes.getRequestHandler(next));

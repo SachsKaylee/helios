@@ -205,6 +205,11 @@ const install = ({ server, models, $send }) => {
     .catch(error => $send(res, { error })));
 
   $createDefaults();
+
+  return {
+    getSessionUser,
+    hasPermission
+  }
 }
 
 module.exports = {
