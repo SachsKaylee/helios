@@ -11,6 +11,7 @@ import NotificationProvider from "../../components/NotificationProvider"
 import { FormattedMessage } from "react-intl";
 import config from "../../config/client";
 import { DeleteIcon, WarningIcon, LoadingIcon, ErrorIcon, CakeIcon, PublishIcon, FileUndoIcon } from "mdi-react";
+import { SlimError, FullError } from "../../components/Error";
 
 export default class extends React.PureComponent {
   constructor(p) {
@@ -182,16 +183,12 @@ export default class extends React.PureComponent {
   }
 
   renderErrorNotification(error) {
-    // todo: error renderer
     return (<div>
       <p className="subtitle">
         <ErrorIcon className="mdi-icon-spacer" />
         <FormattedMessage id="error" />
       </p>
-      <p>
-        <FormattedMessage id="errorMessages.generic" />
-      </p>
-      <p><code>{JSON.stringify(error)}</code></p>
+      <SlimError error={error} />
     </div>);
   }
 
@@ -203,16 +200,8 @@ export default class extends React.PureComponent {
   }
 
   renderError() {
-    // todo: error renderer
     const { error } = this.state;
-    return (<Card title={(<p><FormattedMessage id="error" /></p>)} >
-      <p>
-        <FormattedMessage id="errorMessages.generic" />
-      </p>
-      <p>
-        <code>{JSON.stringify(error)}</code>
-      </p>
-    </Card>);
+    return (<FullError error={error} />);
   }
 
   renderLoaded() {
@@ -231,7 +220,7 @@ export default class extends React.PureComponent {
               action: this.onPublish
             },
             {
-              key: "publish",
+              key: "discard",
               type: "is-danger",
               text: (<><FileUndoIcon className="mdi-icon-spacer" /> <FormattedMessage id="discard" /></>)
             },

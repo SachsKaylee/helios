@@ -7,6 +7,7 @@ import Card from "../components/Card";
 import { render, defaultRules } from "../slate-renderer";
 import { FormattedMessage } from "react-intl";
 import LatestPosts from "../components/LatestPosts";
+import { ErrorFull } from "../components/Error";
 
 class About extends React.Component {
   static getInitialProps({ query: { id } }) {
@@ -60,18 +61,12 @@ class About extends React.Component {
     </>);
   }
 
-  renderError() {
-    // todo: implement a proper error rendering component
+  render() {
     // todo: implement a better translation of mongo errors on server side
     const { error } = this.props;
-    return (<>
-      {JSON.stringify(error)}
-    </>);
-  }
-
-  render() {
-    const { error } = this.props;
-    return error ? this.renderError() : this.renderUser();
+    return error ?
+      (<ErrorFull error={error} />)
+      : this.renderUser();
   }
 }
 

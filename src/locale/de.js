@@ -7,7 +7,12 @@ module.exports = {
   loading: "Lädt…",
   error: "Fehler",
   errorMessages: {
-    generic: "Ein allgemeiner Fehler ist aufgetreten! Vielleicht finden Sie vage Details weiter unten!"
+    generic: "Ein allgemeiner Fehler ist aufgetreten! Vielleicht finden Sie vage Details weiter unten!",
+    missingPermission: "Ihnen fehlt die Berechtigung {permission}.",
+    noData: "Die angefragten Daten konnten nicht gefunden werden. Bitte überprüfen Sie Ihre Eingabe.",
+    incorrectPassword: "Das Passwort ist falsch.",
+    notLoggedIn: "Sie sind nicht angemeldet - Für diese Aktion ist eine Anmeldung erfordelich.",
+    alreadyLoggedIn: "Sie sind bereits angemeldet. Um sich in einem anderen Account anzumelden, müssen Sie sich zunächst aus diesem abmelden."
   },
   notifications: "Benachrichtigungen",
   noNotifications: "Keine Benachrichtigungen!",
