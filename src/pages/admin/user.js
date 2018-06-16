@@ -6,6 +6,7 @@ import { FormattedMessage } from "react-intl";
 import { get, post, put } from "axios";
 import Router from "next/router";
 import { ContentSaveIcon } from "mdi-react";
+import { SlimError } from "../../components/Error";
 
 export default class User extends React.Component {
   static getInitialProps(p) {
@@ -35,14 +36,24 @@ export default class User extends React.Component {
   submitCreate = ({ id, password, bio, avatar, permissions }) => {
     return post("/api/user", { id, password, bio, permissions, avatar: avatar ? avatar.data : "" })
       .then(() => Router.push("/admin/users"))
-      .catch(error => ({ error: "ERROR TODO" })); // todo: error
+      .catch(error => ({
+        id: {
+          error: true,
+          message: (<SlimError error={error.response.data} />)
+        }
+      }));
   }
 
   submitUpdate = ({ password, bio, avatar, permissions }) => {
     const { id } = this.props.user;
     return put(`/api/user/${id}`, { password, bio, permissions, avatar: avatar ? avatar.data : "" })
       .then(() => Router.push("/admin/users"))
-      .catch(error => ({ error: "ERROR TODO" })); // todo: error
+      .catch(error => ({
+        id: {
+          error: true,
+          message: (<SlimError error={error.response.data} />)
+        }
+      }));
   }
 
   getTitle() {

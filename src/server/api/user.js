@@ -6,6 +6,7 @@ const crypto = require("crypto");
 const fp = require("../../fp");
 const async = require("../../async");
 const { default: Plain } = require("slate-plain-serializer");
+const { mongoError } = require("../error-transformer");
 
 const schema = ({ mongoose }) => {
   return mongoose.Schema({
@@ -79,7 +80,11 @@ const install = ({ server, models, $send }) => {
       });
       user.isNew = true;
       user.save((error, data) => {
-        console.log("Default user created:", id, error, data);
+        if (error && error.code !== mongoError.duplicateKey) {
+          console.error("Default user *not* created:", id, error);
+        } else if (data) {
+          console.log("Default user created:", id, data);
+        }
       });
     }
   }

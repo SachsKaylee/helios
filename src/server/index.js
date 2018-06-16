@@ -14,6 +14,7 @@ const routes = require("../routes");
 const config = require("../config/server");
 const areIntlLocalesSupported = require("intl-locales-supported");
 const reactIntl = require("react-intl");
+const { transformError } = require("./error-transformer");
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -42,7 +43,7 @@ const $send = (res, { error, data, errorCode, successCode }) => {
   if (isDevelopment) console.info("sending", { error, data, errorCode, successCode });
   if (error) {
     res.status(errorCode || 500);
-    res.send(error);
+    res.send(transformError(error));
   } else if (!data) {
     res.status(errorCode || 404);
     res.send("no-data");

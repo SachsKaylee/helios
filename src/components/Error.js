@@ -24,5 +24,5 @@ const byString = string => {
   if (string === "incorrect-password") return (<FormattedMessage id="errorMessages.incorrectPassword" />);
   if (string === "not-logged-in") return (<FormattedMessage id="errorMessages.notLoggedIn" />);
   if (string === "already-logged-in") return (<FormattedMessage id="errorMessages.notLoggedIn" />);
-
+  if (string === "already-exists") return (<FormattedMessage id="errorMessages.alreadyExists" />);
 }
