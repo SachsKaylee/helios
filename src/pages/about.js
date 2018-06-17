@@ -6,7 +6,7 @@ import Card from "../components/Card";
 import { render, defaultRules } from "../slate-renderer";
 import { FormattedMessage } from "react-intl";
 import LatestPosts from "../components/LatestPosts";
-import { ErrorFull } from "../components/Error";
+import { FullError } from "../components/Error";
 
 class About extends React.Component {
   static getInitialProps({ query: { id } }) {
@@ -64,7 +64,7 @@ class About extends React.Component {
     // todo: implement a better translation of mongo errors on server side
     const { error } = this.props;
     return error ?
-      (<ErrorFull error={error} />)
+      (<FullError error={error} />)
       : this.renderUser();
   }
 }

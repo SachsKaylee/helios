@@ -3,7 +3,7 @@ import equal from "deep-equal";
 import { get } from "axios";
 import PostMedia from "./PostMedia";
 import { FormattedMessage } from "react-intl";
-import { ErrorSlim } from "./Error"; 
+import { SlimError } from "./Error"; 
 
 // todo: this is shit, we are not using SSR, which would be PERFECT for this. But the next.js devs don't want to support server data for nested components...
 export default class LatestPosts extends React.PureComponent {
@@ -59,6 +59,6 @@ export default class LatestPosts extends React.PureComponent {
 
   renderError() {
     const { error } = this.state;
-    return <ErrorSlim error={error} />;
+    return <SlimError error={error} />;
   }
 }
