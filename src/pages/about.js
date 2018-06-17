@@ -2,7 +2,6 @@ import React from "react";
 import config from "../config/client";
 import axios from "axios";
 import Head from "next/head";
-import Tag from "../components/Tag";
 import Card from "../components/Card";
 import { render, defaultRules } from "../slate-renderer";
 import { FormattedMessage } from "react-intl";
@@ -46,7 +45,7 @@ class About extends React.Component {
             </h1>
             {bio && render(defaultRules, bio)}
             <p className="content is-small"><FormattedMessage id="about.permissions" /> {permissions.length
-              ? permissions.map(p => (<Tag key={p}>{p}</Tag>))
+              ? permissions.map(p => (<span className="tag" key={p}>{p}</span>))
               : <FormattedMessage id="none" />}</p>
           </div>
         </div>

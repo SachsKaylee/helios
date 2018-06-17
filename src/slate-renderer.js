@@ -24,12 +24,18 @@ export const defaultRules = [
       if (obj.object == "mark") {
         switch (obj.type) {
           case "bold": return (<strong {...attributes}>{children}</strong>);
-          case "code": return (<code {...attributes}>{children}</code>);
+          case "code": return (<code className="editor-el editor-el-code" {...attributes}>{children}</code>);
           case "italic": return (<em {...attributes}>{children}</em>);
           case "underlined": return (<u {...attributes}>{children}</u>);
         }
       }
     }
+  },
+  // Error Fallback
+  {
+    serialize: (obj, children, attributes) => (<pre className="editor-el editor-el-error" {...attributes}>
+      Unknown element: {obj.type} ({children.length} children)
+    </pre>)
   }
 ]
 

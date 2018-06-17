@@ -3,15 +3,18 @@
 
 $card-shadow: 0 2px 3px rgba($black, 0.1), 0 0 2px 1px rgba($black, 0.1) !default
 
+// General format helpers
 .margin-2 
   margin: 2px
 
 .push-12 
   margin-top: 12px
 
+// Cards
 .card-shadow 
   box-shadow: $card-shadow
 
+// Icon format
 .mdi-icon
   fill: currentColor
   width: 1.2em
@@ -31,6 +34,14 @@ $card-shadow: 0 2px 3px rgba($black, 0.1), 0 0 2px 1px rgba($black, 0.1) !defaul
 .mdi-icon-titanic
   width: 7em
   height: 7em
+
+// Editor format elements
+.editor-el-code
+  color: black
+
+.editor-el-error
+  color: red
+  border: 1px dotted orange
 
 // 3. Import the rest of Bulma;
 @import 'bulma/bulma'

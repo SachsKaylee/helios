@@ -69,6 +69,17 @@ module.exports = {
     subtitle: "{author} on {date, date, medium}",
     mediaTitle: "{title} by {author}, {date, date, medium}",
     editor: {
+      format: {
+        bold: "Bold",
+        italic: "Italic",
+        underlined: "Underlined",
+        code: "Code",
+        headline1: "Headline 1",
+        headline2: "Headline 2",
+        quote: "Quote",
+        numberedList: "Numbered List",
+        bulletedList: "Bulleted List"
+      },
       notification: {
         deleted: {
           title: "Post deleted.",

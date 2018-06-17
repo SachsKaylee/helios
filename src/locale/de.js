@@ -70,6 +70,17 @@ module.exports = {
     mediaTitle: "{title} von {author}, {date}",
     noneFound: "Es konnten keine Posts gefunden werden. Bitte versuchen Sie es später erneut.",
     editor: {
+      format: {
+        bold: "Fett",
+        italic: "Kursiv",
+        underlined: "Unterstrichen",
+        code: "Code",
+        headline1: "Überschrift 1",
+        headline2: "Überschrift 2",
+        quote: "Zitat",
+        numberedList: "Nummerierte Liste",
+        bulletedList: "Ungeordnete Liste"
+      },
       notification: {
         deleted: {
           title: "Post gelöscht.",
