@@ -1,6 +1,6 @@
 import A from "./A";
 import Card from "./Card";
-import { render, defaultRules } from "../slate-renderer";
+import { render, postRules } from "../slate-renderer";
 import { FormattedMessage } from "react-intl";
 
 const buttons = (edit) => edit ? !edit.indexOf("show-admin-buttons") : false;
@@ -14,7 +14,7 @@ const ReadOnlyPost = ({ id, author, date, title, content, edit }) => (
       date
     }} />}>
     <div>
-      <div>{render(defaultRules, content)}</div>
+      <div>{render(postRules(), content)}</div>
       {buttons(edit) && (<div className="push-12">
         <A className="button is-link" href={`/admin/post/${id}`}><FormattedMessage id="edit" /></A>
       </div>)}

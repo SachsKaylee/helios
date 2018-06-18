@@ -4,7 +4,7 @@ import Card from "../../components/Card";
 import A from "../../components/A";
 import { get } from "axios";
 import Media from "../../components/Media";
-import { render, defaultRules } from "../../slate-renderer";
+import { render, postRules } from "../../slate-renderer";
 
 export default class Admin extends React.Component {
   constructor(p) {
@@ -33,7 +33,7 @@ export default class Admin extends React.Component {
         <strong style={{ marginRight: 2 }}><A href={`/admin/user/${user.id}`}>{user.id}</A></strong>
         {user.permissions.map(p => (<span className="tag" style={{ marginRight: 2 }} key={p}>{p}</span>))}
       </span>)}>
-        {render(defaultRules, user.bio)}
+        {render(postRules(), user.bio)}
       </Media>))}
     </Card>);
   }

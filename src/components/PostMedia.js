@@ -1,6 +1,6 @@
 import A from "./A";
 import Media from "./Media";
-import { render, defaultRules } from "../slate-renderer";
+import { render, postRules } from "../slate-renderer";
 import { FormattedMessage, FormattedDate } from "react-intl";
 
 // todo: render to a shorter version, not the entire post!
@@ -11,7 +11,7 @@ const PostMedia = (post) => (<Media
     author: (<A href={`/about/${post.author}`}>{post.author}</A>),
     date: (<small><FormattedDate value={new Date(post.date)} year="numeric" month="long" day="numeric" weekday="long" /></small>)
   }} />)}>
-  {render(defaultRules, post.content)}
+  {render(postRules(), post.content)}
 </Media>);
 
 export default PostMedia;

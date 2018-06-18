@@ -23,7 +23,7 @@ export default class Navbar extends React.Component {
           <A className="navbar-item" href="../">
             <img src={logo} alt="Logo" />
             &nbsp;
-            {title}
+            <h1>{title}</h1>
           </A>
           <span className={classnames("navbar-burger", "burger", active && "is-active")} onClick={this.toggleActive} aria-label="menu" aria-expanded={active}>
             <span></span>

@@ -6,7 +6,7 @@ const Card = ({ spacing: { top, inner } = {}, image, title, subtitle, children }
           <img src={image.src || image} className="card-shadow top-image" alt={image.alt || image} />
         </div>)}
         {(title || subtitle) && (<div className="media-content has-text-centered">
-          {title && (<div className="title card-title">{title}</div>)}
+          {title && (<h2 className="title card-title">{title}</h2>)}
           {subtitle && (<p className="subtitle is-6 card-subtitle">{subtitle}</p>)}
         </div>)}
       </div>

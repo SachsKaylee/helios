@@ -1,6 +1,6 @@
 import React from "react";
 import { Editor } from 'slate-react';
-import { defaultRules } from "../slate-renderer";
+import { postRules } from "../slate-renderer";
 import { serializeSingle } from "../simple-html-serializer";
 import { Value } from "slate";
 import Plain from "slate-plain-serializer";
@@ -27,11 +27,11 @@ export default class EditorRichText extends React.Component {
 
   renderNode = props => {
     const { attributes, children, node } = props;
-    return serializeSingle(defaultRules, node, children, attributes);
+    return serializeSingle(postRules(), node, children, attributes);
   }
 
   renderMark = props => {
     const { attributes, children, mark } = props;
-    return serializeSingle(defaultRules, mark, children, attributes);
+    return serializeSingle(postRules(), mark, children, attributes);
   }
 }

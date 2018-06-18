@@ -59,6 +59,6 @@ export default class LatestPosts extends React.PureComponent {
 
   renderError() {
     const { error } = this.state;
-    return <SlimError error={error} />;
+    return (<SlimError error={error} />);
   }
 }
