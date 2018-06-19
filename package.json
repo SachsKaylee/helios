@@ -47,6 +47,7 @@
     "react-tooltip": "^3.6.1",
     "slate": "^0.33.7",
     "slate-react": "^0.12.7",
+    "slate-soft-break": "^0.6.1",
     "spdy": "^3.4.7"
   }
 }
