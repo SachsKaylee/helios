@@ -118,7 +118,7 @@ const installGreenlock = () => greenlock.create({ ...greenlockOptions(), app: in
     : console.log("📡", `Listening on greenlock ports HTTP ${config.client.port.http} & HTTPS ${config.client.port.https}!`));
 
 const greenlockOptions = () => ({
-  agreeTos: true, // todo : You MUST NOT build clients that accept the ToS without asking the user
+  agreeTos: config.agreeGreenlockTos,
   version: "draft-11",
   server: isDevelopment ? "https://acme-staging-v02.api.letsencrypt.org/directory" : "https://acme-v02.api.letsencrypt.org/directory",
   email: config.webmasterMail,

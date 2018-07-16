@@ -40,7 +40,6 @@ export default class extends React.Component {
   }
 
   render() {
-    // todo: pagination
     const { posts, count, page } = this.props;
     const endThisPage = page * config.postsPerPage;
     const totalPages = Math.ceil(count / config.postsPerPage);

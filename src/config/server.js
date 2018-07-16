@@ -42,12 +42,18 @@ module.exports = {
 
   // The connection to your database.
   db: {
-    // The database URIs. Contains authentication. See https://mongoosejs.com/docs/connections.html#connections for details.
+    // The database URIs. Contains authentication. 
+    // See https://mongoosejs.com/docs/connections.html#connections for details.
     uris: "mongodb://localhost/helios",
-    // Some options for the database. See https://mongoosejs.com/docs/connections.html#options for details.
+    // Some options for the database. 
+    // See https://mongoosejs.com/docs/connections.html#options for details.
     options: {}
   },
   
+  // Greenlock's(The library we use to create your SSL certificate) license requires you to 
+  // manually confirm that you agree to its TOS. If you do, set this value to true:
+  agreeGreenlockTos: true,
+
   // The client configuration should also be available on the server.
   client
 }

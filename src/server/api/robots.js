@@ -7,7 +7,7 @@ const install = ({ server, $send }) => {
         "short_name": config.client.title,
         "name": config.client.title,
         "description": config.client.description,
-        "lang": "en-US", // todo: Localize Helios one day
+        "lang": config.client.locale.meta.id,
         "icons": [
           makeManifestIcon(256)
         ],
