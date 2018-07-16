@@ -7,6 +7,7 @@ import { get, post, put } from "axios";
 import Router from "next/router";
 import { ContentSaveIcon } from "mdi-react";
 import { SlimError } from "../../components/Error";
+import { formatBytes } from "../../bytes";
 
 export default class User extends React.Component {
   static getInitialProps(p) {
@@ -80,8 +81,6 @@ export default class User extends React.Component {
   }
 }
 
-// todo: permissions!
-
 const baseElements = () => [
   {
     key: "avatar",
@@ -89,10 +88,9 @@ const baseElements = () => [
     name: (<FormattedMessage id="account.avatar.field" />),
     validator: avatar => ({
       error: avatar.size > config.maxAvatarSize,
-      // todo: better byte size formatter
       message: (<FormattedMessage id="account.avatar.errorTooLarge" values={{
-        isSize: avatar.size + "B",
-        maxSize: config.maxAvatarSize + "B"
+        isSize: formatBytes(avatar.size),
+        maxSize: formatBytes(config.maxAvatarSize)
       }} />)
     })
   },

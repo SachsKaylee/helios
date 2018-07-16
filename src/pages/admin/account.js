@@ -6,6 +6,7 @@ import config from "../../config/client";
 import { FormattedMessage } from "react-intl";
 import Store from "../../store";
 import { LoginIcon, LogoutIcon, EarthIcon, DeleteIcon, ContentSaveIcon, ErrorOutlineIcon } from "mdi-react";
+import { formatBytes } from "../../bytes";
 
 export default class Account extends React.Component {
   constructor(p) {
@@ -133,10 +134,9 @@ export default class Account extends React.Component {
           name: (<FormattedMessage id="account.avatar.field" />),
           validator: avatar => ({
             error: avatar.size > config.maxAvatarSize,
-            // todo: better byte size formatter
             message: (<FormattedMessage id="account.avatar.errorTooLarge" values={{
-              isSize: avatar.size + "B",
-              maxSize: config.maxAvatarSize + "B"
+              isSize: formatBytes(avatar.size),
+              maxSize: formatBytes(config.maxAvatarSize)
             }} />)
           })
         },
