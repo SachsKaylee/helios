@@ -1,5 +1,13 @@
 import EditorRichText, { dataToValue } from "../EditorRichText";
 import EditorToolbar from "../EditorToolbar";
+import SoftBreak from "slate-soft-break";
+
+const plugins = [
+  SoftBreak({
+    onlyIn: ["block-quote"],
+    shift: true
+  })
+];
 
 const FormFieldRichText = ({ keyName, name, ignoreData, placeholder, form, waiting }) => {
   const key = keyName;
@@ -12,6 +20,7 @@ const FormFieldRichText = ({ keyName, name, ignoreData, placeholder, form, waiti
       <div className="columns">
         <div className="column is-three-quarters">
           <EditorRichText
+            plugins={plugins}
             readOnly={waiting}
             className="textarea"
             style={{ overflowY: "auto" }}

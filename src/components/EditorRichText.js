@@ -4,7 +4,6 @@ import { postRules } from "../slate-renderer";
 import { serializeSingle } from "../simple-html-serializer";
 import { Value } from "slate";
 import Plain from "slate-plain-serializer";
-import SoftBreak from "slate-soft-break";
 
 export const dataToValue = (value = "") => {
   return "string" === (typeof value)
@@ -14,13 +13,6 @@ export const dataToValue = (value = "") => {
       : Value.fromJSON(value);
 }
 
-const plugins = [
-  SoftBreak({
-    onlyIn: ["block-quote"],
-    shift: true
-  })
-]
-
 export default class EditorRichText extends React.Component {
   render() {
     const { value } = this.props;
@@ -29,11 +21,12 @@ export default class EditorRichText extends React.Component {
         renderNode={this.renderNode}
         renderMark={this.renderMark}
         {...this.props}
-        plugins={plugins}
+        plugins={this.props.plugins}
         value={dataToValue(value)} />
     </div>);
   }
 
+  // todo: rules props
   renderNode = props => {
     const { attributes, children, node } = props;
     return serializeSingle(postRules(), node, children, attributes);
