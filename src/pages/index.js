@@ -8,18 +8,19 @@ import { FormattedMessage } from "react-intl";
 
 export default class extends React.Component {
   static async getInitialProps({ query }) {
-    const { data } = await axios.get("/api/post", {
-      params: {
-        skip: query.page && ((parseInt(query.page, 10) - 1) * config.postsPerPage), limit: config.postsPerPage
-      }
-    });
-    // todo: run in parallel
-    const postCount = await axios.get("/api/post-count");
+    const [posts, postCount] = await Promise.all([
+      axios.get("/api/post", {
+        params: {
+          skip: query.page && ((parseInt(query.page, 10) - 1) * config.postsPerPage), limit: config.postsPerPage
+        }
+      }),
+      axios.get("/api/post-count")
+    ]);
     return {
       count: postCount.data.count,
       page: query.page ? parseInt(query.page, 10) : 1,
       // We do not create the Value here, but instead in render since it was throwing an error with SSR
-      posts: data.map(({ _id, author, date, title, content }) => ({
+      posts: posts.data.map(({ _id, author, date, title, content }) => ({
         id: _id,
         title: title,
         content: content,
@@ -57,8 +58,8 @@ export default class extends React.Component {
       </div>
       <div className="container" style={{ marginTop: 16 }}>
         <nav className="pagination" role="navigation" aria-label="pagination">
-          {page !== 1 && (<A className="pagination-previous" href={"?page=" + (page - 1)}><FormattedMessage id="navigation.previousPage"/></A>)}
-          {endThisPage < count && (<A className="pagination-next" href={"?page=" + (page + 1)}><FormattedMessage id="navigation.nextPage"/></A>)}
+          {page !== 1 && (<A className="pagination-previous" href={"?page=" + (page - 1)}><FormattedMessage id="navigation.previousPage" /></A>)}
+          {endThisPage < count && (<A className="pagination-next" href={"?page=" + (page + 1)}><FormattedMessage id="navigation.nextPage" /></A>)}
           <ul className="pagination-list">
             {page > 1 && (<li>
               <A className="pagination-link" aria-label="#1" href={"?page=1"}>1</A>
