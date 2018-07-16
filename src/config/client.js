@@ -28,5 +28,8 @@ module.exports = {
   locale: require("../locale/de"),
 
   // The max size in bytes for user avatars.
-  maxAvatarSize: 200 * 1024
+  maxAvatarSize: 200 * 1024,
+
+  // How many posts should be displayed per page?
+  postsPerPage: 10
 }

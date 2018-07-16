@@ -27,6 +27,7 @@ const install = ({ server, models, $send, api }) => {
     models.post
       .find({})
       .sort({ date: "descending" })
+      .skip(intOr(parseInt(req.query.skip), 0)) // todo: skip has poor performance on large collection
       .limit(intOr(parseInt(req.query.limit), undefined))
       .exec((error, data) => $send(res, { error, data })));
 
@@ -78,6 +79,7 @@ const install = ({ server, models, $send, api }) => {
     models.post
       .find({ author: config.defaultUser.id })
       .sort({ date: "descending" })
+      .skip(intOr(parseInt(req.query.skip), 0)) // todo: skip has poor performance on large collection
       .limit(intOr(parseInt(req.query.limit), undefined))
       .exec((error, data) => $send(res, { error, data })));
 
@@ -85,6 +87,7 @@ const install = ({ server, models, $send, api }) => {
     models.post
       .find({ author: req.params.id })
       .sort({ date: "descending" })
+      .skip(intOr(parseInt(req.query.skip), 0)) // todo: skip has poor performance on large collection
       .limit(intOr(parseInt(req.query.limit), undefined))
       .exec((error, data) => $send(res, { error, data })));
 }

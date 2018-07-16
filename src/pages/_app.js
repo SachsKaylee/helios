@@ -122,9 +122,7 @@ export default class _App extends App {
               ]
             }]} />
           <div className="section">
-            <div className="container">
-              <Component {...pageProps} />
-            </div>
+            <Component {...pageProps} />
           </div>
         </Store.Provider>
       </IntlProvider>

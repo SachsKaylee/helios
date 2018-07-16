@@ -40,6 +40,8 @@ module.exports = {
   // Navigation
   navigation: {
     home: "Home",
+    previousPage: "Previous Page",
+    nextPage: "Next Page",
     admin: {
       menu: "Admin",
       overview: "Overview",
