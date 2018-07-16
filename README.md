@@ -52,6 +52,8 @@ $ npm run build
 $ npm run start
 ```
 
+Take a look at the [Wiki](https://github.com/PatrickSachs/helios/wiki) for a more detailed explanation and a walk through of all steps required.
+
 ## Contributing
 
 Always welcome!
