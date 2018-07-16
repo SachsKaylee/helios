@@ -39,6 +39,14 @@ module.exports = {
     key: path.resolve(__dirname, "./key.pem"),
     cert: path.resolve(__dirname, "./server.crt")
   },
+
+  // The connection to your database.
+  db: {
+    // The database URIs. Contains authentication. See https://mongoosejs.com/docs/connections.html#connections for details.
+    uris: "mongodb://localhost/helios",
+    // Some options for the database. See https://mongoosejs.com/docs/connections.html#options for details.
+    options: {}
+  },
   
   // The client configuration should also be available on the server.
   client
