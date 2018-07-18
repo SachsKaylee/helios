@@ -18,10 +18,11 @@ class Dynamic extends React.Component {
   }
 
   render() {
-    const { state } = this.state;
+    const { state, error } = this.state;
+    const { renderLoading, renderError } = this.props.dynamic;
     switch (state) {
-      case "loading": return (<FormattedMessage id="loading" />); // todo: customizable
-      case "error": return (<FormattedMessage id="error" />); // todo: customizable
+      case "loading": return renderLoading ? renderLoading() : (<FormattedMessage id="loading" />);
+      case "error": return renderError ? renderError(error) : (<FormattedMessage id="error" />);
       case "loaded": return this.renderLoaded();
     }
   }

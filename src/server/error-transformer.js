@@ -7,6 +7,7 @@ const transformError = error => {
 const transformMongoError = error => {
   switch (error.code) {
     case mongoError.duplicateKey: return "already-exists";
+    default: return "mongo-" + error.code;
   }
 }
 
