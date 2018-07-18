@@ -1,9 +1,11 @@
 import A from "./../A";
 import Card from "./../Card";
-import Editor from './../EditorRichText';
+import EditorRichText from './../EditorRichText';
 import { FormattedMessage } from "react-intl";
 import SoftBreak from "slate-soft-break";
+import { postRules } from "../../slate-renderer";
 
+const rules = postRules();
 const contentPlugins = [
   SoftBreak({
     onlyIn: ["block-quote"],
@@ -17,9 +19,10 @@ const EditablePost = ({ author, date, title, content, onChange }) => (
   <Card
     image={`/api/avatar/${author}`}
     title={<A href={undefined} style={{ cursor: "text" }}>
-      <Editor
+      <EditorRichText
         autoCorrect={true}
         onChange={onChange("title")}
+        rules={rules}
         plugins={titlePlugins}
         value={title} />
     </A>}
@@ -28,10 +31,11 @@ const EditablePost = ({ author, date, title, content, onChange }) => (
       date
     }} />}>
     <div>
-      <Editor
+      <EditorRichText
         autoFocus={true}
         autoCorrect={true}
         onChange={onChange("content")}
+        rules={rules}
         plugins={contentPlugins}
         value={content} />
     </div>

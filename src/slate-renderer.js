@@ -51,4 +51,4 @@ export const defaultRules = ({
   ]
 
 export const render = (rules, value, options) => html.serialize(rules, value, options);
-export const Renderer = ({ rules, options, children }) => html.serialize(rules, children, options);
+export const Renderer = ({ rules, options, children }) => html.serialize(rules, children, options) || null;

@@ -1,7 +1,9 @@
 import EditorRichText, { dataToValue } from "../EditorRichText";
 import EditorToolbar from "../EditorToolbar";
 import SoftBreak from "slate-soft-break";
+import { postRules } from "../../slate-renderer";
 
+const rules = postRules();
 const plugins = [
   SoftBreak({
     onlyIn: ["block-quote"],
@@ -24,6 +26,7 @@ const FormFieldRichText = ({ keyName, name, ignoreData, placeholder, form, waiti
             readOnly={waiting}
             className="textarea"
             style={{ overflowY: "auto" }}
+            rules={rules}
             placeholder={placeholder}
             value={data}
             onChange={change} />

@@ -1,6 +1,5 @@
 import React from "react";
 import { Editor } from 'slate-react';
-import { postRules } from "../slate-renderer";
 import { serializeSingle } from "../simple-html-serializer";
 import { Value } from "slate";
 import Plain from "slate-plain-serializer";
@@ -15,25 +14,25 @@ export const dataToValue = (value = "") => {
 
 export default class EditorRichText extends React.Component {
   render() {
-    const { value } = this.props;
+    const { value, rules: _, ...props } = this.props;
     return (<div>
       <Editor
         renderNode={this.renderNode}
         renderMark={this.renderMark}
-        {...this.props}
-        plugins={this.props.plugins}
+        {...props}
         value={dataToValue(value)} />
     </div>);
   }
 
-  // todo: rules props
   renderNode = props => {
+    const { rules } = this.props;
     const { attributes, children, node } = props;
-    return serializeSingle(postRules(), node, children, attributes);
+    return serializeSingle(rules, node, children, attributes);
   }
 
   renderMark = props => {
+    const { rules } = this.props;
     const { attributes, children, mark } = props;
-    return serializeSingle(postRules(), mark, children, attributes);
+    return serializeSingle(rules, mark, children, attributes);
   }
 }
