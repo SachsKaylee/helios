@@ -14,7 +14,7 @@ class About extends React.Component {
   static getInitialProps({ query: { id } }) {
     return Promise.all([
       axios.get(id ? `/api/user/${id}` : "/api/user"),
-      axios.get(id ? `/api/posts-of/${id}` : "/api/posts-of", { params: { limit: 3 } })
+      axios.get(id ? `/api/posts-of/${id}` : "/api/posts-of", { params: { limit: config.postsPerAboutPage } })
     ]).then(([userData, postData]) => ({ user: userData.data, latestPosts: postData.data }))
       .catch(error => ({ error: error.response.data }));
   }

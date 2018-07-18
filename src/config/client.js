@@ -31,5 +31,8 @@ module.exports = {
   maxAvatarSize: 200 * 1024,
 
   // How many posts should be displayed per page?
-  postsPerPage: 10
+  postsPerPage: 10,
+
+  // How many posts should be displayed on the about page of a user?
+  postsPerAboutPage: 3
 }

@@ -20,6 +20,7 @@ export default class _Document extends Document {
           <meta key="description" name="description" content={config.description} />
           <meta key="keywords" name="keywords" content={config.topics.join(", ")} />
           <link key="manifest" rel="manifest" href="/manifest.json" />
+          <link rel="icon" type="image/x-icon" href="/static/content/system/favicon.ico" sizes="any" />
           <style dangerouslySetInnerHTML={{ __html: style }} />
         </Head>
         <body>
