@@ -1,4 +1,4 @@
-import Posts from "../components/Posts";
+import Posts from "../components/Post/Posts";
 import React from "react";
 import axios from "axios";
 import config, { locale } from "../config/client";

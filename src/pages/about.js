@@ -3,10 +3,12 @@ import config from "../config/client";
 import axios from "axios";
 import Head from "next/head";
 import Card from "../components/Card";
-import { render, postRules } from "../slate-renderer";
+import { Renderer, postRules } from "../slate-renderer";
 import { FormattedMessage } from "react-intl";
-import LatestPosts from "../components/LatestPosts";
+import LatestPosts from "../components/Post/LatestPosts";
 import { FullError } from "../components/Error";
+
+const rules = postRules();
 
 class About extends React.Component {
   static getInitialProps({ query: { id } }) {
@@ -43,7 +45,7 @@ class About extends React.Component {
             <h1 className="title">
               <FormattedMessage id="about.title" values={{ id }} />
             </h1>
-            {bio && render(postRules(), bio)}
+            {bio && (<Renderer rules={rules}>{bio}</Renderer>)}
             <p className="content is-small"><FormattedMessage id="about.permissions" /> {permissions.length
               ? permissions.map(p => (<span className="tag" key={p}>{p}</span>))
               : <FormattedMessage id="none" />}</p>

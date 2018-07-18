@@ -5,7 +5,7 @@ import { Value } from "slate";
 import Plain from 'slate-plain-serializer';
 import React from "react";
 import Card from "../../components/Card"
-import EditablePost from "../../components/EditablePost";
+import EditablePost from "../../components/Post/PostEditor";
 import axios from "axios";
 import NotificationProvider from "../../components/NotificationProvider"
 import { FormattedMessage } from "react-intl";

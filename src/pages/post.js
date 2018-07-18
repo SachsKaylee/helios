@@ -1,4 +1,4 @@
-import Post from "../components/ReadOnlyPost";
+import Post from "../components/Post";
 import React from "react"
 import axios from "axios"
 import Head from "next/head";

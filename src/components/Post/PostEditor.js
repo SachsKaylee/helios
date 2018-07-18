@@ -1,6 +1,6 @@
-import A from "./A";
-import Card from "./Card";
-import Editor from './EditorRichText';
+import A from "./../A";
+import Card from "./../Card";
+import Editor from './../EditorRichText';
 import { FormattedMessage } from "react-intl";
 import SoftBreak from "slate-soft-break";
 
