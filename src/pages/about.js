@@ -11,22 +11,12 @@ import PostMedia from "../components/Post/PostMedia";
 const rules = postRules();
 
 class About extends React.Component {
-  static async getInitialProps({ query: { id } }) {
-    try {
-      // If the user did not specify an ID we will get the default user.
-      const [userData, postData] = await Promise.all([
-        axios.get(id ? `/api/user/${id}` : "/api/user"),
-        axios.get(id ? `/api/posts-of/${id}` : "/api/post", { params: { limit: 3 } })
-      ]);
-      return {
-        user: userData.data,
-        latestPosts: postData.data
-      };
-    } catch (error) {
-      return {
-        error: error.response.data
-      }
-    }
+  static getInitialProps({ query: { id } }) {
+    return Promise.all([
+      axios.get(id ? `/api/user/${id}` : "/api/user"),
+      axios.get(id ? `/api/posts-of/${id}` : "/api/post", { params: { limit: 3 } })
+    ]).then(([userData, postData]) => ({ user: userData.data, latestPosts: postData.data }))
+      .catch(error => ({ error: error.response.data }));
   }
 
   getTitle() {
