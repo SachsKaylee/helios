@@ -5,28 +5,39 @@ import Head from "next/head";
 import Card from "../components/Card";
 import { Renderer, postRules } from "../slate-renderer";
 import { FormattedMessage } from "react-intl";
-import LatestPosts from "../components/Post/LatestPosts";
 import { FullError } from "../components/Error";
+import PostMedia from "../components/Post/PostMedia";
 
 const rules = postRules();
 
 class About extends React.Component {
-  static getInitialProps({ query: { id } }) {
-    // If the user did not specify an ID we will get the default user.
-    return axios.get(id ? `/api/user/${id}` : "/api/user")
-      .then(({ data: user }) => ({ user, error: false }))
-      .catch((error) => ({ error: error.response.data }));
+  static async getInitialProps({ query: { id } }) {
+    try {
+      // If the user did not specify an ID we will get the default user.
+      const [userData, postData] = await Promise.all([
+        axios.get(id ? `/api/user/${id}` : "/api/user"),
+        axios.get(id ? `/api/posts-of/${id}` : "/api/post", { params: { limit: 3 } })
+      ]);
+      return {
+        user: userData.data,
+        latestPosts: postData.data
+      };
+    } catch (error) {
+      return {
+        error: error.response.data
+      }
+    }
   }
 
   getTitle() {
     const { error, user } = this.props;
     return error
       ? (<FormattedMessage id="error" />)
-      : (<FormattedMessage id="about.title" values={{ id }} />);
+      : (<FormattedMessage id="about.title" values={{ id: user.id }} />);
   }
 
   renderUser() {
-    const { user: { id, permissions, bio } } = this.props;
+    const { user: { id, permissions, bio }, latestPosts } = this.props;
     // We need a canonical URL since the ID of the user can be inferred by accessing 
     // the /about page, which resolved to the default user.
     return (<>
@@ -56,8 +67,7 @@ class About extends React.Component {
           <FormattedMessage id="about.recentPosts" />
         </h2>
 
-        <LatestPosts limit={3} ofUser={id} />
-
+        {latestPosts.map(post => (<PostMedia key={post.id} {...post} />))}
       </Card>
     </>);
   }
