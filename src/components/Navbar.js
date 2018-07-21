@@ -15,7 +15,7 @@ export default class Navbar extends React.Component {
   }
 
   render() {
-    const { logo, title, links } = this.props;
+    const { logo, title, children } = this.props;
     const { active } = this.state;
     return (<nav className="navbar" role="navigation" aria-label="main navigation">
       <div className="container">
@@ -33,7 +33,7 @@ export default class Navbar extends React.Component {
         </div>
         <div className={classnames("navbar-menu", active && "is-active")}>
           <div className="navbar-end">
-            <Links links={links} />
+            <Links>{children}</Links>
           </div>
         </div>
       </div>
@@ -41,14 +41,14 @@ export default class Navbar extends React.Component {
   }
 };
 
-const Links = ({ links }) => (links.map(l => l && (<SingleLink key={l.link} link={l.link} title={l.title}>{l.children}</SingleLink>)));
-const SingleLink = ({ title, link, children }) => (
+const Links = ({ children }) => (children.map(child => child && (<SingleLink key={child.key} {...child}>{child.children}</SingleLink>)));
+const SingleLink = ({ title, link, children, ...rest }) => (
   children
     ? (<div className="navbar-item has-dropdown is-hoverable">
       <a className="navbar-link">{title}</a>
       <div className="navbar-dropdown">
-        <Links links={children} />
+        <Links {...rest}>{children}</Links>
       </div>
     </div>)
-    : (<A href={link} className="navbar-item">{title}</A>)
+    : (<A href={link} className="navbar-item" {...rest}>{title}</A>)
 );

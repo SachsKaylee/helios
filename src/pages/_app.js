@@ -99,28 +99,47 @@ export default class _App extends App {
           </Head>
           <Navbar
             title={(<span>{config.title} - {title}</span>)}
-            logo="/static/content/system/logo.png"
-            links={[{
-              title: (<FormattedMessage id="navigation.home" />),
-              link: "/"
-            }, {
-              title: (<FormattedMessage id="navigation.admin.menu" />),
-              link: "/admin",
-              children: [
-                this.hasPermission("author") && {
-                  title: (<FormattedMessage id="navigation.admin.newPost" />),
-                  link: "/admin/post"
-                },
-                this.hasPermission("admin") && {
-                  title: (<FormattedMessage id="navigation.admin.overview" />),
-                  link: "/admin"
-                },
-                {
-                  title: (<FormattedMessage id="navigation.admin.account" />),
-                  link: "/admin/account"
-                }
-              ]
-            }]} />
+            logo="/static/content/system/logo.png">
+            {[
+              {
+                title: (<FormattedMessage id="navigation.home" />),
+                link: "/",
+                key: "home"
+              },
+              session && {
+                title: (<FormattedMessage id="navigation.admin.menu" />),
+                link: "/admin",
+                key: "admin",
+                children: [
+                  this.hasPermission("author") && {
+                    title: (<FormattedMessage id="navigation.admin.newPost" />),
+                    link: "/admin/post",
+                    key: "post"
+                  },
+                  this.hasPermission("admin") && {
+                    title: (<FormattedMessage id="navigation.admin.overview" />),
+                    link: "/admin",
+                    key: "overview"
+                  },
+                  {
+                    title: (<FormattedMessage id="navigation.admin.account" />),
+                    link: "/admin/account",
+                    key: "account"
+                  },
+                  {
+                    title: (<FormattedMessage id="navigation.admin.signOut" />),
+                    link: "/admin/account",
+                    onClick: this.signOut,
+                    key: "signOut"
+                  }
+                ]
+              },
+              (!session && !config.hideLogInButton) && {
+                title: (<FormattedMessage id="navigation.admin.signIn" />),
+                link: "/admin/account",
+                key: "signIn"
+              }]}
+          </Navbar>
           <div className="section">
             <Component {...pageProps} />
           </div>

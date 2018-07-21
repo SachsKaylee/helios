@@ -46,7 +46,9 @@ module.exports = {
       menu: "Administration",
       overview: "Übersicht",
       account: "Benutzerkonto",
-      newPost: "Neuer Post"
+      newPost: "Neuer Post",
+      signIn: "Anmelden",
+      signOut: "Abmelden"
     }
   },
   // Admin page

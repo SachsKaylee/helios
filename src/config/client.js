@@ -34,5 +34,8 @@ module.exports = {
   postsPerPage: 10,
 
   // How many posts should be displayed on the about page of a user?
-  postsPerAboutPage: 3
+  postsPerAboutPage: 3,
+
+  // Should the log in button in the navigation be hidden?
+  hideLogInButton: false
 }

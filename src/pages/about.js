@@ -63,7 +63,6 @@ class About extends React.Component {
   }
 
   render() {
-    // todo: implement a better translation of mongo errors on server side
     const { error } = this.props;
     return error ?
       (<FullError error={error} />)
