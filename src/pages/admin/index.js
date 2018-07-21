@@ -23,21 +23,24 @@ export default class Admin extends React.Component {
 
   render() {
     const { postCount, userCount } = this.props;
-    return (<Card title={config.title} subtitle={config.description}>
-      <nav className="level">
-        <div className="level-item has-text-centered">
-          <div>
-            <p className="heading"><A href="/"><FormattedMessage id="admin.posts" /></A></p>
-            <p className="title"><FormattedNumber value={postCount} /></p>
-          </div>
-        </div>
-        <div className="level-item has-text-centered">
-          <div>
-            <p className="heading"><A href="/admin/users"><FormattedMessage id="admin.users" /></A></p>
-            <p className="title"><FormattedNumber value={userCount} /></p>
-          </div>
-        </div>
-      </nav>
-    </Card>);
+    return (
+      <div className="container">
+        <Card title={config.title} subtitle={config.description}>
+          <nav className="level">
+            <div className="level-item has-text-centered">
+              <div>
+                <p className="heading"><A href="/"><FormattedMessage id="admin.posts" /></A></p>
+                <p className="title"><FormattedNumber value={postCount} /></p>
+              </div>
+            </div>
+            <div className="level-item has-text-centered">
+              <div>
+                <p className="heading"><A href="/admin/users"><FormattedMessage id="admin.users" /></A></p>
+                <p className="title"><FormattedNumber value={userCount} /></p>
+              </div>
+            </div>
+          </nav>
+        </Card>
+      </div>);
   }
 }

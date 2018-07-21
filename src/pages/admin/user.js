@@ -64,14 +64,17 @@ export default class User extends React.Component {
 
   render() {
     const { isNew, user } = this.props;
-    return (<Card
-      image={this.avatarOf(user)}
-      title={isNew ? (<FormattedMessage id="users.createUser" />) : (<FormattedMessage id="users.updateUser" />)}
-      subtitle={!isNew && user && (<FormattedMessage id="users.updateUserSubtitle" values={{ id: user.id }} />)}>
-      {isNew
-        ? (<CreateForm onSubmit={this.submitCreate} />)
-        : (<UpdateForm onSubmit={this.submitUpdate} data={{ ...user, avatar: this.blobToFile(user.avatar) }} />)}
-    </Card>);
+    return (
+      <div className="container">
+        <Card
+          image={this.avatarOf(user)}
+          title={isNew ? (<FormattedMessage id="users.createUser" />) : (<FormattedMessage id="users.updateUser" />)}
+          subtitle={!isNew && user && (<FormattedMessage id="users.updateUserSubtitle" values={{ id: user.id }} />)}>
+          {isNew
+            ? (<CreateForm onSubmit={this.submitCreate} />)
+            : (<UpdateForm onSubmit={this.submitUpdate} data={{ ...user, avatar: this.blobToFile(user.avatar) }} />)}
+        </Card>
+      </div>);
   }
 
   avatarOf(user) {

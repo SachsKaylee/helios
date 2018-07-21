@@ -18,62 +18,66 @@ export default class Account extends React.Component {
   }
 
   render() {
-    return (<Store.Consumer>
-      {store => store && store.session
-        ? this.renderLogOut(store)
-        : this.renderLogIn(store)}
-    </Store.Consumer>);
+    return (
+      <div className="container">
+        <Store.Consumer>
+          {store => store && store.session
+            ? this.renderLogOut(store)
+            : this.renderLogIn(store)}
+        </Store.Consumer>
+      </div>);
   }
 
   renderLogIn(store) {
-    return (<Card>
-      <Form
-        submitText={(<span>
-          <LoginIcon className="mdi-icon-spacer" />
-          <FormattedMessage id="account.signIn" />
-        </span>)}
-        onSubmit={values => store.actions
-          .signIn(values)
-          .then(session => ({}))
-          .catch(error => errorToMessage(error))}
-        elements={[
-          {
-            key: "id",
-            type: "text",
-            name: <FormattedMessage id="username" />,
-            validator: (name) => ({
-              error: !name,
-              message: <FormattedMessage id="formValueRequired" values={{
-                field: <FormattedMessage id="username" />
-              }} />
-            }),
-            placeholder: <FormattedMessage id="account.usernamePlaceholder" />
-          },
-          {
-            key: "password",
-            type: "text",
-            name: <FormattedMessage id="password" />,
-            mode: "password",
-            ignoreData: true,
-            validator: (pw) => ({
-              error: !pw,
-              message: <FormattedMessage id="formValueRequired" values={{
-                field: <FormattedMessage id="password" />
-              }} />
-            }),
-            placeholder: <FormattedMessage id="account.passwordPlaceholder" />
-          },
-          {
-            key: "cookie",
-            type: "checkbox",
-            name: <FormattedMessage id="account.acceptCookie" />,
-            validator: (cookie) => ({
-              error: !cookie,
-              message: <FormattedMessage id="account.cookieRequired" />
-            })
-          }
-        ]} />
-    </Card>);
+    return (
+      <Card>
+        <Form
+          submitText={(<span>
+            <LoginIcon className="mdi-icon-spacer" />
+            <FormattedMessage id="account.signIn" />
+          </span>)}
+          onSubmit={values => store.actions
+            .signIn(values)
+            .then(session => ({}))
+            .catch(error => errorToMessage(error))}
+          elements={[
+            {
+              key: "id",
+              type: "text",
+              name: <FormattedMessage id="username" />,
+              validator: (name) => ({
+                error: !name,
+                message: <FormattedMessage id="formValueRequired" values={{
+                  field: <FormattedMessage id="username" />
+                }} />
+              }),
+              placeholder: <FormattedMessage id="account.usernamePlaceholder" />
+            },
+            {
+              key: "password",
+              type: "text",
+              name: <FormattedMessage id="password" />,
+              mode: "password",
+              ignoreData: true,
+              validator: (pw) => ({
+                error: !pw,
+                message: <FormattedMessage id="formValueRequired" values={{
+                  field: <FormattedMessage id="password" />
+                }} />
+              }),
+              placeholder: <FormattedMessage id="account.passwordPlaceholder" />
+            },
+            {
+              key: "cookie",
+              type: "checkbox",
+              name: <FormattedMessage id="account.acceptCookie" />,
+              validator: (cookie) => ({
+                error: !cookie,
+                message: <FormattedMessage id="account.cookieRequired" />
+              })
+            }
+          ]} />
+      </Card>);
   }
 
   renderLogOut(store) {

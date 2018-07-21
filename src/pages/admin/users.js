@@ -28,15 +28,18 @@ export default class Admin extends React.Component {
 
   render() {
     const { users } = this.state;
-    return (<Card
-      title={(<FormattedMessage id="users.title" />)}
-      subtitle={(<span><A className="button" href="/admin/user"><FormattedMessage id="users.createUser" /></A></span>)}>
-      {users.map(user => (<Media key={user.id} image={user.avatar || `/api/avatar/${user.id}`} title={(<span>
-        <strong style={{ marginRight: 2 }}><A href={`/admin/user/${user.id}`}>{user.id}</A></strong>
-        {user.permissions.map(p => (<span className="tag" style={{ marginRight: 2 }} key={p}>{p}</span>))}
-      </span>)}>
-        <Renderer rules={rules}>{user.bio}</Renderer>
-      </Media>))}
-    </Card>);
+    return (
+      <div className="container">
+        <Card
+          title={(<FormattedMessage id="users.title" />)}
+          subtitle={(<span><A className="button" href="/admin/user"><FormattedMessage id="users.createUser" /></A></span>)}>
+          {users.map(user => (<Media key={user.id} image={user.avatar || `/api/avatar/${user.id}`} title={(<span>
+            <strong style={{ marginRight: 2 }}><A href={`/admin/user/${user.id}`}>{user.id}</A></strong>
+            {user.permissions.map(p => (<span className="tag" style={{ marginRight: 2 }} key={p}>{p}</span>))}
+          </span>)}>
+            <Renderer rules={rules}>{user.bio}</Renderer>
+          </Media>))}
+        </Card>
+    </div>);
   }
 }

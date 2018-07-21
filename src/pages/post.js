@@ -23,15 +23,17 @@ export default class extends React.Component {
         <meta key="author" name="author" content={post.author} />
         <meta key="description" name="description" content={post.title} />
       </Head>
-      <Store.Consumer>
-        {store => (<Post
-          edit={[store && store.hasPermission("author") && "show-admin-buttons"]}
-          id={post._id}
-          date={new Date(post.date)}
-          author={post.author}
-          title={post.title}
-          content={post.content} />)}
-      </Store.Consumer>
+      <div className="container">
+        <Store.Consumer>
+          {store => (<Post
+            edit={[store && store.hasPermission("author") && "show-admin-buttons"]}
+            id={post._id}
+            date={new Date(post.date)}
+            author={post.author}
+            title={post.title}
+            content={post.content} />)}
+        </Store.Consumer>
+      </div>
     </>);
   }
 };

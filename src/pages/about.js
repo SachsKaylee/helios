@@ -64,9 +64,10 @@ class About extends React.Component {
 
   render() {
     const { error } = this.props;
-    return error ?
+    return (<div className="container">{error ?
       (<FullError error={error} />)
-      : this.renderUser();
+      : this.renderUser()
+    }</div>);
   }
 }
 
