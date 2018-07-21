@@ -207,32 +207,35 @@ export default class extends React.PureComponent {
   renderLoaded() {
     const { title, content, isNew, date, author, lastChanged } = this.state;
     return (
-      <SidebarLayout size={3} sidebar={<Card>
-        <EditorToolbar
-          stylesChooser={lastChanged === "content"}
-          value={content}
-          onChange={this.onChange(false)("content")}
-          buttons={[
-            {
-              key: "publish",
-              type: "is-primary",
-              text: (<><PublishIcon className="mdi-icon-spacer" /> <FormattedMessage id="publish" /></>),
-              action: this.onPublish
-            },
-            {
-              key: "discard",
-              type: "is-danger",
-              text: (<><FileUndoIcon className="mdi-icon-spacer" /> <FormattedMessage id="discard" /></>)
-            },
-            !isNew && {
-              key: "delete",
-              type: "is-danger",
-              text: (<><DeleteIcon className="mdi-icon-spacer" /> <FormattedMessage id="delete" /></>),
-              action: this.onDelete(false)
-            }
-          ]} />
-        <NotificationProvider ref={ref => this.notifications = ref} />
-      </Card>}>
+      <SidebarLayout size={3} sidebar={(
+        <div className="sidebar">
+          <Card>
+            <EditorToolbar
+              stylesChooser={lastChanged === "content"}
+              value={content}
+              onChange={this.onChange(false)("content")}
+              buttons={[
+                {
+                  key: "publish",
+                  type: "is-primary",
+                  text: (<><PublishIcon className="mdi-icon-spacer" /> <FormattedMessage id="publish" /></>),
+                  action: this.onPublish
+                },
+                {
+                  key: "discard",
+                  type: "is-danger",
+                  text: (<><FileUndoIcon className="mdi-icon-spacer" /> <FormattedMessage id="discard" /></>)
+                },
+                !isNew && {
+                  key: "delete",
+                  type: "is-danger",
+                  text: (<><DeleteIcon className="mdi-icon-spacer" /> <FormattedMessage id="delete" /></>),
+                  action: this.onDelete(false)
+                }
+              ]} />
+            <NotificationProvider ref={ref => this.notifications = ref} />
+          </Card>
+        </div>)}>
         <EditablePost
           author={author}
           avatar={`/api/avatar/${author}`}
