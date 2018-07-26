@@ -58,7 +58,7 @@ export const defaultRules = ({
       serialize: (obj, children, attributes) => {
         console.error("Unknown slate element:", obj.object, obj.type);
         return (<span className="editor-el editor-el-error" {...attributes}>
-          Unknown element: {obj.type} ({children.length} children)
+          Unknown {obj.object}: {obj.type} ({children.length} children)
         </span>);
       }
     }
