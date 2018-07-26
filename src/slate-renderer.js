@@ -10,7 +10,8 @@ export const postRules = (opts = {}) => defaultRules({
 export const defaultRules = ({
   HeadingOne = "h1",
   HeadingTwo = "h2",
-  Code = "code"
+  Code = "code",
+  Link = "a"
 } = {}) => [
     html.textRule,
     // Serialize Blocks
@@ -19,12 +20,12 @@ export const defaultRules = ({
         if (obj.object == "block") {
           switch (obj.type) {
             case "line": return (<p {...attributes}>{children}</p>);
-            case "block-quote": return (<blockquote {...attributes}>{children}</blockquote>);
-            case "bulleted-list": return (<ul {...attributes}>{children}</ul>);
             case "heading-one": return (<HeadingOne {...attributes}>{children}</HeadingOne>);
             case "heading-two": return (<HeadingTwo {...attributes}>{children}</HeadingTwo>);
-            case "list-item": return (<li {...attributes}>{children}</li>);
+            case "block-quote": return (<blockquote {...attributes}>{children}</blockquote>);
+            case "bulleted-list": return (<ul {...attributes}>{children}</ul>);
             case "numbered-list": return (<ol {...attributes}>{children}</ol>);
+            case "list-item": return (<li {...attributes}>{children}</li>);
           }
         }
       }
@@ -42,11 +43,24 @@ export const defaultRules = ({
         }
       }
     },
+    // Serialize Inlines
+    {
+      serialize(obj, children, attributes) {
+        if (obj.object == "inline") {
+          switch (obj.type) {
+            case "link": return (<Link {...attributes} href={obj.data.href}>{children}</Link>);
+          }
+        }
+      }
+    },
     // Error Fallback
     {
-      serialize: (obj, children, attributes) => (<pre className="editor-el editor-el-error" {...attributes}>
-        Unknown element: {obj.type} ({children.length} children)
-    </pre>)
+      serialize: (obj, children, attributes) => {
+        console.error("Unknown slate element:", obj.object, obj.type);
+        return (<span className="editor-el editor-el-error" {...attributes}>
+          Unknown element: {obj.type} ({children.length} children)
+        </span>);
+      }
     }
   ]
 

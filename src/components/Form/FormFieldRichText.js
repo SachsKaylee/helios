@@ -1,6 +1,7 @@
 import EditorRichText, { dataToValue } from "../EditorRichText";
 import EditorToolbar from "../EditorToolbar";
 import SoftBreak from "slate-soft-break";
+import PasteLinkify from "slate-paste-linkify";
 import { postRules } from "../../slate-renderer";
 
 const rules = postRules();
@@ -8,6 +9,9 @@ const plugins = [
   SoftBreak({
     onlyIn: ["block-quote"],
     shift: true
+  }),
+  PasteLinkify({
+    type: "link"
   })
 ];
 

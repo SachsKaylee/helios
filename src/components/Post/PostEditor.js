@@ -3,6 +3,7 @@ import Card from "./../Card";
 import EditorRichText from './../EditorRichText';
 import { FormattedMessage } from "react-intl";
 import SoftBreak from "slate-soft-break";
+import PasteLinkify from "slate-paste-linkify";
 import { postRules } from "../../slate-renderer";
 
 const rules = postRules();
@@ -10,6 +11,9 @@ const contentPlugins = [
   SoftBreak({
     onlyIn: ["block-quote"],
     shift: true
+  }),
+  PasteLinkify({
+    type: "link"
   })
 ]
 const titlePlugins = [

@@ -46,6 +46,7 @@
     "react-intl": "^2.4.0",
     "react-tooltip": "^3.6.1",
     "slate": "^0.33.8",
+    "slate-paste-linkify": "^0.5.1",
     "slate-react": "^0.12.11",
     "slate-soft-break": "^0.6.1",
     "spdy": "^3.4.7"
