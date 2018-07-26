@@ -6,7 +6,7 @@ export const postRules = (opts = {}) => defaultRules({
   HeadingOne: ({ children, ...attributes }) => (<h3 className="title is-3" {...attributes}>{children}</h3>),
   HeadingTwo: ({ children, ...attributes }) => (<h4 className="title is-4" {...attributes}>{children}</h4>),
   Code: ({ children, ...attributes }) => (<code className="editor-el editor-el-code" {...attributes}>{children}</code>),
-  Link: ({ children, ...attributes }) => (attributes.href.startsWith("https://" + config.domains[0])
+  Link: ({ children, ...attributes }) => (attributes.href && attributes.href.startsWith("https://" + config.domains[0])
     ? <A className="editor-el editor-el-link" {...attributes}>{children}</A>
     : <a className="editor-el editor-el-link" {...attributes}>{children}</a>),
   ...opts
