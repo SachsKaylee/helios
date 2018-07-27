@@ -38,6 +38,7 @@ export default class EditorToolbar extends React.Component {
         {this.renderBlockButton('block-quote', <FormatQuoteOpenIcon className="mdi-icon-medium" />, <FormattedMessage id="post.editor.format.quote" />)}
         {this.renderBlockButton('numbered-list', <FormatListBulletedIcon className="mdi-icon-medium" />, <FormattedMessage id="post.editor.format.numberedList" />)}
         {this.renderBlockButton('bulleted-list', <FormatListNumberedIcon className="mdi-icon-medium" />, <FormattedMessage id="post.editor.format.bulletedList" />)}
+        {this.renderBlockButton("code-block", <CodeBracesIcon className="mdi-icon-medium" />, <FormattedMessage id="post.editor.format.code" />)}
       </div>)}
       {buttons && buttons.length && (<div>
         <div className="margin-2"><span className="tag is-info"><FormattedMessage id="actions" /></span></div>

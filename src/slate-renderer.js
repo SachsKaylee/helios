@@ -2,13 +2,16 @@ const html = require("./simple-html-serializer");
 const A = require("./components/A").default;
 const config = require("./config/client");
 
+const isLocalUrl = url => !!config.domains.find(domain => url.startsWith("https://" + domain));
+
 export const postRules = (opts = {}) => defaultRules({
   HeadingOne: ({ children, ...attributes }) => (<h3 className="title is-3" {...attributes}>{children}</h3>),
   HeadingTwo: ({ children, ...attributes }) => (<h4 className="title is-4" {...attributes}>{children}</h4>),
   Code: ({ children, ...attributes }) => (<code className="editor-el editor-el-code" {...attributes}>{children}</code>),
-  Link: ({ children, ...attributes }) => (attributes.href && attributes.href.startsWith("https://" + config.domains[0])
+  CodeBlock: ({ children, ...attributes }) => (<pre className="editor-el editor-el-code-block" {...attributes}>{children}</pre>),
+  Link: ({ children, ...attributes }) => (attributes.href && isLocalUrl(attributes.href)
     ? <A className="editor-el editor-el-link" {...attributes}>{children}</A>
-    : <a className="editor-el editor-el-link" {...attributes}>{children}</a>),
+    : <a className="editor-el editor-el-link" target="_blank" {...attributes}>{children}</a>),
   ...opts
 });
 
@@ -16,6 +19,7 @@ export const defaultRules = ({
   HeadingOne = "h1",
   HeadingTwo = "h2",
   Code = "code",
+  CodeBlock = "pre",
   Link = "a"
 } = {}) => [
     html.textRule,
@@ -31,6 +35,7 @@ export const defaultRules = ({
             case "bulleted-list": return (<ul {...attributes}>{children}</ul>);
             case "numbered-list": return (<ol {...attributes}>{children}</ol>);
             case "list-item": return (<li {...attributes}>{children}</li>);
+            case "code-block": return (<CodeBlock {...attributes}>{children}</CodeBlock>);
           }
         }
       }

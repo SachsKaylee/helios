@@ -9,7 +9,7 @@ import { postRules } from "../../slate-renderer";
 const rules = postRules();
 const contentPlugins = [
   SoftBreak({
-    onlyIn: ["block-quote"],
+    onlyIn: ["block-quote", "code-block"],
     shift: true
   }),
   PasteLinkify({
