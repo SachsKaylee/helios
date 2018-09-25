@@ -51,4 +51,4 @@ export default injectIntl(class PostForm extends React.PureComponent {
       onSubmit={this.props.onPublish}
     />);
   }
-});s
+});
