@@ -153,8 +153,9 @@ export default class EditorToolbar extends React.Component {
 
     if (['numbered-list', 'bulleted-list'].includes(type)) {
       const { value } = this.props;
-      const parent = value.document.getParent(value.blocks.first().key)
-      isActive = this.hasBlock('list-item') && parent && parent.type === type
+      const firstBlock = value.blocks.first();
+      const parent = firstBlock && value.document.getParent(firstBlock.key)
+      isActive = parent && parent.type === type && this.hasBlock('list-item');
     }
     const onMouseDown = event => this.onClickBlock(event, type)
 

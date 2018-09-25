@@ -16,6 +16,9 @@
     "uglifyjs-webpack-plugin": "^1.2.7"
   },
   "dependencies": {
+    "@react-formilicious/bulma": "^1.0.0",
+    "@react-formilicious/core": "^1.0.0",
+    "@react-formilicious/validator-pwned": "^1.0.0",
     "@zeit/next-sass": "^0.2.0",
     "axios": "^0.18.0",
     "babel-plugin-module-resolver": "^3.1.1",
@@ -32,6 +35,7 @@
     "immutable": "^3.8.2",
     "intl": "^1.2.5",
     "intl-locales-supported": "^1.0.0",
+    "js-sha1": "^0.6.0",
     "mdi-react": "^3.4.0",
     "mongoose": "^5.2.3",
     "next": "^6.1.1",

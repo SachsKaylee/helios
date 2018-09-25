@@ -1,5 +1,5 @@
 import SidebarLayout from "../../components/SidebarLayout";
-import EditorToolbar from "../../components/EditorToolbar";
+//import EditorToolbar from "../../components/EditorToolbar";
 import A from "../../components/A";
 import { Value } from "slate";
 import Plain from 'slate-plain-serializer';
@@ -10,8 +10,9 @@ import axios from "axios";
 import NotificationProvider from "../../components/NotificationProvider"
 import { FormattedMessage } from "react-intl";
 import config from "../../config/client";
-import { DeleteIcon, WarningIcon, LoadingIcon, ErrorIcon, CakeIcon, PublishIcon, FileUndoIcon } from "mdi-react";
+import { DeleteIcon, WarningIcon, LoadingIcon, ErrorIcon, CakeIcon } from "mdi-react";
 import { SlimError, FullError } from "../../components/Error";
+import PostForm from "../../components/pages/admin/post/PostForm";
 
 export default class extends React.PureComponent {
   constructor(p) {
@@ -211,7 +212,7 @@ export default class extends React.PureComponent {
         <SidebarLayout size={3} sidebar={(
           <div className="sidebar">
             <Card>
-              <EditorToolbar
+              {/*<EditorToolbar
                 stylesChooser={lastChanged === "content"}
                 value={content}
                 onChange={this.onChange(false)("content")}
@@ -233,7 +234,13 @@ export default class extends React.PureComponent {
                     text: (<><DeleteIcon className="mdi-icon-spacer" /> <FormattedMessage id="delete" /></>),
                     action: this.onDelete(false)
                   }
-                ]} />
+                ]} />*/}
+              <PostForm 
+                tags={[]}
+                allTags={[]}
+                onPublish={this.onPublish}
+                onDelete={!isNew && (this.onDelete(false))}
+              />
               <NotificationProvider ref={ref => this.notifications = ref} />
             </Card>
           </div>)}>

@@ -10,7 +10,8 @@ const schema = ({ mongoose }) => {
     author: String,
     title: Object,
     content: Object,
-    date: Date
+    date: Date,
+    tags: [String]
   });
 }
 
@@ -64,11 +65,10 @@ const install = ({ server, models, $send, api }) => {
       })
       .catch(error => $send(res, { error })));
 
-  server.delete("/api/post/:id", (req, res) => {
+  server.delete("/api/post/:id", (req, res) => 
     models.post.remove({ _id: req.params.id }, (error, data) => {
       $send(res, { error, data });
-    });
-  });
+    }));
 
   server.get("/api/post-count", (req, res) =>
     models.post
