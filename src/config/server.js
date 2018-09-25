@@ -1,5 +1,6 @@
 const client = require("./client");
 const path = require("path");
+const fs = require("fs");
 
 module.exports = {
   // The secret used to encrypt the passwords in the DB.
@@ -25,7 +26,7 @@ module.exports = {
   // By default we let Let's Encrypt create a nice and free cert for us. If you are
   // hosting on an intranet this is not possible though, so you may prefer the config
   // below.
-  //certs: "lets-encrypt",
+  //certs: "letsEncrypt",
 
   // Paths to your SSL certificates. Make sure they are signed by a proper authority 
   // if used for a public server, or browsers will complain. (This typically isn't free)
@@ -36,8 +37,8 @@ module.exports = {
     allowUnsigned: true,
 
     // Your keys. They are to be placed in this directory.
-    key: path.resolve(__dirname, "./key.pem"),
-    cert: path.resolve(__dirname, "./server.crt")
+    key: fs.readFileSync(path.resolve(__dirname, "./key.pem")).toString(),
+    cert: fs.readFileSync(path.resolve(__dirname, "./server.crt")).toString()
   },
 
   // The connection to your database.
