@@ -1,6 +1,6 @@
 # Helios
 
-A minimalistic CMS using Node.js and React.
+A minimalistic CMS using Node.js and React!
 
 We use Bulma as CSS Framework, next.js for Server Side Rendering and Slate as Content Editor.
 
