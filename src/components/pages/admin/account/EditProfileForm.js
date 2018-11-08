@@ -5,7 +5,7 @@ import TextField from "@react-formilicious/bulma/TextField";
 import required from "react-formilicious/validators/required";*/
 import { FormattedMessage, injectIntl } from "react-intl";
 import FileField from "../../../general/fields/FileField";
-//import RichTextField from "../../../general/fields/RichTextField";
+import RichTextField from "../../../general/fields/RichTextField";
 import { ContentSaveIcon, ErrorOutlineIcon } from "mdi-react";
 import { postRules } from "../../../../slate-renderer";
 import SoftBreak from "slate-soft-break";
@@ -58,13 +58,13 @@ export default injectIntl(class LogInForm extends React.PureComponent {
             }} />)
           })
         },
-        /*{
+        {
           key: "bio",
           type: RichTextField,
           name: (<FormattedMessage id="account.bio.field" />),
           placeholder: (<FormattedMessage id="account.bio.placeholder" />),
           rules, plugins
-        },*/
+        },
         {
           key: "passwordNew",
           type: TextField,

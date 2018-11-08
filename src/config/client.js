@@ -19,9 +19,9 @@ module.exports = {
     // We also have a http port in case the user connects to that. They are automatically
     // redirected to https in that case. Set this to null to disable listing to http 
     // entirely. (Not recommended as of now, this might change in a few years though)
-    http: 80,
+    http: 4080,
     // This is the port the application actually runs on. Helios runs over HTTPS only.
-    https: 443
+    https: 40443
   },
 
   // The locale of the CMS. Create a new .js file in /src/locale and then add its ID here.

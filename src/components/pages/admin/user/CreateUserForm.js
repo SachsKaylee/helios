@@ -4,15 +4,29 @@ import { formatBytes } from "../../../../bytes";
 import TagList from "@react-formilicious/bulma/TagList";
 import TextField from "@react-formilicious/bulma/TextField";
 import FileField from "../../../general/fields/FileField";
-import { ContentSaveIcon } from "mdi-react";
+import RichTextField from "../../../general/fields/RichTextField";
+import { ContentSaveIcon, CancelIcon } from "mdi-react";
+import { postRules } from "../../../../slate-renderer";
+import SoftBreak from "slate-soft-break";
+import PasteLinkify from "slate-paste-linkify";
 import config from "../../../../config/client";
 import required from "@react-formilicious/core/validators/required";
 import combined from "@react-formilicious/core/validators/combined";
 import pwned from "@react-formilicious/validator-pwned";
 
+const rules = postRules();
+const plugins = [
+  SoftBreak({
+    onlyIn: ["block-quote", "code-block"],
+    shift: true
+  }),
+  PasteLinkify({
+    type: "link"
+  })
+];
 export default injectIntl(class CreateUserForm extends Form {
   render() {
-    const { onSubmit, isCreating, data } = this.props;
+    const { onSubmit, onCancel, isCreating, data } = this.props;
     return <Form
       elements={isCreating ? this.newElements() : this.editElements()}
       submitText={(<span>
@@ -21,6 +35,27 @@ export default injectIntl(class CreateUserForm extends Form {
           ? <FormattedMessage id="users.createUser" />
           : <FormattedMessage id="users.updateUser" />}
       </span>)}
+      buttons={[
+        {
+          // todo: other action buttons
+          key: "submit",
+          action: "submit",
+          name: (<span>
+            <ContentSaveIcon className="mdi-icon-spacer" />
+            <FormattedMessage id="save" />
+          </span>),
+          type: "primary"
+        },
+        {
+          key: "cancel",
+          action: onCancel,
+          name: (<span>
+            <CancelIcon className="mdi-icon-spacer" />
+            <FormattedMessage id="cancel" />
+          </span>),
+          type: "danger"
+        }
+      ]}
       onSubmit={onSubmit}
       data={data} />
   }
@@ -39,13 +74,13 @@ export default injectIntl(class CreateUserForm extends Form {
           }} />)
         })
       },
-      // todo: richtext
-      /*{
+      {
         key: "bio",
-        type: "richtext",
+        type: RichTextField,
         name: (<FormattedMessage id="account.bio.field" />),
-        placeholder: (<FormattedMessage id="account.bio.placeholder" />)
-      },*/
+        placeholder: (<FormattedMessage id="account.bio.placeholder" />),
+        rules, plugins
+      },
       {
         key: "permissions",
         name: "Permissions", // todo: locale

@@ -19,14 +19,14 @@ export default class RichTextField extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.value === prevProps.value) {
+    if (this.props.value !== prevProps.value) {
       this.setState({ slateValue: dataToValue(this.props.value) });
     }
   }
 
   onChange(value) {
     const { onChange, system: { waiting } } = this.props;
-    !waiting && onChange(value.value);
+    !waiting && onChange(value.value).then(console.log).catch(e => console.warn("onChange Error", e));
   }
 
   shouldComponentUpdate(nextProps, nextState) {
