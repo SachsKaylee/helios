@@ -33,7 +33,7 @@ export default class User extends React.Component {
 
   submitCreate = ({ id, password, bio, avatar, permissions }) => {
     return post("/api/user", { id, password, bio, permissions, avatar: avatar ? avatar.data : "" })
-      .then(() => Router.push("/admin/users"))
+      .then(this.goBack)
       .catch(error => ({
         id: {
           error: true,
@@ -45,13 +45,17 @@ export default class User extends React.Component {
   submitUpdate = ({ password, bio, avatar, permissions }) => {
     const { id } = this.props.user;
     return put(`/api/user/${id}`, { password, bio, permissions, avatar: avatar ? avatar.data : "" })
-      .then(() => Router.push("/admin/users"))
+      .then(this.goBack)
       .catch(error => ({
         id: {
           error: true,
           message: (<SlimError error={error.response.data} />)
         }
       }));
+  }
+  
+  goBack = () => {
+    Router.push("/admin/users")
   }
 
   getTitle() {
@@ -69,6 +73,7 @@ export default class User extends React.Component {
           subtitle={!isNew && user && (<FormattedMessage id="users.updateUserSubtitle" values={{ id: user.id }} />)}>
           <CreateUserForm
             onSubmit={isNew ? this.submitCreate : this.submitUpdate}
+            onCancel={this.goBack}
             isCreating={isNew}
             data={isNew ? {} : { ...user, avatar: this.blobToFile(user.avatar) }} />
         </Card>
