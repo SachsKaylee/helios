@@ -12,8 +12,7 @@
   },
   "devDependencies": {
     "@types/react-intl": "^2.3.11",
-    "cross-env": "^5.2.0",
-    "uglifyjs-webpack-plugin": "^2.0.1"
+    "cross-env": "^5.2.0"
   },
   "dependencies": {
     "@react-formilicious/bulma": "^1.0.0",
@@ -45,7 +44,7 @@
     "react-dom": "^16.6.1",
     "react-intl": "^2.7.2",
     "react-tooltip": "^3.9.0",
-    "redoubt": "^1.0.2",
+    "redoubt": "^1.1.0",
     "slate": "^0.41.3",
     "slate-paste-linkify": "^0.6.2",
     "slate-react": "^0.18.11",
