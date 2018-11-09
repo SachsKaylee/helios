@@ -2,7 +2,7 @@ import React from "react";
 import Card from "../../components/Card";
 import A from "../../components/A";
 import { FormattedMessage, injectIntl } from "react-intl";
-import Store from "../../store";
+import Session from "../../store/Session";
 import { LogoutIcon, EarthIcon, DeleteIcon } from "mdi-react";
 import LogInForm from "../../components/pages/admin/account/LogInForm";
 import EditProfileForm from "../../components/pages/admin/account/EditProfileForm";
@@ -19,27 +19,26 @@ export default injectIntl(class Account extends React.Component {
   render() {
     return (
       <div className="container">
-        <Store.Consumer>
-          {store => store && store.session
-            ? this.renderLogOut(store)
-            : this.renderLogIn(store)}
-        </Store.Consumer>
+        <Session>
+          {session => session && session.session
+            ? this.renderLogOut(session)
+            : this.renderLogIn(session)}
+        </Session>
       </div>);
   }
 
-  renderLogIn(store) {
+  renderLogIn(session) {
     return (
       <Card>
-        <LogInForm onSubmit={values => store.actions
+        <LogInForm onSubmit={values => session.actions
           .signIn(values)
           .then(() => ({}))
           .catch(error => errorToMessage(error))} />
       </Card>);
   }
 
-  renderLogOut(store) {
-    const { session } = store;
-    const { id, permissions, avatar } = session;
+  renderLogOut(session) {
+    const { id, permissions, avatar } = session.session;
     return (<Card
       title={<FormattedMessage id="account.welcome" values={{ id }} />}
       subtitle={<span><FormattedMessage id="account.permissions" /> {permissions.length
@@ -50,11 +49,11 @@ export default injectIntl(class Account extends React.Component {
         <h2 className="subtitle">
           <FormattedMessage id="account.updateProfile" />
         </h2>
-        {this.renderUpdateForm(store)}
+        {this.renderUpdateForm(session)}
         <h2 className="subtitle">
           <FormattedMessage id="actions" />
         </h2>
-        <a className="margin-2 button is-primary" onClick={() => store.actions.signOut()
+        <a className="margin-2 button is-primary" onClick={() => session.signOut()
           .then(() => ({}))
           .catch(error => errorToMessage(error))}>
           <LogoutIcon className="mdi-icon-spacer" />
@@ -72,9 +71,8 @@ export default injectIntl(class Account extends React.Component {
     </Card>);
   }
 
-  renderUpdateForm(store) {
-    const { session } = store;
-    return <EditProfileForm data={{ ...session, avatar: undefined }}
+  renderUpdateForm(session) {
+    return <EditProfileForm data={{ ...session.session, avatar: undefined }}
       onSubmit={values => store.actions.updateProfile({
         password: values.password,
         passwordNew: values.passwordNew,

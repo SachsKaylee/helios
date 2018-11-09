@@ -10,7 +10,7 @@ import PostMedia from "../components/Post/PostMedia";
 
 const rules = postRules();
 
-class About extends React.Component {
+export default class AboutPage extends React.Component {
   static getInitialProps({ query: { id } }) {
     return Promise.all([
       axios.get(id ? `/api/user/${id}` : "/api/user"),
@@ -70,5 +70,3 @@ class About extends React.Component {
     }</div>);
   }
 }
-
-export default About;

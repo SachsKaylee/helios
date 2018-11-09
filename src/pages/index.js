@@ -6,7 +6,7 @@ import Head from "next/head";
 import A from "../components/A";
 import { FormattedMessage } from "react-intl";
 
-export default class extends React.Component {
+export default class IndexPage extends React.Component {
   static async getInitialProps({ query }) {
     const [posts, postCount] = await Promise.all([
       axios.get("/api/post", {

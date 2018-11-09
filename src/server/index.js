@@ -66,7 +66,7 @@ const redoubt = new Redoubt({
   certs: config.certs,
   cookieSecret: config.cookieSecret,
   domains: config.client.domains,
-  isDevelopment: isDevelopment,
+  isDevelopment: config.$certsForceProductionServer !== undefined ? !config.$certsForceProductionServer : isDevelopment,
   letsEncryptCertDirectory: path.resolve(__dirname, "../config"),
   maxPayloadSize: config.maxPayloadSize,
   name: config.client.title,

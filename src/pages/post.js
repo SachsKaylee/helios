@@ -3,16 +3,16 @@ import React from "react"
 import axios from "axios"
 import Head from "next/head";
 import config from "../config/client";
-import Store from "../store";
+import Session from "../store/Session";
 
-export default class extends React.Component {
+export default class PostPage extends React.Component {
   static async getInitialProps(p) {
     const { data } = await axios.get("/api/post/" + p.query.id);
     return { post: data };
   }
 
   getTitle() {
-    return this.post.title;
+    return this.props.post.title;
   }
 
   render() {
@@ -24,15 +24,15 @@ export default class extends React.Component {
         <meta key="description" name="description" content={post.title} />
       </Head>
       <div className="container">
-        <Store.Consumer>
-          {store => (<Post
-            edit={[store && store.hasPermission("author") && "show-admin-buttons"]}
+        <Session>
+          {session => (<Post
+            edit={[session && session.hasPermission("author") && "show-admin-buttons"]}
             id={post._id}
             date={new Date(post.date)}
             author={post.author}
             title={post.title}
             content={post.content} />)}
-        </Store.Consumer>
+        </Session>
       </div>
     </>);
   }
