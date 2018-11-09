@@ -18,7 +18,7 @@ const schema = ({ mongoose }) => {
   });
 }
 
-const install = ({ server, models, $send }) => {
+const install = ({ server, models }) => {
   const encrypt = password => crypto.createHmac("sha256", config.passwordSecret).update(password).digest("hex");
 
   const getSession = req => req.session.helios || {};
@@ -91,26 +91,26 @@ const install = ({ server, models, $send }) => {
 
   const filterUserData = ({ _id, avatar, bio, permissions }) => ({ id: _id, avatar, bio, permissions });
 
-  const $sendUser = (res, user) => $send(res, { data: filterUserData(user) });
-  const $sendUsers = (res, users) => $send(res, { data: users.map(filterUserData) });
+  const $sendUser = (res, user) => res.sendData({ data: filterUserData(user) });
+  const $sendUsers = (res, users) => res.sendData({ data: users.map(filterUserData) });
 
   // todo: handle if no default user exists (is that even reasonable?)
   server.get("/api/user", (req, res) =>
     getUser(config.defaultUser.id)
       .then(user => $sendUser(res, user))
-      .catch(error => $send(res, { error })));
+      .catch(error => res.sendData({ error })));
 
   server.get("/api/user/:id", (req, res) =>
     getUser(req.params.id)
       .then(user => $sendUser(res, user))
-      .catch(error => $send(res, { error })));
+      .catch(error => res.sendData({ error })));
 
   server.get("/api/users", (req, res) =>
     models.user
       .find({})
       .exec((error, data) => data && !error
         ? $sendUsers(res, data)
-        : $send(res, { error, data })));
+        : res.sendData({ error, data })));
 
   server.post("/api/user", (req, res) =>
     getSessionUser(req)
@@ -124,19 +124,19 @@ const install = ({ server, models, $send }) => {
             bio, avatar
           });
           user.isNew = true;
-          user.save((error, data) => data ? $sendUser(res, data) : $send(res, { error, data }));
+          user.save((error, data) => data ? $sendUser(res, data) : res.sendData({ error, data }));
         } else {
-          $send.missingPermission(res, "admin");
+          res.error.missingPermission("admin");
         }
       })
-      .catch(error => $send(res, { error })));
+      .catch(error => res.sendData({ error })));
 
   server.put("/api/user/:id", (req, res) =>
     async.all({
       session: getSessionUser(req),
       oldUser: getUser(req.params.id)
     }).then(({ session, oldUser }) => {
-      if (!hasPermission(session, "admin")) return $send.missingPermission(res, "admin");
+      if (!hasPermission(session, "admin")) return res.error.missingPermission("admin");
       const { password, bio, avatar, permissions } = req.body;
       // todo: Check if new user does not have more permissions than the current one!
       const user = new models.user({
@@ -149,17 +149,17 @@ const install = ({ server, models, $send }) => {
         bio, avatar
       });
       user.isNew = false;
-      user.save((error, data) => data ? $sendUser(res, data) : $send(res, { error, data }));
-    }).catch(error => $send(res, { error })));
+      user.save((error, data) => data ? $sendUser(res, data) : res.sendData({ error, data }));
+    }).catch(error => res.sendData({ error })));
 
   server.get("/api/user-count", (req, res) =>
     models.user
       .count({})
-      .exec((error, data) => $send(res, { error, data: { count: data } })));
+      .exec((error, data) => res.sendData({ error, data: { count: data } })));
 
   server.post("/api/session/login", (req, res) => {
     if (getSessionUserId(req)) {
-      $send(res, { error: "already-logged-in", errorCode: 400 });
+      res.sendData({ error: "already-logged-in", errorCode: 400 });
     } else {
       const { id, password } = req.body;
       getUser(id)
@@ -168,10 +168,10 @@ const install = ({ server, models, $send }) => {
             $setSessionUserId(req, id);
             $sendUser(res, user);
           } else {
-            $send.incorrectPassword(res);
+            res.error.incorrectPassword();
           }
         })
-        .catch(error => $send(res, { error, errorCode: 400 }));
+        .catch(error => res.sendData({ error, errorCode: 400 }));
     }
   });
 
@@ -179,35 +179,35 @@ const install = ({ server, models, $send }) => {
     const id = getSessionUserId(req);
     if (id) {
       $setSessionUserId(req, undefined);
-      $send(res, { data: id });
+      res.sendData({ data: id });
     } else {
-      $send(res, { error: "not-logged-in", errorCode: 400 });
+      res.sendData({ error: "not-logged-in", errorCode: 400 });
     }
   });
 
   server.get("/api/session", (req, res) =>
     getSessionUser(req)
       .then(user => $sendUser(res, user))
-      .catch(error => $send(res, { error, errorCode: 400 })));
+      .catch(error => res.sendData({ error, errorCode: 400 })));
 
   server.put("/api/session", (req, res) => getSessionUser(req)
     .then(user => {
       const { password } = req.body;
       if (user.password !== encrypt(password)) {
-        $send.incorrectPassword(res);
+        res.error.incorrectPassword();
       } else {
         const { passwordNew, avatar, bio } = req.body;
         const newModel = createUpdatedModel(user, { password: passwordNew, avatar, bio });
-        newModel.save((error, data) => (error || !data) ? $send(res, { error, data }) : $sendUser(res, data));
+        newModel.save((error, data) => (error || !data) ? res.sendData({ error, data }) : $sendUser(res, data));
       }
     })
-    .catch(error => $send(res, { error, errorCode: 400 })));
+    .catch(error => res.sendData({ error, errorCode: 400 })));
 
   server.get("/api/avatar/:id", (req, res) => getUser(req.params.id)
     .then(user => user.avatar
-      ? $send.blob(res, user.avatar)
+      ? res.blob(user.avatar)
       : res.redirect("/static/content/system/default-avatar.png"))
-    .catch(error => $send(res, { error })));
+    .catch(error => res.sendData({ error })));
 
   $createDefaults();
 

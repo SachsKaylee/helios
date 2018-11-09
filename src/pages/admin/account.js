@@ -73,7 +73,7 @@ export default injectIntl(class Account extends React.Component {
 
   renderUpdateForm(session) {
     return <EditProfileForm data={{ ...session.user, avatar: undefined }}
-      onSubmit={values => store.actions.updateProfile({
+      onSubmit={values => session.updateProfile({
         password: values.password,
         passwordNew: values.passwordNew,
         avatar: values.avatar.data,

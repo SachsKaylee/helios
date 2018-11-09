@@ -35,32 +35,6 @@ if (global.Intl && !areIntlLocalesSupported([config.client.locale.meta.id])) {
 }
 reactIntl.addLocaleData(config.client.locale.meta.intl);
 
-const $send = (res, { error, data, errorCode, successCode }) => {
-  if (isDevelopment) console.info("sending", { error, data, errorCode, successCode });
-  if (error) {
-    res.status(errorCode || 500);
-    res.send(transformError(error));
-  } else if (!data) {
-    res.status(errorCode || 404);
-    res.send("no-data");
-  } else {
-    res.status(successCode || 200);
-    res.send(data);
-  }
-}
-$send.missingPermission = (res, permission) => $send(res, { error: `missing-permission-${permission}`, errorCode: 403 });
-$send.incorrectPassword = (res) => $send(res, { error: "incorrect-password", errorCode: 400 });
-$send.blob = (res, blob) => {
-  const [details, data] = blob.split(",");
-  const [mime, format] = details.split(";");
-  const buffer = new Buffer(data, format);
-  res.writeHead(200, {
-    "Content-Type": mime.substr("data:".length),
-    "Content-Length": buffer.length
-  });
-  res.end(buffer);
-};
-
 const redoubt = new Redoubt({
   agreeGreenlockTos: config.agreeGreenlockTos,
   certs: config.certs,
@@ -75,6 +49,40 @@ const redoubt = new Redoubt({
 });
 const server = redoubt.app;
 
+server.use((req, res, next) => {
+
+  res.sendData = ({ error, data, errorCode, successCode }) => {
+    if (isDevelopment) console.info("sending", { error, data, errorCode, successCode });
+    if (error) {
+      res.status(errorCode || 500);
+      res.send(transformError(error));
+    } else if (!data) {
+      res.status(errorCode || 404);
+      res.send("no-data");
+    } else {
+      res.status(successCode || 200);
+      res.send(data);
+    }
+  }
+
+  res.blob = (blob) => {
+    const [details, data] = blob.split(",");
+    const [mime, format] = details.split(";");
+    const buffer = new Buffer(data, format);
+    res.writeHead(200, {
+      "Content-Type": mime.substr("data:".length),
+      "Content-Length": buffer.length
+    });
+    res.end(buffer);
+  };
+
+  res.error = {};
+  res.error.missingPermission = (permission) => res.sendData({ error: `missing-permission-${permission}`, errorCode: 403 });
+  res.error.incorrectPassword = () => res.sendData({ error: "incorrect-password", errorCode: 400 });
+
+  next();
+});
+
 const next = createNext({
   dev: isDevelopment,
   dir: "./src"
@@ -84,7 +92,7 @@ Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
   // todo: get rid of this weird API design
   const apiData = fp.reduceObject(api, (apiData, currentApi, key) => {
     console.log("📡", "Installing an API ...", key);
-    const data = currentApi.install && currentApi.install({ ...dbResolved, server, $send, api: apiData });
+    const data = currentApi.install && currentApi.install({ ...dbResolved, server, api: apiData });
     return { ...apiData, [key]: data };
   }, {});
   console.log("📡", "All APIs:", apiData);

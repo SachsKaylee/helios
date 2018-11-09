@@ -1,8 +1,8 @@
 const config = require("../../config/server");
 
-const install = ({ server, $send }) => {
+const install = ({ server }) => {
   server.get("/manifest.json", (req, res) => {
-    $send(res, {
+    res.sendData({
       data: {
         "short_name": config.client.title,
         "name": config.client.title,

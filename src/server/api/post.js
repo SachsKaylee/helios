@@ -23,7 +23,7 @@ const niceUri = text =>
     + "-" + uuid.uuidSection())        // Append a UUID to it, in case someone writes two posts with the same title
     .replace(/-+/g, "-");              // Avoid having URIs with multiple "-"s after another
 
-const install = ({ server, models, $send, api }) => {
+const install = ({ server, models, api }) => {
   // https://stackoverflow.com/questions/5830513/how-do-i-limit-the-number-of-returned-items
   server.get("/api/post", (req, res) =>
     models.post
@@ -31,26 +31,26 @@ const install = ({ server, models, $send, api }) => {
       .sort({ date: "descending" })
       .skip(intOr(parseInt(req.query.skip), 0)) // todo: skip has poor performance on large collection
       .limit(intOr(parseInt(req.query.limit), undefined))
-      .exec((error, data) => $send(res, { error, data })));
+      .exec((error, data) => res.sendData({ error, data })));
 
   server.post("/api/post", (req, res) =>
     api.user.getSessionUser(req)
       .then(user => {
         if (!api.user.hasPermission(user, "author")) {
-          return $send.missingPermission(res, "author");
+          return res.error.missingPermission("author");
         }
         const { title } = req.body;
         const post = new models.post({ ...req.body, _id: niceUri(title) });
         post.isNew = true;
-        post.save((error, data) => $send(res, { error, data }));
+        post.save((error, data) => res.sendData({ error, data }));
       })
-      .catch(error => $send(res, { error })));
+      .catch(error => res.sendData({ error })));
 
   server.get("/api/post/:id", (req, res) => {
     // We use a reg exp to find the post to allow users to potentially omit the UUID from the URL.
     const idRegExp = new RegExp("^" + req.params.id);
     models.post.findOne({ _id: idRegExp }, (error, data) => {
-      $send(res, { error, data });
+      res.sendData({ error, data });
     });
   });
 
@@ -58,23 +58,23 @@ const install = ({ server, models, $send, api }) => {
     api.user.getSessionUser(req)
       .then(user => {
         if (!api.user.hasPermission(user, "author")) {
-          return $send.missingPermission(res, "author");
+          return res.error.missingPermission("author");
         }
         const post = new models.post({ ...req.body, _id: req.params.id });
         post.isNew = false;
-        post.save((error, data) => $send(res, { error, data }));
+        post.save((error, data) => res.sendData({ error, data }));
       })
-      .catch(error => $send(res, { error })));
+      .catch(error => res.sendData({ error })));
 
   server.delete("/api/post/:id", (req, res) => 
     models.post.remove({ _id: req.params.id }, (error, data) => {
-      $send(res, { error, data });
+      res.sendData({ error, data });
     }));
 
   server.get("/api/post-count", (req, res) =>
     models.post
       .count({})
-      .exec((error, data) => $send(res, { error, data: { count: data } })));
+      .exec((error, data) => res.sendData({ error, data: { count: data } })));
 
   server.get("/api/posts-of", (req, res) =>
     models.post
@@ -82,7 +82,7 @@ const install = ({ server, models, $send, api }) => {
       .sort({ date: "descending" })
       .skip(intOr(parseInt(req.query.skip), 0)) // todo: skip has poor performance on large collection
       .limit(intOr(parseInt(req.query.limit), undefined))
-      .exec((error, data) => $send(res, { error, data })));
+      .exec((error, data) => res.sendData({ error, data })));
 
   server.get("/api/posts-of/:id", (req, res) =>
     models.post
@@ -90,7 +90,7 @@ const install = ({ server, models, $send, api }) => {
       .sort({ date: "descending" })
       .skip(intOr(parseInt(req.query.skip), 0)) // todo: skip has poor performance on large collection
       .limit(intOr(parseInt(req.query.limit), undefined))
-      .exec((error, data) => $send(res, { error, data })));
+      .exec((error, data) => res.sendData({ error, data })));
 }
 
 module.exports = {

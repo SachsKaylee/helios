@@ -18,8 +18,8 @@ const ReadOnlyPost = ({ id, author, date, title, content, edit, tags, notes }) =
     <div>
       <Renderer rules={rules}>{content}</Renderer>
       {notes ? (<p className="is-size-7 has-text-grey">{notes}</p>) : null}
-      {tags && tags.length ? (<div className="tags">{tags.map(tag => (<span className="tag">
-        <A key={tag} href={`/tag/${tag}`}>{tag}</A>
+      {tags && tags.length ? (<div className="tags">{tags.map(tag => (<span className="tag" key={tag}>
+        <A href={`/tag/${tag}`}>{tag}</A>
       </span>))}</div>) : null}
       {buttons(edit) && (<div className="push-12">
         <A className="button is-link" href={`/admin/post/${id}`}><FormattedMessage id="edit" /></A>
