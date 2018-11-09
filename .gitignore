@@ -1,2 +1,6 @@
+# Installed dependencies
 node_modules
+# Ignore compiled Next App
 .next
+# Ignore certs
+src/config/**
