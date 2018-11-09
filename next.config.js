@@ -1,8 +1,8 @@
 require('dotenv').config();
-const webpack = require('webpack');
+//const webpack = require('webpack');
 const path = require('path');
 const glob = require('glob');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+//const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 console.log("NODE_ENV", process.env.NODE_ENV);
 
@@ -19,12 +19,11 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ['babel-loader', 'raw-loader', 'postcss-loader']
+        use: ['raw-loader', 'postcss-loader']
       },
       {
         test: /\.s(a|c)ss$/,
         use: [
-          'babel-loader',
           'raw-loader',
           'postcss-loader',
           {
@@ -41,10 +40,10 @@ module.exports = {
     );
 
     // Setup environment variables
-    config.plugins.push(new webpack.EnvironmentPlugin(process.env));
-    if (process.env.NODE_ENV === "production") {
+    //config.plugins.push(new webpack.EnvironmentPlugin(process.env));
+    /*if (process.env.NODE_ENV === "production") {
       config.plugins.push(new UglifyJsPlugin());
-    }
+    }*/
 
     return config;
   }

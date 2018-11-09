@@ -1,20 +1,19 @@
 import React from "react";
 import Card from "../../components/Card";
-import Form from "../../components/Form";
 import A from "../../components/A";
-import config from "../../config/client";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, injectIntl } from "react-intl";
 import Store from "../../store";
-import { LoginIcon, LogoutIcon, EarthIcon, DeleteIcon, ContentSaveIcon, ErrorOutlineIcon } from "mdi-react";
-import { formatBytes } from "../../bytes";
+import { LogoutIcon, EarthIcon, DeleteIcon } from "mdi-react";
+import LogInForm from "../../components/pages/admin/account/LogInForm";
+import EditProfileForm from "../../components/pages/admin/account/EditProfileForm";
 
-export default class Account extends React.Component {
+export default injectIntl(class Account extends React.Component {
   constructor(p) {
     super(p);
   }
 
   getTitle() {
-    return (<FormattedMessage id="account.title" />);
+    return this.props.intl.formatMessage({ id: "account.title" });
   }
 
   render() {
@@ -31,52 +30,10 @@ export default class Account extends React.Component {
   renderLogIn(store) {
     return (
       <Card>
-        <Form
-          submitText={(<span>
-            <LoginIcon className="mdi-icon-spacer" />
-            <FormattedMessage id="account.signIn" />
-          </span>)}
-          onSubmit={values => store.actions
-            .signIn(values)
-            .then(session => ({}))
-            .catch(error => errorToMessage(error))}
-          elements={[
-            {
-              key: "id",
-              type: "text",
-              name: <FormattedMessage id="username" />,
-              validator: (name) => ({
-                error: !name,
-                message: <FormattedMessage id="formValueRequired" values={{
-                  field: <FormattedMessage id="username" />
-                }} />
-              }),
-              placeholder: <FormattedMessage id="account.usernamePlaceholder" />
-            },
-            {
-              key: "password",
-              type: "text",
-              name: <FormattedMessage id="password" />,
-              mode: "password",
-              ignoreData: true,
-              validator: (pw) => ({
-                error: !pw,
-                message: <FormattedMessage id="formValueRequired" values={{
-                  field: <FormattedMessage id="password" />
-                }} />
-              }),
-              placeholder: <FormattedMessage id="account.passwordPlaceholder" />
-            },
-            {
-              key: "cookie",
-              type: "checkbox",
-              name: <FormattedMessage id="account.acceptCookie" />,
-              validator: (cookie) => ({
-                error: !cookie,
-                message: <FormattedMessage id="account.cookieRequired" />
-              })
-            }
-          ]} />
+        <LogInForm onSubmit={values => store.actions
+          .signIn(values)
+          .then(() => ({}))
+          .catch(error => errorToMessage(error))} />
       </Card>);
   }
 
@@ -117,79 +74,16 @@ export default class Account extends React.Component {
 
   renderUpdateForm(store) {
     const { session } = store;
-    return (<Form
-      className="margin-2"
-      data={{ ...session, avatar: undefined }}
-      submitText={(<span>
-        <ContentSaveIcon className="mdi-icon-spacer" />
-        <FormattedMessage id="save" />
-      </span>)}
+    return <EditProfileForm data={{ ...session, avatar: undefined }}
       onSubmit={values => store.actions.updateProfile({
         password: values.password,
         passwordNew: values.passwordNew,
         avatar: values.avatar.data,
         bio: values.bio
       }).then(() => ({}))
-        .catch(error => errorToMessage(error))}
-      elements={[
-        {
-          key: "avatar",
-          type: "file",
-          name: (<FormattedMessage id="account.avatar.field" />),
-          validator: avatar => ({
-            error: avatar.size > config.maxAvatarSize,
-            message: (<FormattedMessage id="account.avatar.errorTooLarge" values={{
-              isSize: formatBytes(avatar.size),
-              maxSize: formatBytes(config.maxAvatarSize)
-            }} />)
-          })
-        },
-        {
-          key: "bio",
-          type: "richtext",
-          name: (<FormattedMessage id="account.bio.field" />),
-          placeholder: (<FormattedMessage id="account.bio.placeholder" />)
-        },
-        {
-          key: "passwordNew",
-          type: "text",
-          name: (<FormattedMessage id="account.changePassword.field1" />),
-          mode: "password",
-          ignoreData: true,
-          placeholder: (<FormattedMessage id="account.changePassword.field1Placeholder" />)
-        },
-        {
-          key: "passwordNewConfirm",
-          type: "text",
-          name: (<FormattedMessage id="account.changePassword.field2" />),
-          mode: "password",
-          ignoreData: true,
-          placeholder: (<FormattedMessage id="account.changePassword.field2Placeholder" />),
-          validator: (v, d) => ({
-            error: v !== d.passwordNew,
-            message: (<FormattedMessage id="account.changePassword.mismatchError" />)
-          })
-        },
-        {
-          key: "password",
-          type: "text",
-          name: (<span>
-            <ErrorOutlineIcon className="mdi-icon-spacer" />
-            <FormattedMessage id="account.confirmPassword.field" />
-          </span>),
-          mode: "password",
-          ignoreData: true,
-          placeholder: <FormattedMessage id="account.confirmPassword.placeholder" />,
-          validator: pw => ({
-            error: !pw,
-            message: <FormattedMessage id="formValueRequired" values={{
-              field: <FormattedMessage id="account.confirmPassword.field" />
-            }} />
-          })
-        }
-      ]} />);
+        .catch(error => errorToMessage(error))} />
   }
-};
+});
 
 const errorToMessage = error => {
   switch (error) {

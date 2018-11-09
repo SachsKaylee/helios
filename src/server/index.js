@@ -1,12 +1,6 @@
-const fs = require("fs");
 const axios = require("axios");
-const spdy = require("spdy");
 const path = require("path");
 const createNext = require("next");
-const express = require("express");
-const session = require("express-session");
-const greenlock = require("greenlock-express");
-const compression = require("compression");
 const api = require("./api");
 const db = require("./db");
 const fp = require("../fp");
@@ -15,6 +9,8 @@ const config = require("../config/server");
 const areIntlLocalesSupported = require("intl-locales-supported");
 const reactIntl = require("react-intl");
 const { transformError } = require("./error-transformer");
+
+const Redoubt = require("redoubt").default;
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -65,94 +61,35 @@ $send.blob = (res, blob) => {
   res.end(buffer);
 };
 
-// Creates the express server BUT DOES NOT LISTEN TO it that will be used to handle requests.
-const installServer = () => {
-  const next = createNext({
-    dev: isDevelopment,
-    dir: "./src"
-  });
-  const server = express();
-  Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
-    server.use(compression({ filter: shouldCompress }));
-    server.use(express.json({ limit: config.maxPayloadSize }));
-    server.use(express.urlencoded({ limit: config.maxPayloadSize, extended: true }));
-    server.use("/static", express.static("static"));
-    server.use(session({
-      // todo: Use a better session store! (MongoDB)
-      name: "helios",
-      cookie: {
-        httpOnly: true,
-        sameSite: true,
-        secure: true // todo: test this with a proxy! -> server.set("trust proxy", 1); to trust 1st proxy
-      },
-      resave: false,
-      saveUninitialized: false,
-      unset: "destroy",
-      secret: config.cookieSecret
-    }));
-
-    // APIs - APIs can only access APIs ranked "lower"
-    const apiData = fp.reduceObject(api, (apiData, currentApi, key) => {
-      console.log("📡", "Installing an API ...", key);
-      const data = currentApi.install && currentApi.install({ ...dbResolved, server, $send, api: apiData });
-      return { ...apiData, [key]: data };
-    }, {});
-    console.log("📡", "All APIs:", apiData);
-
-    // Fallback
-    server.get("*", routes.getRequestHandler(next));
-  }).catch(err => console.error("🔥", "Error while preparing server!", err));
-  return server;
-}
-
-const shouldCompress = (req, res) => {
-  if (isDevelopment) return false;
-  if (req.headers["x-no-compression"]) return false;
-  return compression.filter(req, res);
-}
-
-// This installs greenlock, which is used for lets-encrypt.
-const installGreenlock = () => greenlock.create({ ...greenlockOptions(), app: installServer() })
-  .listen(config.client.port.http, config.client.port.https, err => err
-    ? console.error("🔥", "Error while listening to greenlock", err)
-    : console.log("📡", `Listening on greenlock ports HTTP ${config.client.port.http} & HTTPS ${config.client.port.https}!`));
-
-const greenlockOptions = () => ({
-  agreeTos: config.agreeGreenlockTos,
-  version: "draft-11",
-  server: isDevelopment ? "https://acme-staging-v02.api.letsencrypt.org/directory" : "https://acme-v02.api.letsencrypt.org/directory",
-  email: config.webmasterMail,
-  approveDomains: config.client.domains,
-  configDir: path.resolve(__dirname, "../config"),
-  debug: isDevelopment,
-  communityMember: false,
-  telemetry: false
+const redoubt = new Redoubt({
+  agreeGreenlockTos: config.agreeGreenlockTos,
+  certs: config.certs,
+  cookieSecret: config.cookieSecret,
+  domains: config.client.domains,
+  isDevelopment: isDevelopment,
+  letsEncryptCertDirectory: path.resolve(__dirname, "../config"),
+  maxPayloadSize: config.maxPayloadSize,
+  name: config.client.title,
+  staticFiles: { from: path.resolve(__dirname, "../../static"), serve: "/static" },
+  webmasterMail: config.webmasterMail
 });
+const server = redoubt.app;
 
-// This installs spdy, which is used for own certificates.
-const installSpdy = () => {
-  const server = installServer();
-
-  // HTTP Server
-  if (config.client.port.http) {
-    const fallbackServer = express();
-    fallbackServer.get("*", (req, res) => res.redirect("https://" + req.headers.host + ":" + config.client.port.https + req.url));
-    fallbackServer.listen(config.client.port.http, err => err
-      ? console.error("🔥", "Error while listening to fallback HTTP server", err)
-      : console.log("📡", `Listening on fallback HTTP port ${config.client.port.http}!`));
-  }
-  // HTTPS Server
-  spdy.createServer(spdyOptions(), server).listen(config.client.port.https, err => err
-    ? console.error("🔥", "Error while listening", err)
-    : console.log("📡", `Listening on primary HTTPS port ${config.client.port.https}!`))
-}
-
-const spdyOptions = () => ({
-  key: fs.readFileSync(config.certs.key),
-  cert: fs.readFileSync(config.certs.cert)
+const next = createNext({
+  dev: isDevelopment,
+  dir: "./src"
 });
+Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
+  // APIs - APIs can only access APIs ranked "lower"
+  // todo: get rid of this weird API design
+  const apiData = fp.reduceObject(api, (apiData, currentApi, key) => {
+    console.log("📡", "Installing an API ...", key);
+    const data = currentApi.install && currentApi.install({ ...dbResolved, server, $send, api: apiData });
+    return { ...apiData, [key]: data };
+  }, {});
+  console.log("📡", "All APIs:", apiData);
+  // Fallback
+  server.get("*", routes.getRequestHandler(next));
+}).catch(err => console.error("🔥", "Error while preparing server!", err));
 
-const runServer = () => config.certs === "lets-encrypt" ? installGreenlock() : installSpdy();
-
-// Alright, let's rock! 🤘
-runServer();
+redoubt.listen(config.client.port.https, config.client.port.http);

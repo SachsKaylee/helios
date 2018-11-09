@@ -11,21 +11,21 @@ module.exports = {
   // Host on these domains. The first domain will be your primary, canocial URL
   // IPs are NOT ALLOWED if using { certs: "lets-encrypt" } (which is the default)
   // in the server.js config!
-  domains: ["localhost"],
+  domains: ["helios.example.com", "www.helios.example.com"],
 
   // The port your server runs on. You typically don't want to change this. Make 
-  // sure to forward the port!
+  // sure to forward the port(s)!
   port: {
     // We also have a http port in case the user connects to that. They are automatically
-    // redirected to https in that case. Set this to false to disable listing to http 
+    // redirected to https in that case. Set this to null to disable listing to http 
     // entirely. (Not recommended as of now, this might change in a few years though)
     http: 80,
-    // This is the port the application actually runs on.
+    // This is the port the application actually runs on. Helios runs over HTTPS only.
     https: 443
   },
 
   // The locale of the CMS. Create a new .js file in /src/locale and then add its ID here.
-  locale: require("../locale/de"),
+  locale: require("../locale/en"),
 
   // The max size in bytes for user avatars.
   maxAvatarSize: 200 * 1024,

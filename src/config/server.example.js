@@ -1,5 +1,6 @@
 const client = require("./client");
 const path = require("path");
+const fs = require("fs");
 
 module.exports = {
   // The secret used to encrypt the passwords in the DB.
@@ -10,7 +11,7 @@ module.exports = {
   cookieSecret: "7-rays-of-light",
 
   // The Webmaster mail. This MUST be valid Mail or you won't get a SSL certificate
-  webmasterMail: "sonstiges@patrick-sachs.de",
+  webmasterMail: "webmaster@example.com",
 
   // The default user to create. Will have admin permissions. Simply delete this 
   // entry or set it to false to avoid creating a default user.
@@ -25,20 +26,20 @@ module.exports = {
   // By default we let Let's Encrypt create a nice and free cert for us. If you are
   // hosting on an intranet this is not possible though, so you may prefer the config
   // below.
-  //certs: "lets-encrypt",
+  certs: "letsEncrypt",
 
   // Paths to your SSL certificates. Make sure they are signed by a proper authority 
   // if used for a public server, or browsers will complain. (This typically isn't free)
   // The two certificates included by default are development certificates and not
   // meant for production. They are not signed.
-  certs: {
+  /*certs: {
     // Are unsigned certs allowed in production? (NOT recommended)
     allowUnsigned: true,
 
     // Your keys. They are to be placed in this directory.
-    key: path.resolve(__dirname, "./key.pem"),
-    cert: path.resolve(__dirname, "./server.crt")
-  },
+    key: fs.readFileSync(path.resolve(__dirname, "./key.pem")).toString(),
+    cert: fs.readFileSync(path.resolve(__dirname, "./server.crt")).toString()
+  },*/
 
   // The connection to your database.
   db: {

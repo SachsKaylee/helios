@@ -44,6 +44,8 @@ const flattenObject = (obj, sep = ".") =>
     return { ...a, [k]: value };
   }, {});
 
+const onlyTruthy = obj => obj.reduce((a, v) => v ? [...a, v] : a, []);
+
 module.exports = {
   mapObject,
   mapObjectKeys,
@@ -53,5 +55,6 @@ module.exports = {
   flattenObject,
   arrayToObject,
   zipObject,
-  all
+  all,
+  onlyTruthy
 }

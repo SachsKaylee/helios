@@ -26,6 +26,7 @@ module.exports = {
   publish: "Publish",
   delete: "Delete",
   discard: "Discard",
+  cancel: "Cancel",
   formValueRequired: "\"{field}\" is required!",
   form: {
     submit: "Submit",
