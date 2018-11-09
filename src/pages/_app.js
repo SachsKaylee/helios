@@ -84,7 +84,7 @@ export default class _App extends App {
   render() {
     const { Component, pageProps } = this.props;
     const { session } = this.state;
-    const title = Component.getTitle && Component.getTitle();
+    const title = this.component && this.component.getTitle && this.component.getTitle() || "…";
     return (<Container>
       <IntlProvider
         locale={localeMeta.id}
@@ -95,7 +95,7 @@ export default class _App extends App {
           actions: this.actions
         }}>
           <Head>
-            <title key="title">{textContent(title)} | {config.title}</title>
+            <title key="title">{title} | {config.title}</title>
           </Head>
           <Navbar
             title={(<span>{config.title} - {title}</span>)}
@@ -141,7 +141,7 @@ export default class _App extends App {
               }]}
           </Navbar>
           <div className="section">
-            <Component {...pageProps} />
+            <Component {...pageProps} ref={component => this.component = component} />
           </div>
         </Store.Provider>
       </IntlProvider>
