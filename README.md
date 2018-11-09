@@ -46,6 +46,8 @@ $ npm run dev
 
 **Important**: Make sure to adjust the config files(`/src/config`). These contain your private keys for passwords. If you leave them at their default values, it will be rather trivial to decrypt your senstive user data you are bound by law to protect.
 
+They are named `client.example.js` and `server.example.js`. Make sure to give to omit the `.example` from the file names of the configured files.
+
 ```
 $ npm install
 $ npm run build
