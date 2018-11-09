@@ -7,7 +7,7 @@ const buttons = (edit) => edit ? !edit.indexOf("show-admin-buttons") : false;
 
 const rules = postRules();
 
-const ReadOnlyPost = ({ id, author, date, title, content, edit }) => (
+const ReadOnlyPost = ({ id, author, date, title, content, edit, tags, notes }) => (
   <Card
     image={`/api/avatar/${author}`}
     title={<A href={`/post/${id}`}>{title}</A>}
@@ -17,6 +17,9 @@ const ReadOnlyPost = ({ id, author, date, title, content, edit }) => (
     }} />}>
     <div>
       <Renderer rules={rules}>{content}</Renderer>
+      {tags && tags.length ? (<div className="tags">{tags.map(tag => (<span className="tag">
+        <A key={tag} href={`/tag/${tag}`}>{tag}</A>
+      </span>))}</div>) : null}
       {buttons(edit) && (<div className="push-12">
         <A className="button is-link" href={`/admin/post/${id}`}><FormattedMessage id="edit" /></A>
       </div>)}

@@ -26,12 +26,10 @@ export default class PostPage extends React.Component {
       <div className="container">
         <Session>
           {session => (<Post
+            {...post}
             edit={[session && session.hasPermission("author") && "show-admin-buttons"]}
             id={post._id}
-            date={new Date(post.date)}
-            author={post.author}
-            title={post.title}
-            content={post.content} />)}
+            date={new Date(post.date)} />)}
         </Session>
       </div>
     </>);

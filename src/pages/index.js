@@ -20,12 +20,11 @@ export default class IndexPage extends React.Component {
       count: postCount.data.count,
       page: query.page ? parseInt(query.page, 10) : 1,
       // We do not create the Value here, but instead in render since it was throwing an error with SSR
-      posts: posts.data.map(({ _id, author, date, title, content }) => ({
+      posts: posts.data.map(({ _id, author, date, title, content, tags, notes }) => ({
         id: _id,
         title: title,
         content: content,
-        date,
-        author
+        date,tags, notes, author
       })).sort((a, b) => {
         const keyA = new Date(a.date);
         const keyB = new Date(b.date);
@@ -51,8 +50,6 @@ export default class IndexPage extends React.Component {
       <div className="container">
         <Posts posts={posts.map(p => ({
           ...p,
-          title: p.title,
-          content: p.content,
           date: new Date(p.date)
         }))} />
       </div>
