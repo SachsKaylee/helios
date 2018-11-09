@@ -20,11 +20,11 @@ export default class EditorToolbar extends React.Component {
   }
 
   render() {
-    const { stylesChooser, buttons } = this.props;
+    const { stylesChooser } = this.props;
     return (<div>
       <ReactTooltip id="editor-toolbar" effect="solid" />
       {stylesChooser && (<div>
-        <div className="margin-2"><span className="tag is-info"><FormattedMessage id="editor.formatSelection" /></span></div>
+        <label className="label"><FormattedMessage id="editor.formatSelection" /></label>
         {this.renderMarkButton('bold', <FormatBoldIcon className="mdi-icon-medium" />, <FormattedMessage id="post.editor.format.bold" />)}
         {this.renderMarkButton('italic', <FormatItalicIcon className="mdi-icon-medium" />, <FormattedMessage id="post.editor.format.italic" />)}
         {this.renderMarkButton('underlined', <FormatUnderlineIcon className="mdi-icon-medium" />, <FormattedMessage id="post.editor.format.underlined" />)}
@@ -32,17 +32,13 @@ export default class EditorToolbar extends React.Component {
         {this.renderInlineButton("link", <LinkVariantIcon className="mdi-icon-medium" />, <FormattedMessage id="post.editor.format.link" />, this.insertLink)}
       </div>)}
       {stylesChooser && (<div>
-        <div className="margin-2"><span className="tag is-info"><FormattedMessage id="editor.formatParagraph" /></span></div>
+        <label className="label"><FormattedMessage id="editor.formatParagraph" /></label>
         {this.renderBlockButton('heading-one', <FormatHeader1Icon className="mdi-icon-medium" />, <FormattedMessage id="post.editor.format.headline1" />)}
         {this.renderBlockButton('heading-two', <FormatHeader2Icon className="mdi-icon-medium" />, <FormattedMessage id="post.editor.format.headline2" />)}
         {this.renderBlockButton('block-quote', <FormatQuoteOpenIcon className="mdi-icon-medium" />, <FormattedMessage id="post.editor.format.quote" />)}
         {this.renderBlockButton('numbered-list', <FormatListBulletedIcon className="mdi-icon-medium" />, <FormattedMessage id="post.editor.format.numberedList" />)}
         {this.renderBlockButton('bulleted-list', <FormatListNumberedIcon className="mdi-icon-medium" />, <FormattedMessage id="post.editor.format.bulletedList" />)}
         {this.renderBlockButton("code-block", <CodeBracesIcon className="mdi-icon-medium" />, <FormattedMessage id="post.editor.format.code" />)}
-      </div>)}
-      {buttons && buttons.length && (<div>
-        <div className="margin-2"><span className="tag is-info"><FormattedMessage id="actions" /></span></div>
-        {buttons.map(button => (button && <a key={button.key} className={classnames("margin-2 button", button.type)} onClick={button.action}>{button.text}</a>))}
       </div>)}
     </div>);
   }

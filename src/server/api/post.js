@@ -11,7 +11,8 @@ const schema = ({ mongoose }) => {
     title: Object,
     content: Object,
     date: Date,
-    tags: [String]
+    tags: [String],
+    notes: String
   });
 }
 

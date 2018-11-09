@@ -95,7 +95,7 @@ export default injectIntl(class LogInForm extends React.PureComponent {
           </span>),
           mode: "password",
           ignoreData: true,
-          placeholder: this.props.intl.formatMessage({ id: "account.changePassword.placeholder" }),
+          placeholder: this.props.intl.formatMessage({ id: "account.confirmPassword.placeholder" }),
           validator: pw => ({ // todo: required()
             error: !pw,
             message: <FormattedMessage id="formValueRequired" values={{

@@ -55,7 +55,7 @@ export default class _App extends App {
                     link: "/",
                     key: "home"
                   },
-                  session && {
+                  session.user && {
                     title: (<FormattedMessage id="navigation.admin.menu" />),
                     link: "/admin",
                     key: "admin",
@@ -83,7 +83,7 @@ export default class _App extends App {
                       }
                     ]
                   },
-                  (!session && !config.hideLogInButton) && {
+                  (!session.user && !config.hideLogInButton) && {
                     title: (<FormattedMessage id="navigation.admin.signIn" />),
                     link: "/admin/account",
                     key: "signIn"

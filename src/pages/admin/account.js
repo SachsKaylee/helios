@@ -20,7 +20,7 @@ export default injectIntl(class Account extends React.Component {
     return (
       <div className="container">
         <Session>
-          {session => session && session.session
+          {session => session && session.user
             ? this.renderLogOut(session)
             : this.renderLogIn(session)}
         </Session>
@@ -30,7 +30,7 @@ export default injectIntl(class Account extends React.Component {
   renderLogIn(session) {
     return (
       <Card>
-        <LogInForm onSubmit={values => session.actions
+        <LogInForm onSubmit={values => session
           .signIn(values)
           .then(() => ({}))
           .catch(error => errorToMessage(error))} />
@@ -38,7 +38,7 @@ export default injectIntl(class Account extends React.Component {
   }
 
   renderLogOut(session) {
-    const { id, permissions, avatar } = session.session;
+    const { id, permissions, avatar } = session.user;
     return (<Card
       title={<FormattedMessage id="account.welcome" values={{ id }} />}
       subtitle={<span><FormattedMessage id="account.permissions" /> {permissions.length
@@ -72,7 +72,7 @@ export default injectIntl(class Account extends React.Component {
   }
 
   renderUpdateForm(session) {
-    return <EditProfileForm data={{ ...session.session, avatar: undefined }}
+    return <EditProfileForm data={{ ...session.user, avatar: undefined }}
       onSubmit={values => store.actions.updateProfile({
         password: values.password,
         passwordNew: values.passwordNew,

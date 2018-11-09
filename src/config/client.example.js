@@ -37,5 +37,8 @@ module.exports = {
   postsPerAboutPage: 3,
 
   // Should the log in button in the navigation be hidden?
-  hideLogInButton: false
+  hideLogInButton: false,
+
+  // The default tags a post should have.
+  defaultTags: ["uncategorized"]
 }

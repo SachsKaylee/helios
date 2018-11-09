@@ -124,7 +124,7 @@ module.exports = {
       field1: "Passwort ändern",
       field2: "Passwort ändern (erneut eingeben)",
       field1Placeholder: "Ihr neues Passwort (optional)",
-      field2Placeholder: "Ihr neues Passwort (optional)",
+      field2Placeholder: "Ihr neues Passwort bestätigen (optional)",
       mismatchError: "Beide Passwörter müssen übereinstimmen. Falls Sie das Passwort nicht ändern möchten, lassen Sie beide Felder frei."
     },
     confirmPassword: {

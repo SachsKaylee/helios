@@ -1,5 +1,5 @@
 import SidebarLayout from "../../components/SidebarLayout";
-//import EditorToolbar from "../../components/EditorToolbar";
+import EditorToolbar from "../../components/EditorToolbar";
 import A from "../../components/A";
 import { Value } from "slate";
 import Plain from 'slate-plain-serializer';
@@ -49,11 +49,11 @@ export default class extends React.PureComponent {
         .catch((data) => this.setState({ error: data, state: "error" }));
   }
 
-  stateFromData = ({ _id, date, author, title, content }, oldState) => {
+  stateFromData = ({ _id, date, author, title, content, tags, notes }, oldState) => {
     return {
       id: _id,
       isNew: !_id,
-      author,
+      author, tags, notes,
       lastChanged: (oldState && oldState.lastChanged) || "content",
       date: date ? new Date(date) : new Date(),
       title: this.dataToValue(title),
@@ -114,10 +114,10 @@ export default class extends React.PureComponent {
     }
   }
 
-  onPublish = () => {
+  onPublish = ({ tags, notes }) => {
     const { id, title, content, date, author, isNew } = this.state;
     const data = {
-      author, date,
+      author, date, tags, notes,
       title: this.valueToString(title),
       content: content.toJSON()
     };
@@ -203,41 +203,23 @@ export default class extends React.PureComponent {
   renderError() {
     const { error } = this.state;
     return (<FullError error={error} />);
-  }
+  }config
 
   renderLoaded() {
-    const { title, content, isNew, date, author, lastChanged } = this.state;
+    const { title, content, isNew, date, author, lastChanged, tags, notes } = this.state;
     return (
       <div className="container">
         <SidebarLayout size={3} sidebar={(
           <div className="sidebar">
             <Card>
-              {/*<EditorToolbar
+              <EditorToolbar
                 stylesChooser={lastChanged === "content"}
                 value={content}
-                onChange={this.onChange(false)("content")}
-                buttons={[
-                  {
-                    key: "publish",
-                    type: "is-primary",
-                    text: (<><PublishIcon className="mdi-icon-spacer" /> <FormattedMessage id="publish" /></>),
-                    action: this.onPublish
-                  },
-                  {
-                    key: "discard",
-                    type: "is-danger",
-                    text: (<><FileUndoIcon className="mdi-icon-spacer" /> <FormattedMessage id="discard" /></>)
-                  },
-                  !isNew && {
-                    key: "delete",
-                    type: "is-danger",
-                    text: (<><DeleteIcon className="mdi-icon-spacer" /> <FormattedMessage id="delete" /></>),
-                    action: this.onDelete(false)
-                  }
-                ]} />*/}
+                onChange={this.onChange(false)("content")} />
               <PostForm 
-                tags={[]}
-                allTags={[]}
+                tags={tags}
+                notes={notes}
+                allTags={["helios", "react", "javascript"]}
                 onPublish={this.onPublish}
                 onDelete={!isNew && (this.onDelete(false))}
               />
@@ -268,6 +250,7 @@ export default class extends React.PureComponent {
 }
 
 const defaultPostData = () => ({
+  tags: config.defaultTags,
   title: config.locale.post.defaults.title,
   content: config.locale.post.defaults.description
 });

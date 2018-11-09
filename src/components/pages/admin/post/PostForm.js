@@ -10,7 +10,8 @@ export default injectIntl(class PostForm extends React.PureComponent {
   render() {
     return (<Form
       data={{
-        tags: this.props.tags
+        tags: this.props.tags,
+        notes: this.props.notes
       }}
       elements={[
         {

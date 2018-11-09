@@ -11,7 +11,7 @@ export const SlimError = ({ error }) => {
   error = error && error.response ? error.response.data : error;
   const str = byString(error);
   if (str) return str;
-  return (<div>todo: handle this error!<code>{JSON.str(error)}</code></div>);
+  return (<div>todo: handle this error!<code>{JSON.stringify(error)}</code></div>);
 }
 
 const byString = string => {

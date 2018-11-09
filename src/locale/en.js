@@ -121,7 +121,7 @@ module.exports = {
       field1: "Change password",
       field2: "Change password (confirm)",
       field1Placeholder: "Your new password (optional)",
-      field2Placeholder: "Your new password (optional)",
+      field2Placeholder: "Confirm your new password (optional)",
       mismatchError: "Both passwords have to be the same. If you do not wish to change your password leave both fields empty."
     },
     confirmPassword: {

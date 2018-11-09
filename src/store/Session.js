@@ -45,7 +45,7 @@ export class SessionProvider extends React.PureComponent {
 
   render() {
     return (<Context.Provider value={{
-      session: this.state.value,
+      user: this.state.session,
       hasPermission: this.hasPermission,
       setSession: this.setSession,
       signIn: this.signIn,
