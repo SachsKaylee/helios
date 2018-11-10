@@ -13,33 +13,41 @@ export default class RichTextField extends React.Component {
   constructor(p) {
     super(p);
     this.onChange = this.onChange.bind(this);
+    this.editorRef = React.createRef();
   }
 
-  onChange(value) {
+  onChange({ value }) {
     const { onChange, system: { waiting } } = this.props;
     if (waiting) {
       return;
     }
-    if (equals(this.props.value.toJSON(), value.value.toJSON())) {
+    if (equals(this.props.value.toJSON(), value.toJSON())) {
       return;
     }
-    onChange(value.value).catch(e => console.warn("onChange Error", e));
+    onChange(value).catch(e => console.warn("onChange Error", e));
   }
 
   shouldComponentUpdate(props) {
+    // Exclude value to check it later, exclude system(it contains ALL other fields), exclude
+    // onChange since its an arrow function(this could actually be considered a bug!)
     const { value: currentValue, system: currentSystem, onChange: _1, ...currentProps } = this.props;
     const { value: nextValue, system: nextSystem, onChange: _2, ...nextProps } = props;
-    global.equals = equals;
+    // However we cannot fully ignore system since it contains the waiting prop.
+    if (currentSystem.waiting !== nextSystem.waiting) {
+      return true;
+    }
+    // Check if the other props have changed
     if (!equals(currentProps, nextProps)) {
       return true;
     }
+   // Here is the actual check for changes
     return !equals(currentValue.toJSON(), nextValue.toJSON());
   }
 
   render() {
     const {
       name, disableToolbar, placeholder, plugins, rules, value,
-      field, system: { waiting }
+      field, system: { waiting } // todo: Implement waiting prop
     } = this.props;
     return (<div className="field">
       <label className="label">{name}</label>
@@ -54,12 +62,12 @@ export default class RichTextField extends React.Component {
               rules={rules}
               placeholder={placeholder}
               value={value}
+              editorRef={this.editorRef}
               onChange={this.onChange} />
           </div>
           {!disableToolbar && (<div className="column">
             <EditorToolbar
-              onChange={this.onChange}
-              value={value}
+              editor={this.editorRef}
               stylesChooser={true} />
           </div>)}
         </div>
