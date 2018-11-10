@@ -45,6 +45,7 @@ export const defaultRules = ({
       serialize(obj, children, attributes) {
         if (obj.object == "mark") {
           switch (obj.type) {
+            case "placeholder": return (<span {...attributes}>{children}</span>);
             case "bold": return (<strong {...attributes}>{children}</strong>);
             case "code": return (<Code {...attributes}>{children}</Code>);
             case "italic": return (<em {...attributes}>{children}</em>);
