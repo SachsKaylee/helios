@@ -18,6 +18,7 @@ export default class extends React.PureComponent {
   constructor(p) {
     super(p);
     this.notifications = React.createRef();
+    this.editorRef = React.createRef();
     this.state = {
       state: "loading"
     };
@@ -214,8 +215,7 @@ export default class extends React.PureComponent {
             <Card>
               <EditorToolbar
                 stylesChooser={lastChanged === "content"}
-                value={content}
-                onChange={this.onChange(false)("content")} />
+                editor={this.editorRef} />
               <PostForm 
                 tags={tags}
                 notes={notes}
@@ -232,6 +232,7 @@ export default class extends React.PureComponent {
             content={content}
             date={date}
             title={title}
+            editorRef={this.editorRef}
             onChange={this.onChange(true)}
           />
         </SidebarLayout>

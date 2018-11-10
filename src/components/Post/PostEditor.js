@@ -19,7 +19,7 @@ const contentPlugins = [
 const titlePlugins = [
 ]
 
-const EditablePost = ({ author, date, title, content, onChange }) => (
+const EditablePost = ({ editorRef, author, date, title, content, onChange }) => (
   <Card
     image={`/api/avatar/${author}`}
     title={<A href={undefined} style={{ cursor: "text" }}>
@@ -41,6 +41,7 @@ const EditablePost = ({ author, date, title, content, onChange }) => (
         onChange={onChange("content")}
         rules={rules}
         plugins={contentPlugins}
+        editorRef={editorRef}
         value={content} />
     </div>
   </Card>
