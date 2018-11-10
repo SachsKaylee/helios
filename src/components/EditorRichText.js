@@ -14,13 +14,13 @@ export const dataToValue = (value = "") => {
 
 export default class EditorRichText extends React.Component {
   render() {
-    const { value, rules: _, ...props } = this.props;
+    const { rules, ...props } = this.props;
     return (<div>
       <Editor
         renderNode={this.renderNode}
         renderMark={this.renderMark}
-        {...props}
-        value={dataToValue(value)} />
+        ref={this.props.editorRef}
+        {...props} />
     </div>);
   }
 

@@ -7,38 +7,48 @@ import equals from "deep-equal"
 
 export default class RichTextField extends React.Component {
   static getDefaultValue() {
-    return dataToValue("I am empty");
+    return dataToValue("");
   }
 
   constructor(p) {
     super(p);
-    this.state = {
-      slateValue: dataToValue(p.value)
-    };
     this.onChange = this.onChange.bind(this);
+    this.editorRef = React.createRef();
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.value !== prevProps.value) {
-      this.setState({ slateValue: dataToValue(this.props.value) });
-    }
-  }
-
-  onChange(value) {
+  onChange({ value }) {
     const { onChange, system: { waiting } } = this.props;
-    !waiting && onChange(value.value).then(console.log).catch(e => console.warn("onChange Error", e));
+    if (waiting) {
+      return;
+    }
+    if (equals(this.props.value.toJSON(), value.toJSON())) {
+      return;
+    }
+    onChange(value).catch(e => console.warn("onChange Error", e));
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return !equals(this.props, nextProps) || !equals(this.state, nextState);
+  shouldComponentUpdate(props) {
+    // Exclude value to check it later, exclude system(it contains ALL other fields), exclude
+    // onChange since its an arrow function(this could actually be considered a bug!)
+    const { value: currentValue, system: currentSystem, onChange: _1, ...currentProps } = this.props;
+    const { value: nextValue, system: nextSystem, onChange: _2, ...nextProps } = props;
+    // However we cannot fully ignore system since it contains the waiting prop.
+    if (currentSystem.waiting !== nextSystem.waiting) {
+      return true;
+    }
+    // Check if the other props have changed
+    if (!equals(currentProps, nextProps)) {
+      return true;
+    }
+   // Here is the actual check for changes
+    return !equals(currentValue.toJSON(), nextValue.toJSON());
   }
 
   render() {
     const {
-      name, disableToolbar, placeholder, plugins, rules,
-      field, system: { waiting }
+      name, disableToolbar, placeholder, plugins, rules, value,
+      field, system: { waiting } // todo: Implement waiting prop
     } = this.props;
-    const { slateValue } = this.state;
     return (<div className="field">
       <label className="label">{name}</label>
       <div className="contol">
@@ -51,13 +61,13 @@ export default class RichTextField extends React.Component {
               style={{ overflowY: "auto" }}
               rules={rules}
               placeholder={placeholder}
-              value={slateValue}
+              value={value}
+              editorRef={this.editorRef}
               onChange={this.onChange} />
           </div>
           {!disableToolbar && (<div className="column">
             <EditorToolbar
-              onChange={this.onChange}
-              value={slateValue}
+              editor={this.editorRef}
               stylesChooser={true} />
           </div>)}
         </div>

@@ -7,33 +7,37 @@ export class SessionProvider extends React.PureComponent {
   constructor(p) {
     super(p);
     this.state = {
-      session: undefined
+      session: null
     };
   }
 
   componentDidMount() {
     get("/api/session")
-      .then(({ data }) => this.setState({ session: data }))
-      .catch(() => this.setState({ session: undefined }));
+      .then(({ data }) => this.setSession(data))
+      .catch(() => this.setSession(undefined));
   }
 
   signIn = ({ id, password }) => new Promise((res, rej) =>
     post("/api/session/login", { id, password })
-      .then(({ data }) => this.setState({ session: data }, res))
+      .then(({ data }) => this.setSession(data, res))
       .catch(error => rej(error.response.data)));
 
   signOut = () => new Promise((res, rej) =>
     post("/api/session/logout")
-      .then(() => this.setState({ session: undefined }, res))
+      .then(() => this.setSession(null, res))
       .catch(error => rej(error.response.data)));
 
   updateProfile = ({ password, passwordNew, avatar, bio }) => new Promise((res, rej) =>
     put("/api/session", { password, passwordNew, avatar, bio })
-      .then(({ data }) => this.setState({ session: data }, res))
+      .then(({ data }) => this.setSession(data, res))
       .catch(error => rej(error.response.data)));
 
-  setSession = (session) => {
-    this.setState({ session });
+  setSession = (session, callback) => {
+    if (session === undefined || session === null) {
+      this.setState({ session: null }, callback);
+    } else {
+      this.setState({ session }, callback);
+    }
   }
 
   hasPermission = (perm) => {
