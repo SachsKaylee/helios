@@ -23,7 +23,7 @@ export default class User extends React.Component {
       name: blob ? "avatar." + type : "",
       type: blob ? "image/" + type : "",
       data: blob,
-      size: blob.length
+      size: blob ? blob.length : 0
     };
   }
 
