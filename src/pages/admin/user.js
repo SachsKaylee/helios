@@ -5,6 +5,7 @@ import { get, post, put } from "axios";
 import Router from "next/router";
 import { SlimError } from "../../components/Error";
 import CreateUserForm from "../../components/pages/admin/user/CreateUserForm";
+import { dataToValue } from "../../components/EditorRichText";
 
 export default class User extends React.Component {
   static getInitialProps(p) {
@@ -75,7 +76,7 @@ export default class User extends React.Component {
             onSubmit={isNew ? this.submitCreate : this.submitUpdate}
             onCancel={this.goBack}
             isCreating={isNew}
-            data={isNew ? {} : { ...user, avatar: this.blobToFile(user.avatar) }} />
+            data={isNew ? {} : { ...user, bio: dataToValue(user.bio), avatar: this.blobToFile(user.avatar) }} />
         </Card>
       </div>);
   }

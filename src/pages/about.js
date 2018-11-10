@@ -7,6 +7,8 @@ import { Renderer, postRules } from "../slate-renderer";
 import { FormattedMessage } from "react-intl";
 import { FullError } from "../components/Error";
 import PostMedia from "../components/Post/PostMedia";
+import Session from "../store/Session";
+import A from "../components/A";
 
 const rules = postRules();
 
@@ -50,6 +52,21 @@ export default class AboutPage extends React.Component {
             <p className="content is-small"><FormattedMessage id="about.permissions" /> {permissions.length
               ? permissions.map(p => (<span className="tag" key={p}>{p}</span>))
               : <FormattedMessage id="none" />}</p>
+            <Session>
+              {session => {
+                if (session.user && session.user.id === id) {
+                  return (<A className="button" href={`/admin/account`}>
+                    <FormattedMessage id="account.updateProfile" />
+                  </A>);
+                } else if (session.hasPermission("admin")) {
+                  return (<A className="button" href={`/admin/user/${id}`}>
+                    <FormattedMessage id="users.updateUser" />
+                  </A>);
+                } else {
+                  return null;
+                }
+              }}
+            </Session>
           </div>
         </div>
 
