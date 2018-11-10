@@ -7,38 +7,40 @@ import equals from "deep-equal"
 
 export default class RichTextField extends React.Component {
   static getDefaultValue() {
-    return dataToValue("I am empty");
+    return dataToValue("");
   }
 
   constructor(p) {
     super(p);
-    this.state = {
-      slateValue: dataToValue(p.value)
-    };
     this.onChange = this.onChange.bind(this);
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.value !== prevProps.value) {
-      this.setState({ slateValue: dataToValue(this.props.value) });
-    }
   }
 
   onChange(value) {
     const { onChange, system: { waiting } } = this.props;
-    !waiting && onChange(value.value).then(console.log).catch(e => console.warn("onChange Error", e));
+    if (waiting) {
+      return;
+    }
+    if (equals(this.props.value.toJSON(), value.value.toJSON())) {
+      return;
+    }
+    onChange(value.value).catch(e => console.warn("onChange Error", e));
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return !equals(this.props, nextProps) || !equals(this.state, nextState);
+  shouldComponentUpdate(props) {
+    const { value: currentValue, system: currentSystem, onChange: _1, ...currentProps } = this.props;
+    const { value: nextValue, system: nextSystem, onChange: _2, ...nextProps } = props;
+    global.equals = equals;
+    if (!equals(currentProps, nextProps)) {
+      return true;
+    }
+    return !equals(currentValue.toJSON(), nextValue.toJSON());
   }
 
   render() {
     const {
-      name, disableToolbar, placeholder, plugins, rules,
+      name, disableToolbar, placeholder, plugins, rules, value,
       field, system: { waiting }
     } = this.props;
-    const { slateValue } = this.state;
     return (<div className="field">
       <label className="label">{name}</label>
       <div className="contol">
@@ -51,13 +53,13 @@ export default class RichTextField extends React.Component {
               style={{ overflowY: "auto" }}
               rules={rules}
               placeholder={placeholder}
-              value={slateValue}
+              value={value}
               onChange={this.onChange} />
           </div>
           {!disableToolbar && (<div className="column">
             <EditorToolbar
               onChange={this.onChange}
-              value={slateValue}
+              value={value}
               stylesChooser={true} />
           </div>)}
         </div>

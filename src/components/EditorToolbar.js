@@ -1,13 +1,12 @@
 import React from 'react'
 import ReactTooltip from 'react-tooltip';
-import classnames from "classnames";
 import { FormatBoldIcon, FormatItalicIcon, FormatUnderlineIcon, CodeBracesIcon, FormatHeader1Icon, FormatHeader2Icon, FormatQuoteOpenIcon, FormatListBulletedIcon, FormatListNumberedIcon, LinkVariantIcon } from 'mdi-react';
 import { FormattedMessage } from 'react-intl';
 import textContent from "react-addons-text-content";
 
 const DEFAULT_NODE = "line";
 
-export default class EditorToolbar extends React.Component {
+export default class EditorToolbar extends React.PureComponent {
   insertLink = (phase, value) => {
     if (phase === "change" && !this.hasInline("link")) {
       const href = prompt("Please enter the target of your link...", window.location.href.replace("/admin/post/", "/post/"));

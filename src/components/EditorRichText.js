@@ -20,7 +20,7 @@ export default class EditorRichText extends React.Component {
         renderNode={this.renderNode}
         renderMark={this.renderMark}
         {...props}
-        value={dataToValue(value)} />
+        value={value} />
     </div>);
   }
 
