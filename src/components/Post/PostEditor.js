@@ -7,14 +7,14 @@ const EditablePost = ({ author, date, title, content, onChange }) => (
   <Card
     image={`/api/avatar/${author}`}
     title={<A href={undefined} style={{ cursor: "text" }}>
-      <input
+      <input className="input" type="text" 
         onChange={e => onChange("title")(e.target.value)}
         value={title} />
     </A>}
-    subtitle={<FormattedMessage id="post.subtitle" values={{
+    /*subtitle={<FormattedMessage id="post.subtitle" values={{
       author: <A href={undefined}>{author}</A>,
       date
-    }} />}>
+    }} />}*/>
     <div>
       <EditorRichText
         onChange={onChange("content")}

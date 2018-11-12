@@ -13,7 +13,7 @@ const ReadOnlyPost = ({ id, author, date, title, content, edit, tags, notes }) =
       date
     }} />}>
     <div>
-      <div dangerouslySetInnerHTML={{ __html: content }} />
+      <div dangerouslySetInnerHTML={{ __html: content }}/>
       {notes ? (<p className="is-size-7 has-text-grey">{notes}</p>) : null}
       {tags && tags.length ? (<div className="tags">{tags.map(tag => (<span className="tag" key={tag}>
         <A href={`/tag/${tag}`}>{tag}</A>
