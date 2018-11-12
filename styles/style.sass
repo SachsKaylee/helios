@@ -36,27 +36,21 @@ $card-shadow: 0 2px 3px rgba($black, 0.1), 0 0 2px 1px rgba($black, 0.1) !defaul
   height: 7em
 
 // Editor format elements
-.editor-el-code
-  color: black
-
-.editor-el-code-block
-  white-space: pre-wrap
-  color: black
-  padding: 0px !important
-  margin-bottom: 0px !important
-
-.editor-el-error
-  color: red
-  border: 1px dotted orange
-
-.editor-el-link
-  text-decoration: underline
-
 .sidebar
   @media (min-width: $tablet)
     position: fixed
     margin-right: 1.5rem
 
+.jodit_container
+  background: unset !important
+  font-size: unset !important
+  font-family: unset !important
+
+.jodit_toolbar
+  border-radius: 4px 4px 0 0 !important
+
+.jodit_statusbar
+  border-radius: 0 0 4px 4px !important
 
 // 3. Import the rest of Bulma;
 @import 'bulma/bulma'

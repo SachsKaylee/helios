@@ -1,5 +1,5 @@
-const Card = ({ spacing: { top, inner } = {}, image, title, subtitle, children }) => (
-  <div className="card" style={{ marginTop: top || "2rem" }}>
+const Card = ({ spacing: { top, inner } = {}, image, title, subtitle, children, style }) => (
+  <div className="card" style={{ marginTop: top || "2rem", ...style }}>
     <div className="card-content">
       <div className="media">
         {image && (<div className="media-center">

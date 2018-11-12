@@ -3,14 +3,11 @@ import config from "../config/client";
 import axios from "axios";
 import Head from "next/head";
 import Card from "../components/Card";
-import { Renderer, postRules } from "../slate-renderer";
 import { FormattedMessage } from "react-intl";
 import { FullError } from "../components/Error";
 import PostMedia from "../components/Post/PostMedia";
 import Session from "../store/Session";
 import A from "../components/A";
-
-const rules = postRules();
 
 export default class AboutPage extends React.Component {
   static getInitialProps({ query: { id } }) {
@@ -48,10 +45,15 @@ export default class AboutPage extends React.Component {
             <h1 className="title">
               <FormattedMessage id="about.title" values={{ id }} />
             </h1>
-            {bio && (<Renderer rules={rules}>{bio}</Renderer>)}
+
             <p className="content is-small"><FormattedMessage id="about.permissions" /> {permissions.length
               ? permissions.map(p => (<span className="tag" key={p}>{p}</span>))
-              : <FormattedMessage id="none" />}</p>
+                : <FormattedMessage id="none" />}
+                <br/>
+            </p>
+
+            <div dangerouslySetInnerHTML={{ __html: bio }}/>
+
             <Session>
               {session => {
                 if (session.user && session.user.id === id) {

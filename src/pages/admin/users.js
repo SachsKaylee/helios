@@ -4,9 +4,6 @@ import Card from "../../components/Card";
 import A from "../../components/A";
 import { get } from "axios";
 import Media from "../../components/Media";
-import { Renderer, postRules } from "../../slate-renderer";
-
-const rules = postRules();
 
 export default class Admin extends React.Component {
   constructor(p) {
@@ -35,9 +32,9 @@ export default class Admin extends React.Component {
           subtitle={(<span><A className="button" href="/admin/user"><FormattedMessage id="users.createUser" /></A></span>)}>
           {users.map(user => (<Media key={user.id} image={user.avatar || `/api/avatar/${user.id}`} title={(<span>
             <strong style={{ marginRight: 2 }}><A href={`/admin/user/${user.id}`}>{user.id}</A></strong>
-            {user.permissions.map(p => (<span className="tag" style={{ marginRight: 2 }} key={p}>{p}</span>))}
-          </span>)}>
-            <Renderer rules={rules}>{user.bio}</Renderer>
+              {user.permissions.map(p => (<span className="tag" style={{ marginRight: 2 }} key={p}>{p}</span>))}
+            </span>)}>
+            <div dangerouslySetInnerHTML={{ __html: user.bio }} />
           </Media>))}
         </Card>
     </div>);

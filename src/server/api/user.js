@@ -5,7 +5,6 @@ const config = require("../../config/server");
 const crypto = require("crypto");
 const fp = require("../../fp");
 const async = require("../../async");
-const { default: Plain } = require("slate-plain-serializer");
 const { mongoError } = require("../error-transformer");
 
 const schema = ({ mongoose }) => {
@@ -47,14 +46,7 @@ const install = ({ server, models }) => {
     // todo: make sure the avatar is of the right image format. We don't want users to upload malware!
     const validAvatar = avatar => avatar && ("string" === typeof avatar) && avatar.length <= 200 * 1024;
     const validPermissions = permissions => permissions && Array.isArray(permissions) && fp.all(permissions, p => allPermissions[p]);
-    const validBio = bio => {
-      if (!bio) return false;
-      return true;// todo <<<---- this is broken, serialize is always ""!!!!!!!!!!!!! FIX ME FIX ME
-      try { return Plain.serialize(bio).trim() !== ""; }
-      catch (_) { return false; }
-    };
-
-    console.log("bio", { bio, plain: Plain.serialize(bio), valid: validBio(bio) })
+    const validBio = () => true;
 
     const newUser = new models.user({
       _id: user._id,
@@ -73,7 +65,7 @@ const install = ({ server, models }) => {
       const { password, id } = config.defaultUser;
       const user = new models.user({
         _id: id,
-        bio: Plain.deserialize("").toJSON(),
+        bio: "",
         avatar: "",
         password: encrypt(password),
         permissions: ["admin"]

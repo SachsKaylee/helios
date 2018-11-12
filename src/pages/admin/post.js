@@ -1,8 +1,5 @@
 import SidebarLayout from "../../components/SidebarLayout";
-import EditorToolbar from "../../components/EditorToolbar";
 import A from "../../components/A";
-import { Value } from "slate";
-import Plain from 'slate-plain-serializer';
 import React from "react";
 import Card from "../../components/Card"
 import EditablePost from "../../components/Post/PostEditor";
@@ -32,8 +29,8 @@ export default class extends React.PureComponent {
     const { state } = this.state;
     switch (state) {
       case "loaded": return isNew
-        ? (<FormattedMessage id="post.title.new" values={{ title: this.valueToString(title) }} />)
-        : (<FormattedMessage id="post.title.edit" values={{ title: this.valueToString(title) }} />);
+        ? (<FormattedMessage id="post.title.new" values={{ title }} />)
+        : (<FormattedMessage id="post.title.edit" values={{ title }} />);
       case "loading": return (<FormattedMessage id="loading" />);
       case "error": return (<FormattedMessage id="error" />);
     }
@@ -55,33 +52,14 @@ export default class extends React.PureComponent {
       id: _id,
       isNew: !_id,
       author, tags, notes,
-      lastChanged: (oldState && oldState.lastChanged) || "content",
       date: date ? new Date(date) : new Date(),
-      title: this.dataToValue(title),
-      content: this.dataToValue(content)
+      title: title,
+      content: content
     }
   }
 
-  dataToValue(value) {
-    return "string" === (typeof value)
-      ? Plain.deserialize(value)
-      : Value.isValue(value)
-        ? value
-        : Value.fromJSON(value);
-  }
-
-  valueToString(value) {
-    return "string" === (typeof value)
-      ? value
-      : Value.isValue(value)
-        ? Plain.serialize(value)
-        : "" + value;
-  }
-
-  onChange = changedFocus => what => ({ value }) => {
-    this.setState(changedFocus
-      ? { [what]: value, lastChanged: what }
-      : { [what]: value });
+  onChange = what => (value) => {
+    this.setState({ [what]: value });
   }
 
   onDelete = (really) => () => {
@@ -119,8 +97,8 @@ export default class extends React.PureComponent {
     const { id, title, content, date, author, isNew } = this.state;
     const data = {
       author, date, tags, notes,
-      title: this.valueToString(title),
-      content: content.toJSON()
+      title: title,
+      content: content
     };
     (isNew
       ? axios.post("/api/post", data)
@@ -204,18 +182,15 @@ export default class extends React.PureComponent {
   renderError() {
     const { error } = this.state;
     return (<FullError error={error} />);
-  }config
+  }
 
   renderLoaded() {
-    const { title, content, isNew, date, author, lastChanged, tags, notes } = this.state;
+    const { title, content, isNew, date, author, tags, notes } = this.state;
     return (
       <div className="container">
         <SidebarLayout size={3} sidebar={(
           <div className="sidebar">
             <Card>
-              <EditorToolbar
-                stylesChooser={lastChanged === "content"}
-                editor={this.editorRef} />
               <PostForm 
                 tags={tags}
                 notes={notes}
@@ -233,7 +208,7 @@ export default class extends React.PureComponent {
             date={date}
             title={title}
             editorRef={this.editorRef}
-            onChange={this.onChange(true)}
+            onChange={this.onChange}
           />
         </SidebarLayout>
       </div>

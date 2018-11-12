@@ -7,23 +7,9 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import FileField from "../../../general/fields/FileField";
 import RichTextField from "../../../general/fields/RichTextField";
 import { ContentSaveIcon, ErrorOutlineIcon } from "mdi-react";
-import { postRules } from "../../../../slate-renderer";
-import SoftBreak from "slate-soft-break";
-import PasteLinkify from "slate-paste-linkify";
 import config from "../../../../config/client";
 import { formatBytes } from "../../../../bytes";
 import pwned from "@react-formilicious/validator-pwned";
-
-const rules = postRules();
-const plugins = [
-  SoftBreak({
-    onlyIn: ["block-quote", "code-block"],
-    shift: true
-  }),
-  PasteLinkify({
-    type: "link"
-  })
-];
 
 export default injectIntl(class LogInForm extends React.PureComponent {
 
@@ -62,8 +48,7 @@ export default injectIntl(class LogInForm extends React.PureComponent {
           key: "bio",
           type: RichTextField,
           name: (<FormattedMessage id="account.bio.field" />),
-          placeholder: (<FormattedMessage id="account.bio.placeholder" />),
-          rules, plugins
+          placeholder: (<FormattedMessage id="account.bio.placeholder" />)
         },
         {
           key: "passwordNew",

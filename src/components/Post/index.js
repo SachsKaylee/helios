@@ -1,11 +1,8 @@
 import A from "./../A";
 import Card from "./../Card";
-import { Renderer, postRules } from "../../slate-renderer";
 import { FormattedMessage } from "react-intl";
 
 const buttons = (edit) => edit ? !edit.indexOf("show-admin-buttons") : false;
-
-const rules = postRules();
 
 const ReadOnlyPost = ({ id, author, date, title, content, edit, tags, notes }) => (
   <Card
@@ -16,7 +13,7 @@ const ReadOnlyPost = ({ id, author, date, title, content, edit, tags, notes }) =
       date
     }} />}>
     <div>
-      <Renderer rules={rules}>{content}</Renderer>
+      <div dangerouslySetInnerHTML={{ __html: content }}/>
       {notes ? (<p className="is-size-7 has-text-grey">{notes}</p>) : null}
       {tags && tags.length ? (<div className="tags">{tags.map(tag => (<span className="tag" key={tag}>
         <A href={`/tag/${tag}`}>{tag}</A>
