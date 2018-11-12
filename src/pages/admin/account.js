@@ -6,7 +6,6 @@ import Session from "../../store/Session";
 import { LogoutIcon, EarthIcon, DeleteIcon } from "mdi-react";
 import LogInForm from "../../components/pages/admin/account/LogInForm";
 import EditProfileForm from "../../components/pages/admin/account/EditProfileForm";
-import { dataToValue } from "../../components/EditorRichText";
 
 export default injectIntl(class Account extends React.Component {
   constructor(p) {
@@ -73,12 +72,12 @@ export default injectIntl(class Account extends React.Component {
   }
 
   renderUpdateForm(session) {
-    return <EditProfileForm data={{ ...session.user, bio: dataToValue(session.user.bio), avatar: undefined }}
+    return <EditProfileForm data={{ ...session.user, avatar: undefined }}
       onSubmit={values => session.updateProfile({
         password: values.password,
         passwordNew: values.passwordNew,
         avatar: values.avatar.data,
-        bio: values.bio.toJSON()
+        bio: values.bio
       }).then(() => ({}))
         .catch(error => errorToMessage(error))} />
   }

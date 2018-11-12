@@ -22,6 +22,7 @@ export default class _Document extends Document {
           <link key="manifest" rel="manifest" href="/manifest.json" />
           <link rel="icon" type="image/x-icon" href="/static/content/system/favicon.ico" sizes="any" />
           <style dangerouslySetInnerHTML={{ __html: style }} />
+          <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jodit/3.1.92/jodit.min.css"></link>
         </Head>
         <body>
           <Main />
