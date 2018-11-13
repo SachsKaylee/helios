@@ -47,16 +47,16 @@ module.exports = {
       menu: "Admin",
       overview: "Overview",
       account: "Account",
-      newPost: "New Post"
+      newPost: "New Post",
+      signIn: "Sign in",
+      signOut: "Sign out"
     }
   },
   // Admin page
   admin: {
     title: "Overview",
     posts: "Posts",
-    users: "Users",
-    signIn: "Sign in",
-    signOut: "Sign out"
+    users: "Users"
   },
   // Admin accounts overview page
   users: {
