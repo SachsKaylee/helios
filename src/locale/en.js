@@ -54,7 +54,9 @@ module.exports = {
   admin: {
     title: "Overview",
     posts: "Posts",
-    users: "Users"
+    users: "Users",
+    signIn: "Sign in",
+    signOut: "Sign out"
   },
   // Admin accounts overview page
   users: {
@@ -71,6 +73,7 @@ module.exports = {
   post: {
     subtitle: "{author} on {date, date, medium}",
     mediaTitle: "{title} by {author}, {date, date, medium}",
+    noneFound: "No posts could be found. Please try again later.",
     editor: {
       format: {
         bold: "Bold",
