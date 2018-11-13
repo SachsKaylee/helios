@@ -14,14 +14,11 @@ export default injectIntl(class Admin extends React.Component {
   }
 
   componentDidMount() {
+    const title = this.props.intl.formatMessage({ id: "users.title" });
+    this.props.setPageTitle(title);
     get("/api/users")
       .then(({ data }) => this.setState({ users: data }))
       .catch(console.error);
-  }
-
-  componentDidMount() {
-    const title = this.props.intl.formatMessage({ id: "users.title" });
-    this.props.setPageTitle(title);
   }
 
   render() {
