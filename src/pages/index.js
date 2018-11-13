@@ -6,7 +6,7 @@ import Head from "next/head";
 import A from "../components/A";
 import { FormattedMessage } from "react-intl";
 
-export default class IndexPage extends React.Component {
+export default class IndexPage extends React.PureComponent {
   static async getInitialProps({ query }) {
     const [posts, postCount] = await Promise.all([
       axios.get("/api/post", {
@@ -35,8 +35,8 @@ export default class IndexPage extends React.Component {
     };
   }
 
-  getTitle() {
-    return locale.pages.blog.title;
+  componentDidMount() {
+    this.props.setPageTitle(locale.pages.blog.title);
   }
 
   render() {

@@ -1,12 +1,12 @@
 import React from "react";
-import { FormattedMessage, FormattedNumber } from "react-intl";
+import { FormattedMessage, FormattedNumber, injectIntl } from "react-intl";
 import Card from "../../components/Card";
 import config from "../../config/client";
 import A from "../../components/A";
 import { get } from "axios";
 import async from "../../async";
 
-export default class Admin extends React.Component {
+export default injectIntl(class Admin extends React.Component {
   static getInitialProps() {
     return async.all({
       post: get("/api/post-count"),
@@ -17,8 +17,9 @@ export default class Admin extends React.Component {
     }));
   }
 
-  getTitle() {
-    return (<FormattedMessage id="admin.title" />);
+  componentDidMount() {
+    const title = this.props.intl.formatMessage({ id: "admin.title" });
+    this.props.setPageTitle(title);
   }
 
   render() {
@@ -43,4 +44,4 @@ export default class Admin extends React.Component {
         </Card>
       </div>);
   }
-}
+});

@@ -3,13 +3,13 @@ import config from "../config/client";
 import axios from "axios";
 import Head from "next/head";
 import Card from "../components/Card";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, injectIntl } from "react-intl";
 import { FullError } from "../components/Error";
 import PostMedia from "../components/Post/PostMedia";
 import Session from "../store/Session";
 import A from "../components/A";
 
-export default class AboutPage extends React.Component {
+export default injectIntl(class AboutPage extends React.Component {
   static getInitialProps({ query: { id } }) {
     return Promise.all([
       axios.get(id ? `/api/user/${id}` : "/api/user"),
@@ -18,11 +18,9 @@ export default class AboutPage extends React.Component {
       .catch(error => ({ error: error.response.data }));
   }
 
-  getTitle() {
-    const { error, user } = this.props;
-    return error
-      ? (<FormattedMessage id="error" />)
-      : (<FormattedMessage id="about.title" values={{ id: user.id }} />);
+  componentDidMount() {
+    const title = this.props.intl.formatMessage({ id: "about.title" }, { id: this.props.user.id });
+    this.props.setPageTitle(title);
   }
 
   renderUser() {
@@ -88,4 +86,4 @@ export default class AboutPage extends React.Component {
       : this.renderUser()
     }</div>);
   }
-}
+});

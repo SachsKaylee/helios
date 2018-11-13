@@ -1,11 +1,11 @@
 import React from "react";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, injectIntl } from "react-intl";
 import Card from "../../components/Card";
 import A from "../../components/A";
 import { get } from "axios";
 import Media from "../../components/Media";
 
-export default class Admin extends React.Component {
+export default injectIntl(class Admin extends React.Component {
   constructor(p) {
     super(p);
     this.state = {
@@ -19,8 +19,9 @@ export default class Admin extends React.Component {
       .catch(console.error);
   }
 
-  getTitle() {
-    return (<FormattedMessage id="users.title" />);
+  componentDidMount() {
+    const title = this.props.intl.formatMessage({ id: "users.title" });
+    this.props.setPageTitle(title);
   }
 
   render() {
@@ -39,4 +40,4 @@ export default class Admin extends React.Component {
         </Card>
     </div>);
   }
-}
+});

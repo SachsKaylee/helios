@@ -8,12 +8,9 @@ import LogInForm from "../../components/pages/admin/account/LogInForm";
 import EditProfileForm from "../../components/pages/admin/account/EditProfileForm";
 
 export default injectIntl(class Account extends React.Component {
-  constructor(p) {
-    super(p);
-  }
-
-  getTitle() {
-    return this.props.intl.formatMessage({ id: "account.title" });
+  componentDidMount() {
+    const title = this.props.intl.formatMessage({ id: "account.title" });
+    this.props.setPageTitle(title);
   }
 
   render() {

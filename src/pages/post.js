@@ -5,14 +5,14 @@ import Head from "next/head";
 import config from "../config/client";
 import Session from "../store/Session";
 
-export default class PostPage extends React.Component {
+export default class PostPage extends React.PureComponent {
   static async getInitialProps(p) {
     const { data } = await axios.get("/api/post/" + p.query.id);
     return { post: data };
   }
-
-  getTitle() {
-    return this.props.post.title;
+  
+  componentDidMount() {
+    this.props.setPageTitle(this.props.post.title);
   }
 
   render() {

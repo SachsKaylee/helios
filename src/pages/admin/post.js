@@ -5,13 +5,13 @@ import Card from "../../components/Card"
 import EditablePost from "../../components/Post/PostEditor";
 import axios from "axios";
 import NotificationProvider from "../../components/NotificationProvider"
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, injectIntl } from "react-intl";
 import config from "../../config/client";
 import { DeleteIcon, WarningIcon, LoadingIcon, ErrorIcon, CakeIcon } from "mdi-react";
 import { SlimError, FullError } from "../../components/Error";
 import PostForm from "../../components/pages/admin/post/PostForm";
 
-export default class extends React.PureComponent {
+export default injectIntl(class PostPage extends React.PureComponent {
   constructor(p) {
     super(p);
     this.notifications = React.createRef();
@@ -25,15 +25,26 @@ export default class extends React.PureComponent {
     return { id };
   }
 
-  getTitle() {
+  componentDidMount() {
+    let title = "";
     const { state } = this.state;
     switch (state) {
-      case "loaded": return isNew
-        ? (<FormattedMessage id="post.title.new" values={{ title }} />)
-        : (<FormattedMessage id="post.title.edit" values={{ title }} />);
-      case "loading": return (<FormattedMessage id="loading" />);
-      case "error": return (<FormattedMessage id="error" />);
+      case "loaded": {
+        title = isNew
+          ? this.props.intl.formatMessage({ id: "post.title.new" }, { title })
+          : this.props.intl.formatMessage({ id: "post.title.edit" }, { title })
+        break;
+      }
+      case "loading": {
+        title = this.props.intl.formatMessage({ id: "loading" });
+        break;
+      }
+      case "error": {
+        title = this.props.intl.formatMessage({ id: "error" });
+        break;
+      }
     }
+    this.props.setPageTitle(title);
   }
 
   componentDidMount() {
@@ -223,7 +234,7 @@ export default class extends React.PureComponent {
       case "error": return this.renderError();
     }
   }
-}
+});
 
 const defaultPostData = () => ({
   tags: config.defaultTags,

@@ -33,9 +33,22 @@ export default class _App extends App {
     return { pageProps };
   }
 
+  constructor(p) {
+    super(p);
+    this.setPageTitle = this.setPageTitle.bind(this);
+    this.state = {
+      title: "…"
+    };
+  }
+
+  setPageTitle(title) {
+    this.setState({ title });
+  }
+
   render() {
     const { Component, pageProps } = this.props;
-    const title = this.component && this.component.getTitle && this.component.getTitle() || "…";
+    //const title = this.component && this.component.getTitle && this.component.getTitle() || "…";
+    const title = this.state.title;
     return (<Container>
       <IntlProvider
         locale={localeMeta.id}
@@ -91,7 +104,7 @@ export default class _App extends App {
               </Navbar>)}
           </Session>
           <div className="section">
-            <Component {...pageProps} />
+            <Component {...pageProps} setPageTitle={this.setPageTitle} />
           </div>
         </SessionProvider>
       </IntlProvider>

@@ -1,13 +1,12 @@
 import React from "react";
 import Card from "../../components/Card";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, injectIntl } from "react-intl";
 import { get, post, put } from "axios";
 import Router from "next/router";
 import { SlimError } from "../../components/Error";
 import CreateUserForm from "../../components/pages/admin/user/CreateUserForm";
-import { dataToValue } from "../../components/EditorRichText";
 
-export default class User extends React.Component {
+export default injectIntl(class User extends React.Component {
   static getInitialProps(p) {
     const { id } = p.query;
     return id
@@ -59,9 +58,10 @@ export default class User extends React.Component {
     Router.push("/admin/users")
   }
 
-  getTitle() {
+  componentDidMount() {
     const { isNew } = this.props;
-    return isNew ? (<FormattedMessage id="users.createUser" />) : (<FormattedMessage id="users.updateUser" />);
+    const title = this.props.intl.formatMessage({ id: isNew ? "users.createUser" : "users.updateUser" });
+    this.props.setPageTitle(title);
   }
 
   render() {
@@ -76,7 +76,7 @@ export default class User extends React.Component {
             onSubmit={isNew ? this.submitCreate : this.submitUpdate}
             onCancel={this.goBack}
             isCreating={isNew}
-            data={isNew ? {} : { ...user, bio: dataToValue(user.bio), avatar: this.blobToFile(user.avatar) }} />
+            data={isNew ? {} : { ...user, bio: user.bio, avatar: this.blobToFile(user.avatar) }} />
         </Card>
       </div>);
   }
@@ -86,4 +86,4 @@ export default class User extends React.Component {
     if (user.avatar) return user.avatar;
     return `/api/avatar/${user.id}`;
   }
-}
+});
