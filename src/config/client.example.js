@@ -1,4 +1,16 @@
-module.exports = {
+/** ********************************
+ * 
+ * This is the Helios CLIENT configuration file.
+ * Please take your time to configure the client to your system.
+ * 
+ * You can find a comprehensive guide about all settings here:
+ * https://github.com/PatrickSachs/helios/wiki/Client-Configuration
+ * 
+ * YOUR SERVER WILL NOT WORK WITHOUT ADJUSTING THESE SETTINGS!
+ * 
+ ******************************** */
+
+ module.exports = {
   // The title/name of your website
   title: "Helios",
 

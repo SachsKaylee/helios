@@ -1,6 +1,14 @@
-const client = require("./client");
-const path = require("path");
-const fs = require("fs");
+/** ********************************
+ * 
+ * This is the Helios SERVER configuration file.
+ * Please take your time to configure the server to your system.
+ * 
+ * You can find a comprehensive guide about all settings here:
+ * https://github.com/PatrickSachs/helios/wiki/Server-Configuration
+ * 
+ * YOUR SERVER WILL NOT WORK WITHOUT ADJUSTING THESE SETTINGS!
+ * 
+ ******************************** */
 
 module.exports = {
   // The secret used to encrypt the passwords in the DB.
@@ -37,8 +45,8 @@ module.exports = {
     allowUnsigned: true,
 
     // Your keys. They are to be placed in this directory.
-    key: fs.readFileSync(path.resolve(__dirname, "./key.pem")).toString(),
-    cert: fs.readFileSync(path.resolve(__dirname, "./server.crt")).toString()
+    key: require("fs").readFileSync(require("path").resolve(__dirname, "./key.pem")).toString(),
+    cert: require("fs").readFileSync(require("path").resolve(__dirname, "./server.crt")).toString()
   },*/
 
   // The connection to your database.
@@ -56,5 +64,5 @@ module.exports = {
   agreeGreenlockTos: true,
 
   // The client configuration should also be available on the server.
-  client
+  client: require("./client")
 }
