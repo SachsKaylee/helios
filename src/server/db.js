@@ -15,6 +15,9 @@ const $makeModel = (source, name) => mongoose.model(name, source.schema({ mongoo
 const connected = new Promise(res => mongoose.connection.once('open', () => {
   const models = fp.mapObject(api, (source, name) => source.schema && $makeModel(source, name));
   console.log("DB Connected!", "APIs:", Object.keys(api));
+  fp.mapObject(models, (model, name) => {
+    api[name].schema.model = model;
+  });
   res({ models, mongoose });
 }));
 
