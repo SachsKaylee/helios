@@ -1,5 +1,5 @@
-const uuid = require("../../uuid");
 const config = require("../../config/server");
+const niceUri = require("../../nice-uri");
 
 const intOr = (int, or) => Number.isInteger(int) ? int : or;
 const stringOr = (string, or) => ("string" === typeof string) ? string : or;
@@ -15,13 +15,6 @@ const schema = ({ mongoose }) => {
     notes: String
   });
 }
-
-const niceUri = text =>
-  (("" + (text || uuid.uuidSection())) // Make sure we have a string! If not just shove a UUID in there.
-    .replace(/[^a-zA-Z0-9]/g, '-')     // Replace non alphanumerical things with "-"
-    .toLowerCase()                     // the internet is lowercase
-    + "-" + uuid.uuidSection())        // Append a UUID to it, in case someone writes two posts with the same title
-    .replace(/-+/g, "-");              // Avoid having URIs with multiple "-"s after another
 
 const install = ({ server, models, api }) => {
   // https://stackoverflow.com/questions/5830513/how-do-i-limit-the-number-of-returned-items
