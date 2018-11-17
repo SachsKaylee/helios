@@ -1,5 +1,5 @@
-import A from "./../A";
-import Media from "./../Media";
+import A from "./../system/A";
+import Media from "../layout/Media";
 import { FormattedMessage, FormattedDate } from "react-intl";
 
 // todo: render to a shorter version, not the entire post!

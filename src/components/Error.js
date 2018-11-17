@@ -1,5 +1,5 @@
 import { FormattedMessage } from "react-intl";
-import Card from "./Card";
+import Card from "./layout/Card";
 
 export const FullError = ({ error }) => {
   return (<Card title={<p><FormattedMessage id="error" /></p>}>

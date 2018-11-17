@@ -12,8 +12,7 @@ const Card = ({ spacing: { top, inner } = {}, image, title, subtitle, children, 
       </div>
       <div className="content" style={inner && { margin: inner }}>{children}</div>
     </div>
-    <style jsx>
-      {`
+    <style jsx>{`
     .content p {
         line-height: 1.9;
         margin: 15px 0;

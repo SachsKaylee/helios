@@ -1,4 +1,4 @@
-import A from "./A";
+import A from "./system/A";
 import classnames from "classnames";
 import React from "react";
 

@@ -1,5 +1,5 @@
-import Post from "./";
-import Card from "./../Card";
+import Post from "./Post";
+import Card from "../layout/Card";
 import { FormattedMessage } from "react-intl";
 import { EmoticonSadIcon } from "mdi-react";
 

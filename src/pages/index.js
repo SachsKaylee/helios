@@ -1,9 +1,9 @@
-import Posts from "../components/Post/PostList";
+import Posts from "../components/post/PostList";
 import React from "react";
 import axios from "axios";
 import config, { locale } from "../config/client";
 import Head from "next/head";
-import A from "../components/A";
+import A from "../components/system/A";
 import { FormattedMessage } from "react-intl";
 
 export default class IndexPage extends React.PureComponent {

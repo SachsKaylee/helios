@@ -2,12 +2,12 @@ import React from "react";
 import config from "../config/client";
 import axios from "axios";
 import Head from "next/head";
-import Card from "../components/Card";
+import Card from "../components/layout/Card";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { FullError } from "../components/Error";
-import PostMedia from "../components/Post/PostMedia";
+import PostMedia from "../components/post/PostMedia";
 import Session from "../store/Session";
-import A from "../components/A";
+import A from "../components/system/A";
 
 export default injectIntl(class AboutPage extends React.Component {
   static getInitialProps({ query: { id } }) {

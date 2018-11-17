@@ -1,9 +1,9 @@
 import React from "react";
 import { FormattedMessage, injectIntl } from "react-intl";
-import Card from "../../components/Card";
-import A from "../../components/A";
+import Card from "../../components/layout/Card";
+import A from "../../components/system/A";
 import { get } from "axios";
-import Media from "../../components/Media";
+import Media from "../../components/layout/Media";
 
 export default injectIntl(class Admin extends React.Component {
   constructor(p) {

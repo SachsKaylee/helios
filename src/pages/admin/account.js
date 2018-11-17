@@ -1,11 +1,11 @@
 import React from "react";
-import Card from "../../components/Card";
-import A from "../../components/A";
+import Card from "../../components/layout/Card";
+import A from "../../components/system/A";
 import { FormattedMessage, injectIntl } from "react-intl";
 import Session from "../../store/Session";
 import { LogoutIcon, EarthIcon, DeleteIcon } from "mdi-react";
-import LogInForm from "../../components/pages/admin/account/LogInForm";
-import EditProfileForm from "../../components/pages/admin/account/EditProfileForm";
+import LogInForm from "../../components/forms/LogInForm";
+import EditProfileForm from "../../components/forms/EditProfileForm";
 
 export default injectIntl(class Account extends React.Component {
   componentDidMount() {

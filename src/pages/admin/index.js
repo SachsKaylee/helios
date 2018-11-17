@@ -1,8 +1,8 @@
 import React from "react";
 import { FormattedMessage, FormattedNumber, injectIntl } from "react-intl";
-import Card from "../../components/Card";
+import Card from "../../components/layout/Card";
 import config from "../../config/client";
-import A from "../../components/A";
+import A from "../../components/system/A";
 import { get } from "axios";
 
 export default injectIntl(class Admin extends React.Component {

@@ -1,5 +1,5 @@
-import A from "./../A";
-import Card from "./../Card";
+import A from "./../system/A";
+import Card from "../layout/Card";
 import EditorRichText from './../EditorRichText';
 import { FormattedMessage } from "react-intl";
 

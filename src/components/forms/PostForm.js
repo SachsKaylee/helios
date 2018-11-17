@@ -4,7 +4,7 @@ import TagList from "@react-formilicious/bulma/TagList";
 import TextArea from "@react-formilicious/bulma/TextArea";
 import { PublishIcon, FileUndoIcon, DeleteIcon } from "mdi-react";
 import { FormattedMessage, injectIntl } from "react-intl";
-import onlyTruthy from "../../../../utils/onlyTruthy";
+import onlyTruthy from "../../utils/onlyTruthy";
 
 export default injectIntl(class PostForm extends React.PureComponent {
   render() {

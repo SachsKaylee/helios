@@ -1,10 +1,10 @@
-import A from "./../A";
-import Card from "./../Card";
+import A from "../system/A";
+import Card from "../layout/Card";
 import { FormattedMessage } from "react-intl";
 
 const buttons = (edit) => edit ? !edit.indexOf("show-admin-buttons") : false;
 
-const ReadOnlyPost = ({ id, author, date, title, content, edit, tags, notes }) => (
+const Post = ({ id, author, date, title, content, edit, tags, notes }) => (
   <Card
     image={`/api/avatar/${author}`}
     title={<A href={`/post/${id}`}>{title}</A>}
@@ -25,4 +25,4 @@ const ReadOnlyPost = ({ id, author, date, title, content, edit, tags, notes }) =
   </Card>
 );
 
-export default ReadOnlyPost;
+export default Post;

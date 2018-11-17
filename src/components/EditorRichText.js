@@ -1,6 +1,6 @@
 import * as React from "react";
 import JoditStyle from 'jodit/build/jodit.min.css';
-import Dynamic from "../components/Dynamic";
+import Dynamic from "./system/Dynamic";
 
 export default class EditorRichText extends React.Component {
   shouldComponentUpdate() {

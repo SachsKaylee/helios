@@ -1,12 +1,12 @@
 import Form from "@react-formilicious/bulma";
 import { FormattedMessage, injectIntl } from "react-intl";
-import { formatBytes } from "../../../../utils/bytes";
+import { formatBytes } from "../../utils/bytes";
 import TagList from "@react-formilicious/bulma/TagList";
 import TextField from "@react-formilicious/bulma/TextField";
-import FileField from "../../../general/fields/FileField";
+import FileField from "../fields/FileField";
 import RichTextField from "../../../general/fields/RichTextField";
 import { ContentSaveIcon, CancelIcon } from "mdi-react";
-import config from "../../../../config/client";
+import config from "../../config/client";
 import required from "@react-formilicious/core/validators/required";
 import combined from "@react-formilicious/core/validators/combined";
 import pwned from "@react-formilicious/validator-pwned";

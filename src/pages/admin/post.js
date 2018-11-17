@@ -1,8 +1,8 @@
 import SidebarLayout from "../../components/SidebarLayout";
-import A from "../../components/A";
+import A from "../../components/system/A";
 import React from "react";
-import Card from "../../components/Card"
-import EditablePost from "../../components/Post/PostEditor";
+import Card from "../../components/layout/Card"
+import EditablePost from "../../components/post/PostEditor";
 import axios from "axios";
 import NotificationProvider from "../../components/NotificationProvider"
 import { FormattedMessage, injectIntl } from "react-intl";
