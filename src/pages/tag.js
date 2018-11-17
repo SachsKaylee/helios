@@ -1,3 +1,4 @@
+
 import Posts from "../components/post/PostList";
 import React from "react";
 import axios from "axios";
@@ -8,14 +9,15 @@ import Pagination from "../components/layout/Pagination";
 export default class IndexPage extends React.PureComponent {
   static async getInitialProps({ query }) {
     const [posts, postCount] = await Promise.all([
-      axios.get("/api/post", {
+      axios.get("/api/tag/posts/" + encodeURIComponent(query.tag || config.defaultTags[0]), {
         params: {
           skip: query.page && ((parseInt(query.page, 10) - 1) * config.postsPerPage), limit: config.postsPerPage
         }
       }),
-      axios.get("/api/post-count")
+      axios.get("/api/tag/count/" + encodeURIComponent(query.tag || config.defaultTags[0]))
     ]);
     return {
+      tag: query.tag || config.defaultTags[0],
       count: postCount.data.count,
       page: query.page ? parseInt(query.page, 10) : 1,
       posts: posts.data.map(({ _id, author, date, title, content, tags, notes }) => ({
@@ -34,14 +36,14 @@ export default class IndexPage extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.props.setPageTitle(locale.pages.blog.title);
+    this.props.setPageTitle("Tag: " + this.props.tag);
   }
 
   render() {
-    const { posts, count, page } = this.props;
+    const { posts, count, page, tag } = this.props;
     return (<>
       <Head>
-        <link key="canonical" rel="canonical" href={`https://${config.domains[0]}:${config.port.https}/`} />
+        <link key="canonical" rel="canonical" href={`https://${config.domains[0]}:${config.port.https}/tag/${encodeURIComponent(tag)}`} />
       </Head>
       <Pagination perPage={config.postsPerPage} count={count} page={page}>
         <Posts posts={posts.map(p => ({
