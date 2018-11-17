@@ -2,13 +2,13 @@ const axios = require("axios");
 const path = require("path");
 const createNext = require("next");
 const api = require("./api");
+const db = require("./db");
 const fp = require("../fp");
 const routes = require("../routes");
 const config = require("../config/server");
 const areIntlLocalesSupported = require("intl-locales-supported");
 const reactIntl = require("react-intl");
 const { transformError } = require("./error-transformer");
-
 const Redoubt = require("redoubt").default;
 
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -67,7 +67,7 @@ server.use((req, res, next) => {
   res.blob = (blob) => {
     const [details, data] = blob.split(",");
     const [mime, format] = details.split(";");
-    const buffer = new Buffer(data, format);
+    const buffer = Buffer.from(data, format);
     res.writeHead(200, {
       "Content-Type": mime.substr("data:".length),
       "Content-Length": buffer.length
@@ -92,6 +92,8 @@ const next = createNext({
   dir: "./src"
 });
 Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
+  redoubt.listen(config.client.port.https, config.client.port.http);
+
   // APIs - APIs can only access APIs ranked "lower"
   // todo: get rid of this weird API design
   const apiData = fp.reduceObject(api, (apiData, currentApi, key) => {
@@ -102,6 +104,7 @@ Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
   console.log("📡", "All APIs:", apiData);
   // Fallback
   server.get("*", routes.getRequestHandler(next));
-}).catch(err => console.error("🔥", "Error while preparing server!", err));
-
-redoubt.listen(config.client.port.https, config.client.port.http);
+}).catch(err => {
+  console.error("🔥", "Error while preparing server!", err);
+  process.exit(1);
+});

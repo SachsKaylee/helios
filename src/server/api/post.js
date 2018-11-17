@@ -33,7 +33,7 @@ const install = ({ server, models, api }) => {
           return res.error.missingPermission("author");
         }
         const { title } = req.body;
-        const post = new models.post({ ...req.body, _id: niceUri(title) });
+        const post = new Post({ ...req.body, _id: niceUri(title) });
         post.isNew = true;
         return post.save().then(post => res.sendData({ data: post }))
       })
@@ -75,7 +75,7 @@ const install = ({ server, models, api }) => {
 
   server.delete("/api/post/:id", (req, res) =>
     Post
-      .remove({ _id: req.params.id })
+      .deleteOne({ _id: req.params.id })
       .then(post => res.sendData({ data: post }))
       .catch(error => res.error.server(error)));
 
@@ -108,5 +108,5 @@ const install = ({ server, models, api }) => {
 }
 
 module.exports = {
-  install, schema
+  install
 }

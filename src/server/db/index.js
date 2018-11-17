@@ -10,9 +10,11 @@ mongoose.connection.on("error", err => console.error("Mongoose Error", err));
 
 const connected = new Promise((res, rej) => {
   mongoose.connection.once("open", () => {
+    console.log("Now connected to database!");
     res();
   });
-  mongoose.connect.once("error", () => {
+  mongoose.connection.once("error", () => {
+    console.error("Failed to connect to database!");
     rej();
   })
 });

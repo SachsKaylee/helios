@@ -1,4 +1,4 @@
-const uuid = require("../../uuid");
+const uuid = require("./uuid");
 
 const niceUri = text =>
 (("" + (text || uuid.uuidSection())) // Make sure we have a string! If not just shove a UUID in there.
