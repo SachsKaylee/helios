@@ -2,11 +2,12 @@
 import Posts from "../components/post/PostList";
 import React from "react";
 import axios from "axios";
-import config, { locale } from "../config/client";
+import config from "../config/client";
 import Head from "next/head";
 import Pagination from "../components/layout/Pagination";
+import { injectIntl } from "react-intl";
 
-export default class IndexPage extends React.PureComponent {
+export default injectIntl(class IndexPage extends React.PureComponent {
   static async getInitialProps({ query }) {
     const [posts, postCount] = await Promise.all([
       axios.get("/api/tag/posts/" + encodeURIComponent(query.tag || config.defaultTags[0]), {
@@ -36,7 +37,8 @@ export default class IndexPage extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.props.setPageTitle("Tag: " + this.props.tag);
+    const title = this.props.intl.formatMessage({ id: "tag.title" }, { tag: this.props.tag });
+    this.props.setPageTitle(title);
   }
 
   render() {
@@ -53,4 +55,4 @@ export default class IndexPage extends React.PureComponent {
       </Pagination>
     </>);
   }
-};
+});
