@@ -2,7 +2,6 @@ const axios = require("axios");
 const path = require("path");
 const createNext = require("next");
 const api = require("./api");
-const db = require("./db");
 const fp = require("../fp");
 const routes = require("../routes");
 const config = require("../config/server");

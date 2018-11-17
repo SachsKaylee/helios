@@ -6,7 +6,7 @@ const crypto = require("crypto");
 const fp = require("../../fp");
 const async = require("../../async");
 const mongoose = require('mongoose');
-const DbError = require("../db-error");
+const { error: DbError } = require("../db");
 const { mongoError } = require("../error-transformer");
 
 // All permissions avilable.
