@@ -105,6 +105,30 @@ const install = ({ server }) => {
       .exec()
       .then(posts => res.sendData({ data: posts }))
       .catch(error => res.error.server(error)));
+
+  server.get("/api/tag", (req, res) =>
+    Post
+      .distinct("tags")
+      .exec()
+      .then(tags => res.sendData({ data: { tags } }))
+      .catch(error => res.error.server(error)));
+
+  server.get("/api/tag/count/:tag", (req, res) =>
+    Post
+      .count({ tags: req.params.tag })
+      .exec()
+      .then(count => res.sendData({ data: { count } }))
+      .catch(error => res.error.server(error)));
+
+  server.get("/api/tag/posts/:tag", (req, res) =>
+    Post
+      .find({ tags: req.params.tag })
+      .sort({ date: "descending" })
+      .skip(intOr(parseInt(req.query.skip), 0)) // todo: skip has poor performance on large collection
+      .limit(intOr(parseInt(req.query.limit), undefined))
+      .exec()
+      .then(posts => res.sendData({ data: posts }))
+      .catch(error => res.error.server(error)));
 }
 
 module.exports = {

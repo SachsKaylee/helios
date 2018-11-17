@@ -17,7 +17,8 @@ export default injectIntl(class PostPage extends React.PureComponent {
     this.notifications = React.createRef();
     this.editorRef = React.createRef();
     this.state = {
-      state: "loading"
+      state: "loading",
+      allTags: []
     };
   }
 
@@ -56,6 +57,9 @@ export default injectIntl(class PostPage extends React.PureComponent {
       : axios.get("/api/session")
         .then(({ data }) => this.setState({ ...this.stateFromData({ ...defaultPostData(), author: data.id, }), state: "loaded" }))
         .catch((data) => this.setState({ error: data, state: "error" }));
+    axios.get("/api/tag")
+      .then(({ data }) => this.setState({ allTags: data.tags }))
+      .catch(data => this.setState({ error: data, state: "error" }));
   }
 
   stateFromData = ({ _id, date, author, title, content, tags, notes }, oldState) => {
@@ -202,10 +206,10 @@ export default injectIntl(class PostPage extends React.PureComponent {
         <Columns size={3} sidebar={(
           <div className="sidebar">
             <Card>
-              <PostForm 
+              <PostForm
                 tags={tags}
                 notes={notes}
-                allTags={["helios", "react", "javascript"]}
+                allTags={this.state.allTags}
                 onPublish={this.onPublish}
                 onDelete={!isNew && (this.onDelete(false))}
               />
