@@ -74,7 +74,7 @@ export default injectIntl(class AboutPage extends React.Component {
           <FormattedMessage id="about.recentPosts" />
         </h2>
 
-        {latestPosts.map(post => (<PostMedia key={post.id} {...post} />))}
+        {latestPosts.map(post => (<PostMedia key={post._id} {...post} />))}
       </Card>
     </>);
   }

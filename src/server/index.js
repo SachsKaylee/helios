@@ -3,13 +3,11 @@ const path = require("path");
 const createNext = require("next");
 const api = require("./api");
 const db = require("./db");
-const fp = require("../fp");
 const routes = require("../routes");
 const config = require("../config/server");
 const areIntlLocalesSupported = require("intl-locales-supported");
 const reactIntl = require("react-intl");
 const { transformError } = require("./error-transformer");
-
 const Redoubt = require("redoubt").default;
 
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -68,7 +66,7 @@ server.use((req, res, next) => {
   res.blob = (blob) => {
     const [details, data] = blob.split(",");
     const [mime, format] = details.split(";");
-    const buffer = new Buffer(data, format);
+    const buffer = Buffer.from(data, format);
     res.writeHead(200, {
       "Content-Type": mime.substr("data:".length),
       "Content-Length": buffer.length
@@ -77,8 +75,13 @@ server.use((req, res, next) => {
   };
 
   res.error = {};
+  res.error.server = (error) => {
+    console.error("Internal Server Error", error);
+    res.sendData({ error: `internal-server-error`, errorCode: 500 });
+  };
+  res.error.notLoggedIn = () => res.sendData({ error: "not-logged-in", errorCode: 401 });
+  res.error.authorizationFailure = () => res.sendData({ error: "authorization-failure", errorCode: 401 });
   res.error.missingPermission = (permission) => res.sendData({ error: `missing-permission-${permission}`, errorCode: 403 });
-  res.error.incorrectPassword = () => res.sendData({ error: "incorrect-password", errorCode: 400 });
 
   next();
 });
@@ -87,17 +90,16 @@ const next = createNext({
   dev: isDevelopment,
   dir: "./src"
 });
-Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
-  // APIs - APIs can only access APIs ranked "lower"
-  // todo: get rid of this weird API design
-  const apiData = fp.reduceObject(api, (apiData, currentApi, key) => {
-    console.log("📡", "Installing an API ...", key);
-    const data = currentApi.install && currentApi.install({ ...dbResolved, server, api: apiData });
-    return { ...apiData, [key]: data };
-  }, {});
-  console.log("📡", "All APIs:", apiData);
+Promise.all([next.prepare(), db.connected]).then(() => {
+  redoubt.listen(config.client.port.https, config.client.port.http);
+  for(let key in api) {
+    console.log("📡", "Installing API:", key);
+    api[key].install({ server });
+  }
+  console.log("📡", "All APIs have been installed.");
   // Fallback
   server.get("*", routes.getRequestHandler(next));
-}).catch(err => console.error("🔥", "Error while preparing server!", err));
-
-redoubt.listen(config.client.port.https, config.client.port.http);
+}).catch(err => {
+  console.error("🔥", "Error while preparing server!", err);
+  process.exit(1);
+});

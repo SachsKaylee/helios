@@ -8,7 +8,7 @@ import FileField from "../../../general/fields/FileField";
 import RichTextField from "../../../general/fields/RichTextField";
 import { ContentSaveIcon, ErrorOutlineIcon } from "mdi-react";
 import config from "../../../../config/client";
-import { formatBytes } from "../../../../bytes";
+import { formatBytes } from "../../../../utils/bytes";
 import pwned from "@react-formilicious/validator-pwned";
 
 export default injectIntl(class LogInForm extends React.PureComponent {

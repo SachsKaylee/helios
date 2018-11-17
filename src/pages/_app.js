@@ -3,7 +3,7 @@ import Head from "next/head";
 import Navbar from "./../components/Navbar";
 import config from "../config/client";
 import { IntlProvider, addLocaleData, FormattedMessage } from "react-intl";
-import { flattenObject } from "../fp"
+import flattenObject from "../utils/flattenObject"
 import areIntlLocalesSupported from "intl-locales-supported";
 import intl from "intl"; // todo: try to make this import lazy!
 import Session, { SessionProvider } from "../store/Session";
