@@ -1,6 +1,6 @@
 import Form from "@react-formilicious/bulma";
 import { FormattedMessage, injectIntl } from "react-intl";
-import { formatBytes } from "../../../../bytes";
+import { formatBytes } from "../../../../utils/bytes";
 import TagList from "@react-formilicious/bulma/TagList";
 import TextField from "@react-formilicious/bulma/TextField";
 import FileField from "../../../general/fields/FileField";

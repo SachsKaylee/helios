@@ -1,6 +1,6 @@
 import React from "react";
 import Notification from "./Notification";
-import fp from "../fp";
+import splice from "../utils/splice";
 import { uuid } from "../uuid";
 
 export default class extends React.Component {
@@ -20,7 +20,7 @@ export default class extends React.Component {
       const index = s.notifications.indexOf(p);
       return index === -1
         ? null
-        : { notifications: fp.splice(s.notifications, index, 1) };;
+        : { notifications: splice(s.notifications, index, 1) };;
     }, () => onClose && onClose());
   }
 

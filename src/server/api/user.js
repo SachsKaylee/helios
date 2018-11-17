@@ -3,8 +3,7 @@
  */
 const config = require("../../config/server");
 const crypto = require("crypto");
-const fp = require("../../fp");
-const async = require("../../async");
+const all = require("../../utils/all");
 const mongoose = require('mongoose');
 const { error: DbError } = require("../db");
 const { mongoError } = require("../error-transformer");
@@ -34,8 +33,7 @@ const UserSchema = new mongoose.Schema({
  * @param permission The permission to check for.
  * @param impliedByAdmin Is the permission automatically granted by being admin? (true by default)
  */
-UserSchema.methods.hasPermission = function (permission, impliedByAdmin) {
-  impliedByAdmin = impliedByAdmin === undefined ? true : !!impliedByAdmin;
+UserSchema.methods.hasPermission = function (permission, impliedByAdmin = true) {
   if (this.permissions.includes(permission)) {
     return true;
   }
@@ -101,29 +99,28 @@ const install = ({ server }) => {
       .catch(error => res.sendData({ error })));
 
   server.put("/api/user/:id", (req, res) =>
-    async.all({
-      session: req.user.getUser(),
-      oldUser: User.findOne({ _id: req.params.id })
-    }).then(({ session, oldUser }) => {
-      if (!session.hasPermission("admin")) {
-        return res.error.missingPermission("admin");
-      }
-      const { password, bio, avatar, permissions } = req.body;
-      const user = new models.user({
-        _id: req.params.id,
-        password: password ? encrypt(password) : oldUser.password,
-        permissions: permissions.reduce(
-          (a, p) => allPermissions[p] && !a.includes(p) && p !== "admin" ? [...a, p] : a,
-          oldUser.permissions.includes("admin") ? ["admin"] : []
-        ),
-        bio, avatar
-      });
-      user.isNew = false;
-      // TODO: Validate
-      user.save()
-        .then(user => res.sendUser(user))
-        .catch(error => res.error.server(error));
-    }).catch(error => res.error.server(error)));
+    Promise
+      .all([req.user.getUser(), User.findOne({ _id: req.params.id })])
+      .then(([session, oldUser]) => {
+        if (!session.hasPermission("admin")) {
+          return res.error.missingPermission("admin");
+        }
+        const { password, bio, avatar, permissions } = req.body;
+        const user = new models.user({
+          _id: req.params.id,
+          password: password ? encrypt(password) : oldUser.password,
+          permissions: permissions.reduce(
+            (a, p) => allPermissions[p] && !a.includes(p) && p !== "admin" ? [...a, p] : a,
+            oldUser.permissions.includes("admin") ? ["admin"] : []
+          ),
+          bio, avatar
+        });
+        user.isNew = false;
+        // TODO: Validate
+        user.save()
+          .then(user => res.sendUser(user))
+          .catch(error => res.error.server(error));
+      }).catch(error => res.error.server(error)));
 
   server.get("/api/user-count", (req, res) =>
     User.count({}).exec()
@@ -232,7 +229,7 @@ const createUpdatedModel = (user, { password, avatar, permissions, bio }) => {
   const validPassword = password => password && ("string" === typeof password);
   // TODO: make sure the avatar is of the right image format. We don't want users to upload malware!
   const validAvatar = avatar => avatar && ("string" === typeof avatar) && avatar.length <= 200 * 1024;
-  const validPermissions = permissions => permissions && Array.isArray(permissions) && fp.all(permissions, p => allPermissions[p]);
+  const validPermissions = permissions => permissions && Array.isArray(permissions) && all(permissions, p => allPermissions[p]);
   const validBio = () => true;
 
   const newUser = new User({

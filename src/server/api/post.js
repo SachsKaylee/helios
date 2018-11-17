@@ -15,7 +15,7 @@ const Post = mongoose.model("post", new mongoose.Schema({
   notes: String
 }));
 
-const install = ({ server, models, api }) => {
+const install = ({ server }) => {
   // https://stackoverflow.com/questions/5830513/how-do-i-limit-the-number-of-returned-items
   server.get("/api/post", (req, res) =>
     Post

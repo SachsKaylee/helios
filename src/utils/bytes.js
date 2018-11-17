@@ -5,6 +5,6 @@ const formatBytes = bytes => {
   return (Math.ceil(bytes / (1024 * 1024 * 1024))) + "GiB";
 }
 
-export {
+module.exports = {
   formatBytes
 };

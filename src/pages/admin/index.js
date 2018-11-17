@@ -4,17 +4,15 @@ import Card from "../../components/Card";
 import config from "../../config/client";
 import A from "../../components/A";
 import { get } from "axios";
-import async from "../../async";
 
 export default injectIntl(class Admin extends React.Component {
   static getInitialProps() {
-    return async.all({
-      post: get("/api/post-count"),
-      user: get("/api/user-count")
-    }).then(({ post, user }) => ({
-      postCount: post.data.count,
-      userCount: user.data.count
-    }));
+    return Promise
+      .all([get("/api/post-count"), get("/api/user-count")])
+      .then(([post, user]) => ({
+        postCount: post.data.count,
+        userCount: user.data.count
+      }));
   }
 
   componentDidMount() {

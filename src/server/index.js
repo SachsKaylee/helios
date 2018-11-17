@@ -3,7 +3,6 @@ const path = require("path");
 const createNext = require("next");
 const api = require("./api");
 const db = require("./db");
-const fp = require("../fp");
 const routes = require("../routes");
 const config = require("../config/server");
 const areIntlLocalesSupported = require("intl-locales-supported");
@@ -91,17 +90,13 @@ const next = createNext({
   dev: isDevelopment,
   dir: "./src"
 });
-Promise.all([next.prepare(), db.connected]).then(([_, dbResolved]) => {
+Promise.all([next.prepare(), db.connected]).then(() => {
   redoubt.listen(config.client.port.https, config.client.port.http);
-
-  // APIs - APIs can only access APIs ranked "lower"
-  // todo: get rid of this weird API design
-  const apiData = fp.reduceObject(api, (apiData, currentApi, key) => {
-    console.log("📡", "Installing an API ...", key);
-    const data = currentApi.install && currentApi.install({ ...dbResolved, server, api: apiData });
-    return { ...apiData, [key]: data };
-  }, {});
-  console.log("📡", "All APIs:", apiData);
+  for(let key in api) {
+    console.log("📡", "Installing API:", key);
+    api[key].install({ server });
+  }
+  console.log("📡", "All APIs have been installed.");
   // Fallback
   server.get("*", routes.getRequestHandler(next));
 }).catch(err => {
