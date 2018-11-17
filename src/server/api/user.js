@@ -29,6 +29,22 @@ const User = mongoose.model("user", new mongoose.Schema({
   permissions: [String]
 }));
 
+/**
+ * Checks if the user has the given permission.
+ * @param permission The permission to check for.
+ * @param impliedByAdmin Is the permission automatically granted by being admin? (true by default)
+ */
+User.methods.hasPermission = function(permission, impliedByAdmin) {
+  impliedByAdmin = impliedByAdmin === undefined ? true : !!impliedByAdmin;
+  if (this.permissions.includes(permission)) {
+    return true;
+  }
+  if (impliedByAdmin && user.permissions.includes(allPermissions.admin)) {
+    return true;
+  }
+  return false;
+}
+
 const install = ({ server }) => {
   // API specific middlemare
   server.use((req, res, next) => {
@@ -65,7 +81,7 @@ const install = ({ server }) => {
   server.post("/api/user", (req, res) =>
     req.user.getUser()
       .then(user => {
-        if (!hasPermission(user, "admin")) {
+        if (!user.hasPermission("admin")) {
           return res.error.missingPermission("admin");
         }
         const { password, id, bio, avatar } = req.body;
@@ -87,7 +103,7 @@ const install = ({ server }) => {
       session: req.user.getUser(),
       oldUser: getUser(req.params.id)
     }).then(({ session, oldUser }) => {
-      if (!hasPermission(session, "admin")) {
+      if (!session.hasPermission("admin")) {
         return res.error.missingPermission("admin");
       }
       const { password, bio, avatar, permissions } = req.body;
@@ -184,8 +200,6 @@ const install = ({ server }) => {
   createFactoryContent();
 }
 
-const hasPermission = (user, permission, notImpliedByAdmin) => user.permissions.includes(permission) || (!notImpliedByAdmin && user.permissions.includes("admin"));
-
 // ===============================================
 // === INTERNAL FUNCTIONS
 // ===============================================
@@ -239,7 +253,5 @@ const encrypt = password => crypto.createHmac("sha256", config.passwordSecret).u
 // ===============================================
 
 module.exports = {
-  install, 
-  
-  hasPermission
+  install
 }
