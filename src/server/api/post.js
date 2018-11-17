@@ -106,6 +106,13 @@ const install = ({ server }) => {
       .then(posts => res.sendData({ data: posts }))
       .catch(error => res.error.server(error)));
 
+  server.get("/api/tag", (req, res) =>
+    Post
+      .distinct("tags")
+      .exec()
+      .then(tags => res.sendData({ data: { tags } }))
+      .catch(error => res.error.server(error)));
+
   server.get("/api/tag/count/:tag", (req, res) =>
     Post
       .count({ tags: req.params.tag })
