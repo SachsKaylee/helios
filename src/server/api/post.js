@@ -1,5 +1,5 @@
 const config = require("../../config/server");
-const niceUri = require("../../nice-uri");
+const niceUri = require("../../utils/nice-uri");
 const mongoose = require('mongoose');
 
 const intOr = (int, or) => Number.isInteger(int) ? int : or;

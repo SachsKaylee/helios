@@ -1,7 +1,7 @@
 import React from "react";
 import Notification from "./Notification";
 import splice from "../utils/splice";
-import { uuid } from "../uuid";
+import { uuid } from "../utils/uuid";
 
 export default class extends React.Component {
   state = {
