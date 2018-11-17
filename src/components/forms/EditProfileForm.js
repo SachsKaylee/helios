@@ -5,7 +5,7 @@ import TextField from "@react-formilicious/bulma/TextField";
 import required from "react-formilicious/validators/required";*/
 import { FormattedMessage, injectIntl } from "react-intl";
 import FileField from "../fields/FileField";
-import RichTextField from "../../../general/fields/RichTextField";
+import RichTextField from "../fields/RichTextField";
 import { ContentSaveIcon, ErrorOutlineIcon } from "mdi-react";
 import config from "../../config/client";
 import { formatBytes } from "../../utils/bytes";
@@ -15,9 +15,9 @@ export default injectIntl(class LogInForm extends React.PureComponent {
   render() {
     return (<Form
       data={this.props.data}
+      // TODO: other action buttons
       buttons={[
         {
-          // todo: other action buttons
           key: "submit",
           action: "submit",
           name: (<span>

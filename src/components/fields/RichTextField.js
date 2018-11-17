@@ -1,6 +1,6 @@
 import * as React from "react";
 import ValidationResult from "@react-formilicious/core/validators/ValidationResult";
-import EditorRichText from "../../EditorRichText";
+import EditorRichText from "../EditorRichText";
 
 export default class RichTextField extends React.Component {
   static getDefaultValue() {

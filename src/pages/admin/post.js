@@ -1,4 +1,4 @@
-import SidebarLayout from "../../components/SidebarLayout";
+import Columns from "../../components/layout/Columns";
 import A from "../../components/system/A";
 import React from "react";
 import Card from "../../components/layout/Card"
@@ -9,7 +9,7 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import config from "../../config/client";
 import { DeleteIcon, WarningIcon, LoadingIcon, ErrorIcon, CakeIcon } from "mdi-react";
 import { SlimError, FullError } from "../../components/Error";
-import PostForm from "../../components/pages/admin/post/PostForm";
+import PostForm from "../../components/forms/PostForm";
 
 export default injectIntl(class PostPage extends React.PureComponent {
   constructor(p) {
@@ -199,7 +199,7 @@ export default injectIntl(class PostPage extends React.PureComponent {
     const { title, content, isNew, date, author, tags, notes } = this.state;
     return (
       <div className="container">
-        <SidebarLayout size={3} sidebar={(
+        <Columns size={3} sidebar={(
           <div className="sidebar">
             <Card>
               <PostForm 
@@ -221,7 +221,7 @@ export default injectIntl(class PostPage extends React.PureComponent {
             editorRef={this.editorRef}
             onChange={this.onChange}
           />
-        </SidebarLayout>
+        </Columns>
       </div>
     );
   }

@@ -4,7 +4,7 @@ import { formatBytes } from "../../utils/bytes";
 import TagList from "@react-formilicious/bulma/TagList";
 import TextField from "@react-formilicious/bulma/TextField";
 import FileField from "../fields/FileField";
-import RichTextField from "../../../general/fields/RichTextField";
+import RichTextField from "../fields/RichTextField";
 import { ContentSaveIcon, CancelIcon } from "mdi-react";
 import config from "../../config/client";
 import required from "@react-formilicious/core/validators/required";

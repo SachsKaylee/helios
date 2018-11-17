@@ -1,10 +1,10 @@
 import React from "react";
-import Card from "../../components/Card";
+import Card from "../../components/layout/Card";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { get, post, put } from "axios";
 import Router from "next/router";
 import { SlimError } from "../../components/Error";
-import CreateUserForm from "../../components/pages/admin/user/CreateUserForm";
+import CreateUserForm from "../../components/forms/CreateUserForm";
 
 export default injectIntl(class User extends React.Component {
   static getInitialProps(p) {
