@@ -17,16 +17,18 @@ export default injectIntl(class PostForm extends React.PureComponent {
         {
           type: TextArea,
           key: "notes",
-          name: "Notes",
+          name: (<FormattedMessage id="post.notes.field" />),
           lines: 4,
-          placeholder: "Take some quick notes about your post. They are only visible to other authors."
+          placeholder: this.props.intl.formatMessage({ id: "post.notes.placeholder" })
         },
         {
           type: TagList,
           key: "tags",
-          name: "Tags", // todo: locale & for add button
+          name: (<FormattedMessage id="tags" />), // todo: locale & for add button
           allowCustomTags: true,
-          tags: this.props.allTags || ["tag-1", "awesome"]
+          tags: this.props.allTags,
+          addCustomTagText: this.props.intl.formatMessage({ id: "post.tags" }),
+          addCustomTagButtonText: (<FormattedMessage id="add" />)
         }
       ]}
       buttons={onlyTruthy([

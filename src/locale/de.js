@@ -15,6 +15,9 @@ module.exports = {
     alreadyLoggedIn: "Sie sind bereits angemeldet. Um sich in einem anderen Account anzumelden, müssen Sie sich zunächst aus diesem abmelden.",
     alreadyExists: "Dieser Datensatz existiert bereits. Bitte bearbeiten Sie ihn stattdessen."
   },
+  tag: "Tag",
+  tags: "Tags",
+  add: "Hinzufügen",
   notifications: "Benachrichtigungen",
   noNotifications: "Keine Benachrichtigungen!",
   username: "Benutzername",
@@ -74,6 +77,11 @@ module.exports = {
     subtitle: "{author} am {date, date, medium}",
     mediaTitle: "{title} von {author}, {date}",
     noneFound: "Es konnten keine Posts gefunden werden. Bitte versuchen Sie es später erneut.",
+    tags: "Tags zum kategorisieren…",
+    notes: {
+      field: "Notizen",
+      placeholder: "Hier können Sie Notizen zu diesem Post festhalten. Diese sind nur von anderen Authoren sichtbar."
+    },
     editor: {
       format: {
         bold: "Fett",

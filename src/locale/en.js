@@ -15,6 +15,9 @@ module.exports = {
     alreadyLoggedIn: "You are already logged in. If you wish to log into a different account you must first sign out.",
     alreadyExists: "This item already exists. Please edit it instead."
   },
+  tag: "Tag",
+  tags: "Tags",
+  add: "Add",
   notifications: "Notifications",
   noNotifications: "No Notifications!",
   username: "Username",
@@ -74,6 +77,11 @@ module.exports = {
     subtitle: "{author} on {date, date, medium}",
     mediaTitle: "{title} by {author}, {date, date, medium}",
     noneFound: "No posts could be found. Please try again later.",
+    tags: "Tags for categorization…",
+    notes: {
+      field:"Notes", 
+      placeholder: "Take some quick notes about your post. They are only visible to other authors."
+    },
     editor: {
       format: {
         bold: "Bold",

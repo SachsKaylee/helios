@@ -15,7 +15,7 @@
     "cross-env": "^5.2.0"
   },
   "dependencies": {
-    "@react-formilicious/bulma": "^1.0.0",
+    "@react-formilicious/bulma": "^1.0.1",
     "@react-formilicious/core": "^1.0.1",
     "@react-formilicious/validator-pwned": "^1.0.0",
     "@zeit/next-sass": "^1.0.1",
