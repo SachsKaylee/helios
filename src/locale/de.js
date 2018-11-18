@@ -36,7 +36,8 @@ module.exports = {
     submit: "Senden",
     chooseFile: "Datei auswählen…",
     noFilesSelected: "Keine Dateien ausgewählt…",
-    filesSelected: "{n} Dateien ausgewählt."
+    filesSelected: "{n} Dateien ausgewählt.",
+    addPath: "Neuen Pfad hinzufügen…"
   },
   editor: {
     formatSelection: "Selektion formatieren",
@@ -52,6 +53,7 @@ module.exports = {
       overview: "Übersicht",
       account: "Benutzerkonto",
       newPost: "Neuer Post",
+      newPage: "Neue Seite",
       signIn: "Anmelden",
       signOut: "Abmelden"
     }
@@ -61,6 +63,7 @@ module.exports = {
     title: "Übersicht",
     posts: "Posts",
     users: "Benutzer",
+    pages: "Seiten",
   },
   // Admin accounts overview page
   users: {
@@ -94,6 +97,12 @@ module.exports = {
     type: {
       card: "Abschnitt",
       columns: "Spalten"
+    },
+    path: {
+      field: "Pfad in der Navigation"
+    },
+    manage: {
+      title: "Seiten verwalten"
     }
   },
   // Strings used for displaying and editing posts

@@ -1,5 +1,6 @@
 import App, { Container } from "next/app";
 import Head from "next/head";
+import { get } from "axios";
 import Navbar from "./../components/Navbar";
 import config from "../config/client";
 import { IntlProvider, addLocaleData, FormattedMessage } from "react-intl";
@@ -7,6 +8,7 @@ import flattenObject from "../utils/flattenObject"
 import areIntlLocalesSupported from "intl-locales-supported";
 import intl from "intl"; // todo: try to make this import lazy!
 import Session, { SessionProvider } from "../store/Session";
+import BookOpenPageVariantIcon from "mdi-react/BookOpenPageVariantIcon";
 
 const g = global || window;
 // Load the locale data for NodeJS if it has not been installed.
@@ -30,7 +32,8 @@ export default class _App extends App {
     const pageProps = Component.getInitialProps
       ? await Component.getInitialProps(ctx)
       : {};
-    return { pageProps };
+    const customPages = await get("/api/page-navigation");
+    return { pageProps, customPages: customPages.data };
   }
 
   constructor(p) {
@@ -46,7 +49,7 @@ export default class _App extends App {
   }
 
   render() {
-    const { Component, pageProps } = this.props;
+    const { Component, pageProps,customPages } = this.props;
     //const title = this.component && this.component.getTitle && this.component.getTitle() || "…";
     const title = this.state.title;
     return (<Container>
@@ -68,6 +71,7 @@ export default class _App extends App {
                     link: "/",
                     key: "home"
                   },
+                  ...customPages,
                   session.user && {
                     title: (<FormattedMessage id="navigation.admin.menu" />),
                     link: "/admin",
@@ -77,6 +81,14 @@ export default class _App extends App {
                         title: (<FormattedMessage id="navigation.admin.newPost" />),
                         link: "/admin/post",
                         key: "post"
+                      },
+                      session.hasPermission("maintainer") && {
+                        title: (<span>
+                          <BookOpenPageVariantIcon className="mdi-icon-spacer" />
+                          <FormattedMessage id="navigation.admin.newPage" />
+                        </span>),
+                        link: "/admin/page",
+                        key: "page"
                       },
                       session.hasPermission("admin") && {
                         title: (<FormattedMessage id="navigation.admin.overview" />),

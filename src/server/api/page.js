@@ -9,6 +9,7 @@ const Page = mongoose.model("page", new mongoose.Schema({
   _id: String,
   title: String,
   elements: [Object],
+  path: [String],
   notes: String
 }));
 
@@ -82,6 +83,52 @@ const install = ({ server }) => {
       .count({})
       .exec()
       .then(count => res.sendData({ data: { count } }))
+      .catch(error => res.error.server(error)));
+
+  server.get("/api/page-navigation", (req, res) =>
+    Page
+      .find({})
+      .exec()
+      .then(pages => {
+        const navigation = pages.reduce((navigation, page) => {
+          const { _id, title, path } = page;
+          // Create the containing folder
+          let navigationNode = navigation;
+          for (let i = 0; i < path.length; i++) {
+            let child = navigationNode.children.find(child => child.title === path[i]);
+            // Create folder path if it does not exist. Flag navigation nodes that are just folders as "synthetic"
+            if (!child) {
+              child = {
+                title: path[i],
+                id: "page/" + path[i],
+                link: null,
+                children: [],
+                isSynthetic: true
+              };
+              navigationNode.children.push(child);
+            }
+            navigationNode = child;
+          }
+          // Create the actual link
+          let node = navigationNode.children.find(child => child.title === title);
+          if (!node) {
+            node = {
+              title: title,
+              id: "page/" + _id,
+              link: "/page/" + _id,
+              children: [],
+              isSynthetic: false
+            }
+            navigationNode.children.push(node);
+          } else if (node.isSynthetic) {
+            node.title = title;
+            node.link = "/page/" + _id;
+            node.isSynthetic = false;
+          }
+          return navigation;
+        }, { children: [] });
+        res.sendData({ data: navigation.children });
+      })
       .catch(error => res.error.server(error)));
 }
 

@@ -8,13 +8,15 @@ import EarthIcon from "mdi-react/EarthIcon";
 import DeleteIcon from "mdi-react/DeleteIcon";
 import { FormattedMessage, injectIntl } from "react-intl";
 import onlyTruthy from "../../utils/onlyTruthy";
+import PathField from "../fields/PathField";
 
 export default injectIntl(class PageForm extends React.PureComponent {
   render() {
     return (<Form
       data={{
-        tags: this.props.tags,
-        notes: this.props.notes
+        title: this.props.title,
+        notes: this.props.notes,
+        path: this.props.path
       }}
       elements={[
         {
@@ -23,6 +25,12 @@ export default injectIntl(class PageForm extends React.PureComponent {
           name: (<FormattedMessage id="page.title.field" />),
           validator: required(),
           placeholder: this.props.intl.formatMessage({ id: "page.title.placeholder" })
+        },
+        {
+          type: PathField,
+          key: "path",
+          name: (<FormattedMessage id="page.path.field" />),
+          validator: required()
         },
         {
           type: TextArea,

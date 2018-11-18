@@ -12,8 +12,9 @@ routes
   .add("/page/:id", "/page")
   .add("/admin/user", "/admin/user")
   .add("/admin/user/:id", "/admin/user")
+  .add("/admin/users", "/admin/users")
   .add("/admin/post", "/admin/post")
   .add("/admin/post/:id", "/admin/post")
   .add("/admin/page", "/admin/page")
   .add("/admin/page/:id", "/admin/page")
-  .add("/:id", "/page");
+  .add("/admin/pages", "/admin/pages")

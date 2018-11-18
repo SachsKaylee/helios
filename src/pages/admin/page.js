@@ -66,13 +66,13 @@ export default injectIntl(class PagePage extends React.PureComponent {
       }
     }
   */
-  onPublish = ({ title, notes }) => {
-    const { id, elements, isNew } = this.state;
-    const data = { _id: id, title, elements, notes };
+  onPublish = ({ title, notes, path }) => {
+    const { _id, elements, isNew } = this.state;
+    const data = { _id, title, elements, notes, path };
     (isNew
       ? axios.post("/api/page", data)
-      : axios.put(`/api/page/${id}`, data)).then(({ data }) => {
-        this.setState({ elements: data.elements, title: data.title, notes: data.notes, id: data._id, isNew: false });
+      : axios.put(`/api/page/${_id}`, data)).then(({ data }) => {
+        this.setState({ ...data, isNew: false });
       }).catch(error => {
         this.notifications.push({
           canClose: true,
@@ -95,16 +95,17 @@ export default injectIntl(class PagePage extends React.PureComponent {
   }
 
   renderLoaded() {
-    const { elements, isNew, notes } = this.state;
+    const { elements, title, path, notes, state } = this.state;
     return (
       <div className="container">
         <Editor onChange={this.onChange} elements={elements} />
         <Card>
           <PageForm
             notes={notes}
-            allTags={this.state.allTags}
+            title={title}
+            path={path}
             onPublish={this.onPublish}
-            //onDelete={!isNew && (this.onDelete(false))}
+          //onDelete={!isNew && (this.onDelete(false))}
           />
           <NotificationProvider ref={ref => this.notifications = ref} />
         </Card>
