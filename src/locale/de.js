@@ -30,6 +30,7 @@ module.exports = {
   delete: "Löschen",
   discard: "Verwerfen",
   cancel: "Abbrechen",
+  preview: "Vorschau",
   formValueRequired: "\"{field}\" muss angegeben werden!",
   form: {
     submit: "Senden",
@@ -70,6 +71,29 @@ module.exports = {
     password: {
       placeholder: "Passwort des Nutzers",
       confirm: "Passwort bestätigen"
+    }
+  },
+  page: {
+    title: {
+      field: "Seitenname",
+      placeholder: "Der Name der Seite - wird unter anderen im Browsertitel angezeigt."
+    },
+    notes: {
+      field: "Notizen",
+      placeholder: "Hier können Sie Notizen zu dieser Seite festhalten. Diese sind nur von anderen Verwaltern sichtbar."
+    },
+    move: {
+      title: "Bewegen",
+      up: "Nach oben",
+      down: "Nach unten"
+    },
+    add: {
+      title: "Neue Komponente hinzufügen",
+      subtitle: "Wählen Sie die Komponente aus, welche zur Seite hinzugefügt werden soll."
+    },
+    type: {
+      card: "Abschnitt",
+      columns: "Spalten"
     }
   },
   // Strings used for displaying and editing posts

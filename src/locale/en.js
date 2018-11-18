@@ -30,6 +30,7 @@ module.exports = {
   delete: "Delete",
   discard: "Discard",
   cancel: "Cancel",
+  preview: "Preview",
   formValueRequired: "\"{field}\" is required!",
   form: {
     submit: "Submit",
