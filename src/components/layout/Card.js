@@ -1,5 +1,5 @@
-const Card = ({ spacing: { top, inner } = {}, image, title, subtitle, children, style }) => (
-  <div className="card" style={{ marginTop: top || "2rem", ...style }}>
+const Card = ({ image, title, subtitle, children, style }) => (
+  <div className="card" style={style && style.outer ? style.outer : style}>
     <div className="card-content">
       <div className="media">
         {image && (<div className="media-center">
@@ -10,9 +10,14 @@ const Card = ({ spacing: { top, inner } = {}, image, title, subtitle, children, 
           {subtitle && (<p className="subtitle is-6 card-subtitle">{subtitle}</p>)}
         </div>)}
       </div>
-      <div className="content" style={inner && { margin: inner }}>{children}</div>
+      <div className="content" style={style && style.inner ? style.inner : undefined}>
+        {children}
+      </div>
     </div>
     <style jsx>{`
+    .card {
+      margin-bottom: 2.5rem;
+    }
     .content p {
         line-height: 1.9;
         margin: 15px 0;
@@ -45,4 +50,5 @@ const Card = ({ spacing: { top, inner } = {}, image, title, subtitle, children, 
     }`}
     </style>
   </div>);
+  
 export default Card;
