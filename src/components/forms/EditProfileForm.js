@@ -25,7 +25,8 @@ export default injectIntl(class LogInForm extends React.PureComponent {
             <FormattedMessage id="save" />
           </span>),
           type: "primary"
-        }
+        },
+        ...(this.props.buttons || [])
       ]}
       onSubmit={this.props.onSubmit}
       elements={[

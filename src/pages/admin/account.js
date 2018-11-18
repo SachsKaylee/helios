@@ -1,11 +1,11 @@
 import React from "react";
 import Card from "../../components/layout/Card";
-import A from "../../components/system/A";
 import { FormattedMessage, injectIntl } from "react-intl";
 import Session from "../../store/Session";
 import { LogoutIcon, EarthIcon, DeleteIcon } from "mdi-react";
 import LogInForm from "../../components/forms/LogInForm";
 import EditProfileForm from "../../components/forms/EditProfileForm";
+import { Router } from "../../routes";
 
 export default injectIntl(class Account extends React.Component {
   componentDidMount() {
@@ -47,29 +47,40 @@ export default injectIntl(class Account extends React.Component {
           <FormattedMessage id="account.updateProfile" />
         </h2>
         {this.renderUpdateForm(session)}
-        <h2 className="subtitle">
-          <FormattedMessage id="actions" />
-        </h2>
-        <a className="margin-2 button is-primary" onClick={() => session.signOut()
-          .then(() => ({}))
-          .catch(error => errorToMessage(error))}>
-          <LogoutIcon className="mdi-icon-spacer" />
-          <FormattedMessage id="account.signOut" />
-        </a>
-        <A className="margin-2 button is-link" href={`/about/${id}`}>
-          <EarthIcon className="mdi-icon-spacer" />
-          <FormattedMessage id="account.viewPublic" />
-        </A>
-        <a className="margin-2 button is-danger">
-          <DeleteIcon className="mdi-icon-spacer" />
-          <FormattedMessage id="account.delete" />
-        </a>
       </div>
     </Card>);
   }
 
   renderUpdateForm(session) {
-    return <EditProfileForm data={{ ...session.user, avatar: undefined }}
+    return <EditProfileForm
+      data={{ ...session.user, avatar: undefined }}
+      buttons={[
+        {
+          key: "signOut",
+          action: () => session.signOut().catch(error => errorToMessage(error)),
+          name: (<span>
+            <LogoutIcon className="mdi-icon-spacer" />
+            <FormattedMessage id="account.signOut" />
+          </span>)
+        },
+        {
+          key: "viewPublic",
+          action: () => Router.pushRoute(`/about/${session.user.id}`),
+          name: (<span>
+            <EarthIcon className="mdi-icon-spacer" />
+            <FormattedMessage id="account.viewPublic" />
+          </span>),
+          type: "link"
+        },
+        /*{
+          key: "delete",
+          name: (<span>
+            <DeleteIcon className="mdi-icon-spacer" />
+            <FormattedMessage id="account.delete" />
+          </span>),
+          type: "danger"
+        }*/
+      ]}
       onSubmit={values => session.updateProfile({
         password: values.password,
         passwordNew: values.passwordNew,
