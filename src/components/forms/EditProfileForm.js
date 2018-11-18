@@ -6,7 +6,8 @@ import required from "react-formilicious/validators/required";*/
 import { FormattedMessage, injectIntl } from "react-intl";
 import FileField from "../fields/FileField";
 import RichTextField from "../fields/RichTextField";
-import { ContentSaveIcon, ErrorOutlineIcon } from "mdi-react";
+import ContentSaveIcon from "mdi-react/ContentSaveIcon";
+import ErrorOutlineIcon from "mdi-react/ErrorOutlineIcon";
 import config from "../../config/client";
 import { formatBytes } from "../../utils/bytes";
 import pwned from "@react-formilicious/validator-pwned";

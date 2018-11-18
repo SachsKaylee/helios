@@ -1,7 +1,7 @@
 import Post from "./Post";
 import Card from "../layout/Card";
 import { FormattedMessage } from "react-intl";
-import { EmoticonSadIcon } from "mdi-react";
+import EmoticonSadIcon from "mdi-react/EmoticonSadIcon";
 
 export default ({ posts }) => (
   <section className="articles">

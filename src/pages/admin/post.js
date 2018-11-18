@@ -7,7 +7,11 @@ import axios from "axios";
 import NotificationProvider from "../../components/NotificationProvider"
 import { FormattedMessage, injectIntl } from "react-intl";
 import config from "../../config/client";
-import { DeleteIcon, WarningIcon, LoadingIcon, ErrorIcon, CakeIcon } from "mdi-react";
+import DeleteIcon from "mdi-react/DeleteIcon";
+import WarningIcon from "mdi-react/WarningIcon";
+import LoadingIcon from "mdi-react/LoadingIcon";
+import ErrorIcon from "mdi-react/ErrorIcon";
+import CakeIcon from "mdi-react/CakeIcon";
 import { SlimError, FullError } from "../../components/Error";
 import PostForm from "../../components/forms/PostForm";
 

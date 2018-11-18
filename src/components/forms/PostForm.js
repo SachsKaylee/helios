@@ -2,7 +2,9 @@ import * as React from "react";
 import Form from "@react-formilicious/bulma";
 import TagList from "@react-formilicious/bulma/TagList";
 import TextArea from "@react-formilicious/bulma/TextArea";
-import { PublishIcon, FileUndoIcon, DeleteIcon } from "mdi-react";
+import PublishIcon from "mdi-react/PublishIcon";
+import FileUndoIcon from "mdi-react/FileUndoIcon";
+import DeleteIcon from "mdi-react/DeleteIcon";
 import { FormattedMessage, injectIntl } from "react-intl";
 import onlyTruthy from "../../utils/onlyTruthy";
 
