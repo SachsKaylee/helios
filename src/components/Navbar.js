@@ -50,5 +50,5 @@ const SingleLink = ({ title, link, children, ...rest }) => (
         <Links {...rest}>{children}</Links>
       </div>
     </div>)
-    : (<A href={link} className="navbar-item" {...rest}>{title}</A>)
+    : (<A href={link} className="navbar-item">{title}</A>)
 );

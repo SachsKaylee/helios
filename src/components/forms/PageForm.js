@@ -1,6 +1,7 @@
 import * as React from "react";
 import Form from "@react-formilicious/bulma";
 import TextArea from "@react-formilicious/bulma/TextArea";
+import TagList from "@react-formilicious/bulma/TagList";
 import TextField from "@react-formilicious/bulma/TextField";
 import required from "@react-formilicious/core/validators/required";
 import PublishIcon from "mdi-react/PublishIcon";
@@ -8,7 +9,6 @@ import EarthIcon from "mdi-react/EarthIcon";
 import DeleteIcon from "mdi-react/DeleteIcon";
 import { FormattedMessage, injectIntl } from "react-intl";
 import onlyTruthy from "../../utils/onlyTruthy";
-import PathField from "../fields/PathField";
 
 export default injectIntl(class PageForm extends React.PureComponent {
   render() {
@@ -27,10 +27,13 @@ export default injectIntl(class PageForm extends React.PureComponent {
           placeholder: this.props.intl.formatMessage({ id: "page.title.placeholder" })
         },
         {
-          type: PathField,
+          type: TagList,
           key: "path",
+          limit: 1,
           name: (<FormattedMessage id="page.path.field" />),
-          validator: required()
+          tags: this.props.allPaths,
+          addCustomTagText: this.props.intl.formatMessage({ id: "page.path.placeholder" }),
+          addCustomTagButtonText: (<FormattedMessage id="add" />)
         },
         {
           type: TextArea,

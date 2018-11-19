@@ -14,6 +14,7 @@ export default injectIntl(class PagePage extends React.PureComponent {
     this.onChange = this.onChange.bind(this);
     this.state = {
       state: "loading",
+      allPaths: [],
       elements: []
     };
   }
@@ -29,6 +30,9 @@ export default injectIntl(class PagePage extends React.PureComponent {
         .then(({ data }) => this.setState({ ...data, state: "loaded", isNew: false }))
         .catch((error) => this.setState({ error, state: "error" }))
       : this.setState({ elements: [{ type: "card", id: "root" }], state: "loaded", isNew: true });
+    axios.get("/api/page-paths")
+      .then(({ data }) => this.setState({ allPaths: data.paths }))
+      .catch(console.error);
   }
 
   onChange(elements) {
@@ -104,6 +108,7 @@ export default injectIntl(class PagePage extends React.PureComponent {
             notes={notes}
             title={title}
             path={path}
+            allPaths={this.state.allPaths}
             onPublish={this.onPublish}
           //onDelete={!isNew && (this.onDelete(false))}
           />

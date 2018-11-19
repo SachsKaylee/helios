@@ -15,15 +15,15 @@ const Post = ({ id, author, date, title, content, edit, tags, notes }) => (
       }} />}>
       <div>
         <div dangerouslySetInnerHTML={{ __html: content }} />
-        {notes ? (<p className="is-size-7 has-text-grey">{notes}</p>) : null}
         {tags && tags.length ? (<div className="tags">{tags.map(tag => (<span className="tag" key={tag}>
           <A href={`/tag/${encodeURIComponent(tag)}`}>{tag}</A>
         </span>))}</div>) : null}
       </div>
     </Card>
-    {buttons(edit) && (<div className="push-12">
-      <A className="button is-link" href={`/admin/post/${id}`}><FormattedMessage id="edit" /></A>
-    </div>)}
+    <div className="push-12">
+      {notes ? (<p className="is-size-7 has-text-grey margin-2">{notes}</p>) : null}
+      {buttons(edit) && (<A className="button is-link" href={`/admin/post/${id}`}><FormattedMessage id="edit" /></A>)}
+    </div>
   </>
 );
 

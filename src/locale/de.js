@@ -99,7 +99,8 @@ module.exports = {
       columns: "Spalten"
     },
     path: {
-      field: "Pfad in der Navigation"
+      field: "Pfad in der Navigation",
+      placeholder: "Eigenen Pfad definieren…"
     },
     manage: {
       title: "Seiten verwalten"

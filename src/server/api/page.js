@@ -78,6 +78,13 @@ const install = ({ server }) => {
       .then(page => res.sendData({ data: page }))
       .catch(error => res.error.server(error)));
 
+  server.get("/api/page-paths", (req, res) =>
+    Page
+      .distinct("path")
+      .exec()
+      .then(paths => res.sendData({ data: { paths } }))
+      .catch(error => res.error.server(error)));
+
   server.get("/api/page-count", (req, res) =>
     Page
       .count({})
