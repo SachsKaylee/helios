@@ -23,60 +23,62 @@ export default injectIntl(class PagePage extends React.PureComponent {
     return { id };
   }
 
-  componentDidMount() {
+  updateTitle() {
+    let title = "";
+    const { state } = this.state;
+    switch (state) {
+      case "loaded": {
+        title = this.state.isNew
+          ? this.props.intl.formatMessage({ id: "page.manage.new" })
+          : this.props.intl.formatMessage({ id: "page.manage.edit" }, { title: this.state.title })
+        break;
+      }
+      case "loading": {
+        title = this.props.intl.formatMessage({ id: "loading" });
+        break;
+      }
+      case "error": {
+        title = this.props.intl.formatMessage({ id: "error" });
+        break;
+      }
+    }
+    this.props.setPageTitle(title);
+  }
+
+  async componentDidMount() {
     const { id } = this.props;
-    id
-      ? axios.get(`/api/page/${id}`)
-        .then(({ data }) => this.setState({ ...data, state: "loaded", isNew: false }))
-        .catch((error) => this.setState({ error, state: "error" }))
-      : this.setState({ elements: [{ type: "card", id: "root" }], state: "loaded", isNew: true });
-    axios.get("/api/page-paths")
-      .then(({ data }) => this.setState({ allPaths: data.paths }))
-      .catch(console.error);
+    // Load full page data.
+    if (id) {
+      try {
+        const { data: pageData } = await axios.get(`/api/page/${id}`);
+        this.setState({ ...pageData, state: "loaded", isNew: false }, () => this.updateTitle());
+      } catch (e) {
+        console.error("Failed to load page", e);
+        this.setState({ error, state: "error" }, () => this.updateTitle());
+      }
+    } else {
+      this.setState({ elements: [{ type: "card", id: "root" }], state: "loaded", isNew: true }, () => this.updateTitle());
+    }
+    // Load all navigation tags available.
+    try {
+      const { data: pathData } = await axios.get("/api/page-paths");
+      this.setState({ allPaths: pathData.paths });
+    } catch (e) {
+      console.error("Failed to load page paths", e);
+    }
   }
 
   onChange(elements) {
     this.setState({ elements });
   }
-  /*
-    onDelete = (really) => () => {
-      if (really) {
-        const { id } = this.state;
-        axios.delete(`/api/post/${id}`).then(() => {
-          this.setState({
-            id: undefined,
-            isNew: true,
-            date: new Date()
-          }, () => {
-            this.notifications.push({
-              canClose: true,
-              type: "success",
-              children: this.renderDeleteSuccessNotification()
-            });
-          });
-        }).catch(error => {
-          this.notifications.push({
-            canClose: true,
-            type: "danger",
-            children: this.renderErrorNotification({ error })
-          });
-        });
-      } else {
-        this.notifications.push({
-          canClose: true,
-          type: "danger",
-          children: this.renderDeleteConfirmNotification()
-        });
-      }
-    }
-  */
+
   onPublish = ({ title, notes, path }) => {
     const { _id, elements, isNew } = this.state;
     const data = { _id, title, elements, notes, path };
     (isNew
       ? axios.post("/api/page", data)
       : axios.put(`/api/page/${_id}`, data)).then(({ data }) => {
-        this.setState({ ...data, isNew: false });
+        this.setState({ ...data, isNew: false }, () => this.updateTitle());
       }).catch(error => {
         this.notifications.push({
           canClose: true,

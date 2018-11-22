@@ -104,7 +104,9 @@ module.exports = {
     },
     manage: {
       title: "Seiten verwalten",
-      newPage: "Neue Seite"
+      newPage: "Neue Seite",
+      new: "Seite erstellen…",
+      edit: "Bearbeite Seite: {title}"
     }
   },
   // Strings used for displaying and editing posts
@@ -147,7 +149,7 @@ module.exports = {
     },
     title: {
       new: "Post verfassen…",
-      edit: "Bearbeite {title}"
+      edit: "Bearbeite Post: {title}"
     },
     defaults: {
       title: "Neuer Post",

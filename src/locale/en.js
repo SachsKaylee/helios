@@ -79,11 +79,11 @@ module.exports = {
   page: {
     title: {
       field: "Page name",
-      placeholder: "The name of the page - this is displayed e.g. in the browser tile."
+      placeholder: "The name of the page - this is displayed e.g. in the browser title."
     },
     notes: {
       field: "Notes",
-      placeholder: "Take some quick notes about your post. They are only visible to other maintainers."
+      placeholder: "Take some quick notes about your page. They are only visible to other maintainers."
     },
     move: {
       title: "Move",
@@ -104,7 +104,9 @@ module.exports = {
     },
     manage: {
       title: "Manage pages",
-      newPage: "New page"
+      newPage: "New page",
+      new: "Creating new page…",
+      edit: "Editing page: {title}"
     }
   },
   // Strings used for displaying and editing posts
@@ -147,7 +149,7 @@ module.exports = {
     },
     title: {
       new: "Composing post…",
-      edit: "Editing {title}"
+      edit: "Editing post: {title}"
     },
     defaults: {
       title: "New post",
