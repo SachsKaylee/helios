@@ -106,8 +106,8 @@ const install = ({ server }) => {
             // Create folder path if it does not exist. Flag navigation nodes that are just folders as "synthetic"
             if (!child) {
               child = {
+                _id: "page/" + path[i],
                 title: path[i],
-                id: "page/" + path[i],
                 link: null,
                 children: [],
                 isSynthetic: true
@@ -120,8 +120,8 @@ const install = ({ server }) => {
           let node = navigationNode.children.find(child => child.title === title);
           if (!node) {
             node = {
+              _id: "page/" + _id,
               title: title,
-              id: "page/" + _id,
               link: "/page/" + _id,
               children: [],
               isSynthetic: false

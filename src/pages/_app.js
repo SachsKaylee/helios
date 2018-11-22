@@ -69,18 +69,18 @@ export default class _App extends App {
                   {
                     title: (<FormattedMessage id="navigation.home" />),
                     link: "/",
-                    key: "home"
+                    _id: "home"
                   },
                   ...customPages,
                   session.user && {
                     title: (<FormattedMessage id="navigation.admin.menu" />),
                     link: "/admin",
-                    key: "admin",
+                    _id: "admin",
                     children: [
                       session.hasPermission("author") && {
                         title: (<FormattedMessage id="navigation.admin.newPost" />),
                         link: "/admin/post",
-                        key: "post"
+                        _id: "post"
                       },
                       session.hasPermission("maintainer") && {
                         title: (<span>
@@ -88,30 +88,30 @@ export default class _App extends App {
                           <FormattedMessage id="navigation.admin.newPage" />
                         </span>),
                         link: "/admin/page",
-                        key: "page"
+                        _id: "page"
                       },
                       session.hasPermission("admin") && {
                         title: (<FormattedMessage id="navigation.admin.overview" />),
                         link: "/admin",
-                        key: "overview"
+                        _id: "overview"
                       },
                       {
                         title: (<FormattedMessage id="navigation.admin.account" />),
                         link: "/admin/account",
-                        key: "account"
+                        _id: "account"
                       },
                       {
                         title: (<FormattedMessage id="navigation.admin.signOut" />),
                         link: "/admin/account",
                         onClick: session.signOut,
-                        key: "signOut"
+                        _id: "signOut"
                       }
                     ]
                   },
                   (!session.user && !config.hideLogInButton) && {
                     title: (<FormattedMessage id="navigation.admin.signIn" />),
                     link: "/admin/account",
-                    key: "signIn"
+                    _id: "signIn"
                   }]}
               </Navbar>)}
           </Session>
