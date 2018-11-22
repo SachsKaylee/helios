@@ -70,10 +70,10 @@ export default injectIntl(class CreateUserForm extends Form {
       },
       {
         key: "permissions",
-        name: "Permissions", // todo: locale
+        name: (<FormattedMessage id="permissions" />),
         type: TagList,
         allowCustomTags: false,
-        tags: ["author"]
+        tags: ["author", "maintainer"]
       }
     ];
   }

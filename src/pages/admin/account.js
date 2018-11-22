@@ -39,7 +39,7 @@ export default injectIntl(class Account extends React.Component {
     const { id, permissions, avatar } = session.user;
     return (<Card
       title={<FormattedMessage id="account.welcome" values={{ id }} />}
-      subtitle={<span><FormattedMessage id="account.permissions" /> {permissions.length
+      subtitle={<span><FormattedMessage id="permissions" />: {permissions.length
         ? permissions.map(p => (<span className="tag" style={{ marginRight: 2 }} key={p}>{p}</span>))
         : <FormattedMessage id="none" />}</span>}
       image={avatar || `/api/avatar/${id}`}>

@@ -31,6 +31,7 @@ module.exports = {
   discard: "Verwerfen",
   cancel: "Abbrechen",
   preview: "Vorschau",
+  permissions: "Berechtigungen",
   formValueRequired: "\"{field}\" muss angegeben werden!",
   form: {
     submit: "Senden",
@@ -103,7 +104,8 @@ module.exports = {
       placeholder: "Eigenen Pfad definieren…"
     },
     manage: {
-      title: "Seiten verwalten"
+      title: "Seiten verwalten",
+      newPage: "Neue Seite"
     }
   },
   // Strings used for displaying and editing posts
@@ -158,7 +160,6 @@ module.exports = {
   },
   about: {
     title: "Über {id}…",
-    permissions: "Berechtigungen:",
     recentPosts: "Neueste Posts"
   },
   account: {
@@ -184,7 +185,6 @@ module.exports = {
       field: "Avatar ändern",
       errorTooLarge: "Der Avatar darf nicht größer als {maxSize} sein. (Gewählte Größe: {isSize})",
     },
-    permissions: "Berechtigungen:",
     welcome: "Willkommen, {id}!",
     viewPublic: "Öffentliches Profil ansehen",
     updateProfile: "Benutzerprofil aktualisieren",

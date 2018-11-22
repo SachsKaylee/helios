@@ -14,7 +14,7 @@ export default injectIntl(class PagesPage extends React.Component {
   }
 
   componentDidMount() {
-    const title = this.props.intl.formatMessage({ id: "pages.manage.title" });
+    const title = this.props.intl.formatMessage({ id: "page.manage.title" });
     this.props.setPageTitle(title);
     get("/api/page")
       .then(({ data }) => this.setState({ pages: data }))
@@ -26,8 +26,8 @@ export default injectIntl(class PagesPage extends React.Component {
     return (
       <div className="container">
         <Card
-          title={(<FormattedMessage id="pages.manage.title" />)}
-          subtitle={(<span><A className="button" href="/admin/page"><FormattedMessage id="pages.createPage" /></A></span>)}>
+          title={(<FormattedMessage id="page.manage.title" />)}
+          subtitle={(<span><A className="button" href="/admin/page"><FormattedMessage id="page.manage.newPage" /></A></span>)}>
           {pages.map(page => (<Media key={page._id} title={(<span>
             <strong style={{ marginRight: 2 }}><A href={`/admin/page/${page._id}`}>{page.title}</A></strong>
               {page.notes}
