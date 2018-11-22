@@ -10,7 +10,7 @@ export default class _Document extends Document {
 
   render() {
     return (
-      <html>
+      <html lang={config.locale.meta.id}>
         <Head>
           <meta charSet="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />

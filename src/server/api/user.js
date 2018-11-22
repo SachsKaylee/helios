@@ -13,7 +13,10 @@ const allPermissions = {
   // The admin can do everything.
   admin: "admin",
   // The author can publish, delete and edit posts.
-  author: "author"
+  author: "author",
+  // The maintainer can manage pages. 
+  // TODO: Figure out a better name
+  maintainer: "maintainer"
 };
 
 // ===============================================

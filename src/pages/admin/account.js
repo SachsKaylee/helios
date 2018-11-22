@@ -2,7 +2,8 @@ import React from "react";
 import Card from "../../components/layout/Card";
 import { FormattedMessage, injectIntl } from "react-intl";
 import Session from "../../store/Session";
-import { LogoutIcon, EarthIcon, DeleteIcon } from "mdi-react";
+import LogoutIcon from "mdi-react/LogoutIcon";
+import EarthIcon from "mdi-react/EarthIcon";
 import LogInForm from "../../components/forms/LogInForm";
 import EditProfileForm from "../../components/forms/EditProfileForm";
 import { Router } from "../../routes";
@@ -38,7 +39,7 @@ export default injectIntl(class Account extends React.Component {
     const { id, permissions, avatar } = session.user;
     return (<Card
       title={<FormattedMessage id="account.welcome" values={{ id }} />}
-      subtitle={<span><FormattedMessage id="account.permissions" /> {permissions.length
+      subtitle={<span><FormattedMessage id="permissions" />: {permissions.length
         ? permissions.map(p => (<span className="tag" style={{ marginRight: 2 }} key={p}>{p}</span>))
         : <FormattedMessage id="none" />}</span>}
       image={avatar || `/api/avatar/${id}`}>

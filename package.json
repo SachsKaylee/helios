@@ -15,8 +15,8 @@
     "cross-env": "^5.2.0"
   },
   "dependencies": {
-    "@react-formilicious/bulma": "^1.0.1",
-    "@react-formilicious/core": "^1.0.1",
+    "@react-formilicious/bulma": "^1.0.2",
+    "@react-formilicious/core": "^1.0.3",
     "@react-formilicious/validator-pwned": "^1.0.0",
     "@zeit/next-sass": "^1.0.1",
     "axios": "^0.18.0",
@@ -31,7 +31,7 @@
     "intl": "^1.2.5",
     "intl-locales-supported": "^1.0.0",
     "jodit-react": "^1.0.17",
-    "mdi-react": "^4.4.0",
+    "mdi-react": "^5.0.0",
     "mongoose": "^5.3.10",
     "next": "^7.0.2",
     "next-routes": "^1.4.2",

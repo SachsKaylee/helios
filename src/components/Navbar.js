@@ -41,14 +41,14 @@ export default class Navbar extends React.Component {
   }
 };
 
-const Links = ({ children }) => (children.map(child => child && (<SingleLink key={child.key} {...child}>{child.children}</SingleLink>)));
+const Links = ({ children }) => (children.map(child => child && (<SingleLink key={child._id} {...child}>{child.children}</SingleLink>)));
 const SingleLink = ({ title, link, children, ...rest }) => (
-  children
+  children && children.length
     ? (<div className="navbar-item has-dropdown is-hoverable">
       <a className="navbar-link">{title}</a>
       <div className="navbar-dropdown">
         <Links {...rest}>{children}</Links>
       </div>
     </div>)
-    : (<A href={link} className="navbar-item" {...rest}>{title}</A>)
+    : (<A href={link} className="navbar-item">{title}</A>)
 );

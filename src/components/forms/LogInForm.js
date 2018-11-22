@@ -4,7 +4,7 @@ import TextField from "@react-formilicious/bulma/TextField";
 import Checkbox from "@react-formilicious/bulma/Checkbox";
 import required from "@react-formilicious/core/validators/required";
 import { FormattedMessage, injectIntl } from "react-intl";
-import { LoginIcon } from "mdi-react";
+import LoginIcon from "mdi-react/LoginIcon";
 
 export default injectIntl(class LogInForm extends React.PureComponent {
   render() {

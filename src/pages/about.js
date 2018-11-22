@@ -44,7 +44,7 @@ export default injectIntl(class AboutPage extends React.Component {
               <FormattedMessage id="about.title" values={{ id }} />
             </h1>
 
-            <p className="content is-small"><FormattedMessage id="about.permissions" /> {permissions.length
+            <p className="content is-small"><FormattedMessage id="permissions" />: {permissions.length
               ? permissions.map(p => (<span className="tag" key={p}>{p}</span>))
                 : <FormattedMessage id="none" />}
                 <br/>

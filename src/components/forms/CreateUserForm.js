@@ -5,7 +5,8 @@ import TagList from "@react-formilicious/bulma/TagList";
 import TextField from "@react-formilicious/bulma/TextField";
 import FileField from "../fields/FileField";
 import RichTextField from "../fields/RichTextField";
-import { ContentSaveIcon, CancelIcon } from "mdi-react";
+import ContentSaveIcon from "mdi-react/ContentSaveIcon";
+import CancelIcon from "mdi-react/CancelIcon";
 import config from "../../config/client";
 import required from "@react-formilicious/core/validators/required";
 import combined from "@react-formilicious/core/validators/combined";
@@ -69,10 +70,10 @@ export default injectIntl(class CreateUserForm extends Form {
       },
       {
         key: "permissions",
-        name: "Permissions", // todo: locale
+        name: (<FormattedMessage id="permissions" />),
         type: TagList,
         allowCustomTags: false,
-        tags: ["author"]
+        tags: ["author", "maintainer"]
       }
     ];
   }

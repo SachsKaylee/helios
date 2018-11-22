@@ -30,6 +30,8 @@ module.exports = {
   delete: "Löschen",
   discard: "Verwerfen",
   cancel: "Abbrechen",
+  preview: "Vorschau",
+  permissions: "Berechtigungen",
   formValueRequired: "\"{field}\" muss angegeben werden!",
   form: {
     submit: "Senden",
@@ -51,6 +53,7 @@ module.exports = {
       overview: "Übersicht",
       account: "Benutzerkonto",
       newPost: "Neuer Post",
+      newPage: "Neue Seite",
       signIn: "Anmelden",
       signOut: "Abmelden"
     }
@@ -60,6 +63,7 @@ module.exports = {
     title: "Übersicht",
     posts: "Posts",
     users: "Benutzer",
+    pages: "Seiten",
   },
   // Admin accounts overview page
   users: {
@@ -70,6 +74,39 @@ module.exports = {
     password: {
       placeholder: "Passwort des Nutzers",
       confirm: "Passwort bestätigen"
+    }
+  },
+  page: {
+    title: {
+      field: "Seitenname",
+      placeholder: "Der Name der Seite - wird unter anderen im Browsertitel angezeigt."
+    },
+    notes: {
+      field: "Notizen",
+      placeholder: "Hier können Sie Notizen zu dieser Seite festhalten. Diese sind nur von anderen Verwaltern sichtbar."
+    },
+    move: {
+      title: "Bewegen",
+      up: "Nach oben",
+      down: "Nach unten"
+    },
+    add: {
+      title: "Neue Komponente hinzufügen",
+      subtitle: "Wählen Sie die Komponente aus, welche zur Seite hinzugefügt werden soll."
+    },
+    type: {
+      card: "Abschnitt",
+      columns: "Spalten"
+    },
+    path: {
+      field: "Pfad in der Navigation",
+      placeholder: "Eigenen Pfad definieren…"
+    },
+    manage: {
+      title: "Seiten verwalten",
+      newPage: "Neue Seite",
+      new: "Seite erstellen…",
+      edit: "Bearbeite Seite: {title}"
     }
   },
   // Strings used for displaying and editing posts
@@ -112,7 +149,7 @@ module.exports = {
     },
     title: {
       new: "Post verfassen…",
-      edit: "Bearbeite {title}"
+      edit: "Bearbeite Post: {title}"
     },
     defaults: {
       title: "Neuer Post",
@@ -124,7 +161,6 @@ module.exports = {
   },
   about: {
     title: "Über {id}…",
-    permissions: "Berechtigungen:",
     recentPosts: "Neueste Posts"
   },
   account: {
@@ -150,7 +186,6 @@ module.exports = {
       field: "Avatar ändern",
       errorTooLarge: "Der Avatar darf nicht größer als {maxSize} sein. (Gewählte Größe: {isSize})",
     },
-    permissions: "Berechtigungen:",
     welcome: "Willkommen, {id}!",
     viewPublic: "Öffentliches Profil ansehen",
     updateProfile: "Benutzerprofil aktualisieren",
