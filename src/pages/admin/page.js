@@ -13,6 +13,7 @@ export default injectIntl(class PagePage extends React.PureComponent {
     super(p);
     this.onChange = this.onChange.bind(this);
     this.onPreview = this.onPreview.bind(this);
+    this.onDelete = this.onDelete.bind(this);
     this.previewForm = React.createRef();
     this.state = {
       state: "loading",
@@ -56,7 +57,7 @@ export default injectIntl(class PagePage extends React.PureComponent {
         this.setState({ ...pageData, state: "loaded", isNew: false }, () => this.updateTitle());
       } catch (e) {
         console.error("Failed to load page", e);
-        this.setState({ error, state: "error" }, () => this.updateTitle());
+        this.setState({ error: e, state: "error" }, () => this.updateTitle());
       }
     } else {
       this.setState({ elements: [{ type: "card", id: "root" }], state: "loaded", isNew: true }, () => this.updateTitle());
@@ -68,6 +69,10 @@ export default injectIntl(class PagePage extends React.PureComponent {
     } catch (e) {
       console.error("Failed to load page paths", e);
     }
+  }
+
+  onDelete() {
+    axios.delete(`/api/page/${this.state._id}`).then(() => this.setState({ _id: null, isNew: true }, () => this.updateTitle()));
   }
 
   onChange(elements) {
@@ -111,7 +116,7 @@ export default injectIntl(class PagePage extends React.PureComponent {
   }
 
   renderLoaded() {
-    const { elements, title, path, notes, state } = this.state;
+    const { elements, title, path, notes, isNew } = this.state;
     return (
       <div className="container">
         <Editor onChange={this.onChange} elements={elements} />
@@ -123,7 +128,7 @@ export default injectIntl(class PagePage extends React.PureComponent {
             allPaths={this.state.allPaths}
             onPublish={this.onPublish}
             onPreview={this.onPreview}
-          //onDelete={!isNew && (this.onDelete(false))}
+            onDelete={isNew ? undefined : this.onDelete}
           />
           <NotificationProvider ref={ref => this.notifications = ref} />
         </Card>
