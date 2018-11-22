@@ -9,8 +9,18 @@ import { FormattedMessage, injectIntl } from "react-intl";
 
 export default injectIntl(class PagePage extends React.PureComponent {
   static async getInitialProps(p) {
-    const { data } = await axios.get("/api/page/" + encodeURIComponent(p.query.id));
-    return { page: data };
+    if (p.query.id) {
+      const { data } = await axios.get("/api/page/" + encodeURIComponent(p.query.id));
+      return { page: data };
+    } else {
+      return {
+        page: {
+          elements: JSON.parse(p.query.elements),
+          title: p.query.title,
+          notes: p.query.notes
+        }
+      };
+    }
   }
 
   componentDidMount() {

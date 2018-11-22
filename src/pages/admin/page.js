@@ -12,6 +12,8 @@ export default injectIntl(class PagePage extends React.PureComponent {
   constructor(p) {
     super(p);
     this.onChange = this.onChange.bind(this);
+    this.onPreview = this.onPreview.bind(this);
+    this.previewForm = React.createRef();
     this.state = {
       state: "loading",
       allPaths: [],
@@ -88,6 +90,14 @@ export default injectIntl(class PagePage extends React.PureComponent {
       });
   }
 
+  onPreview(data) {
+    const form = this.previewForm.current;
+    form.elements.value = JSON.stringify(this.state.elements);
+    form.title.value = data.title;
+    form.notes.value = data.notes;
+    form.submit();
+  }
+
   renderLoading() {
     // TODO: Spinner
     return (<Card title={(<p><FormattedMessage id="loading" /></p>)}>
@@ -112,10 +122,17 @@ export default injectIntl(class PagePage extends React.PureComponent {
             path={path}
             allPaths={this.state.allPaths}
             onPublish={this.onPublish}
+            onPreview={this.onPreview}
           //onDelete={!isNew && (this.onDelete(false))}
           />
           <NotificationProvider ref={ref => this.notifications = ref} />
         </Card>
+
+        <form method="get" action="/page" target="_blank" ref={this.previewForm}>
+          <input type="hidden" name="elements" value="[]" />
+          <input type="hidden" name="title" value="" />
+          <input type="hidden" name="notes" value="" />
+        </form>
       </div>
     );
   }

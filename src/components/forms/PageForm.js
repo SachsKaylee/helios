@@ -50,11 +50,11 @@ export default injectIntl(class PageForm extends React.PureComponent {
           name: (<><PublishIcon className="mdi-icon-spacer" /> <FormattedMessage id="publish" /></>),
           type: "primary"
         },
-        {
+        this.props.onPreview && {
           key: "preview",
           type: "link",
           name: (<><EarthIcon className="mdi-icon-spacer" /> <FormattedMessage id="preview" /></>),
-          action: "reset"
+          action: this.props.onPreview
         },
         this.props.onDelete && {
           key: "delete",
