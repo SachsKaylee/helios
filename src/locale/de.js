@@ -37,8 +37,7 @@ module.exports = {
     submit: "Senden",
     chooseFile: "Datei auswählen…",
     noFilesSelected: "Keine Dateien ausgewählt…",
-    filesSelected: "{n} Dateien ausgewählt.",
-    addPath: "Neuen Pfad hinzufügen…"
+    filesSelected: "{n} Dateien ausgewählt."
   },
   editor: {
     formatSelection: "Selektion formatieren",

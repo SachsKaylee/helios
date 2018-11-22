@@ -31,6 +31,7 @@ module.exports = {
   discard: "Discard",
   cancel: "Cancel",
   preview: "Preview",
+  permissions: "Permissions",
   formValueRequired: "\"{field}\" is required!",
   form: {
     submit: "Submit",
@@ -52,6 +53,7 @@ module.exports = {
       overview: "Overview",
       account: "Account",
       newPost: "New Post",
+      newPage: "New Page",
       signIn: "Sign in",
       signOut: "Sign out"
     }
@@ -60,7 +62,8 @@ module.exports = {
   admin: {
     title: "Overview",
     posts: "Posts",
-    users: "Users"
+    users: "Users",
+    pages: "Pages"
   },
   // Admin accounts overview page
   users: {
@@ -72,6 +75,37 @@ module.exports = {
       placeholder: "User password",
       confirm: "Confirm user password"
     }
+  },  
+  page: {
+    title: {
+      field: "Page name",
+      placeholder: "The name of the page - this is displayed e.g. in the browser tile."
+    },
+    notes: {
+      field: "Notes",
+      placeholder: "Take some quick notes about your post. They are only visible to other maintainers."
+    },
+    move: {
+      title: "Move",
+      up: "Move up",
+      down: "Move down"
+    },
+    add: {
+      title: "Add new component",
+      subtitle: "Select the component that should be added to the page."
+    },
+    type: {
+      card: "Section",
+      columns: "Columns"
+    },
+    path: {
+      field: "Path in the navigation",
+      placeholder: "Define a custom path…"
+    },
+    manage: {
+      title: "Manage pages",
+      newPage: "New page"
+    }
   },
   // Strings used for displaying and editing posts
   post: {
@@ -80,7 +114,7 @@ module.exports = {
     noneFound: "No posts could be found. Please try again later.",
     tags: "Tags for categorization…",
     notes: {
-      field:"Notes", 
+      field: "Notes", 
       placeholder: "Take some quick notes about your post. They are only visible to other authors."
     },
     editor: {
