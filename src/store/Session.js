@@ -60,4 +60,6 @@ export class SessionProvider extends React.PureComponent {
     </Context.Provider>)
   }
 }
+
+Context.Consumer.name = "sessionStore";
 export default Context.Consumer;

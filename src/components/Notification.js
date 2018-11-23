@@ -15,10 +15,11 @@ export default class Notification extends React.PureComponent {
   }
 
   render() {
-    const { canClose, children, type } = this.props;
+    const { canClose, children, title, icon: Icon, type } = this.props;
     const { closed } = this.state;
-    return (!closed && (<div className={classnames("notification", type && "is-" + type)}>
+    return (!closed && (<div className={classnames("pop-in", "notification", type && "is-" + type)}>
       {canClose && (<button className="delete" onClick={this.onClose}></button>)}
+      {(title || Icon) && <p><Icon />{title}</p>}
       {children}
     </div>));
   }
