@@ -107,6 +107,21 @@ module.exports = {
       newPage: "New page",
       new: "Creating new page…",
       edit: "Editing page: {title}"
+    },
+    notification: {
+      deleted: {
+        title: "Page deleted.",
+        description: "The page has been deleted. The contents of the page will stay in the editor in case you wish to re-publish it."
+      },
+      delete: {
+        title: "Are you sure?",
+        description: "You are about to delete this page. This cannot be undone.",
+        confirm: "Understood - Delete regardless"
+      },
+      published: {
+        title: "Published!",
+        description: "The page {link} has been published."
+      }
     }
   },
   // Strings used for displaying and editing posts

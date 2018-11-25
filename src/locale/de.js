@@ -107,6 +107,21 @@ module.exports = {
       newPage: "Neue Seite",
       new: "Seite erstellen…",
       edit: "Bearbeite Seite: {title}"
+    },
+    notification: {
+      deleted: {
+        title: "Seite gelöscht.",
+        description: "Die Seite wurde gelöscht. Der Inhalt der Seite bleibt im Editor erhalten, falls Sie diese erneut veröffentlichen möchten."
+      },
+      delete: {
+        title: "Sind Sie sicher?",
+        description: "Sie sind dabei diese Seite zu löschen. Diese Aktion ist permanent und kann nicht rückgängig gemacht werden.",
+        confirm: "Verstanden - Trotzdem löschen"
+      },
+      published: {
+        title: "Veröffentlicht!",
+        description: "Die Seite {link} wurde veröffentlicht."
+      }
     }
   },
   // Strings used for displaying and editing posts
@@ -134,7 +149,7 @@ module.exports = {
       notification: {
         deleted: {
           title: "Post gelöscht.",
-          description: "Der Post wurde gelöscht. Der Inhalt des Posts bleib im Editor erhalten, falls Sie Ihn erneut veröffentlichen möchten."
+          description: "Der Post wurde gelöscht. Der Inhalt des Posts bleibt im Editor erhalten, falls Sie diesen erneut veröffentlichen möchten."
         },
         delete: {
           title: "Sind Sie sicher?",
