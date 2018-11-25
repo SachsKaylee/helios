@@ -6,7 +6,7 @@ const withStores = (stores, Component) => {
     static displayName = `WithStores(${Component.displayName})`;
 
     static async getInitialProps(...args) {
-      return Component.getInitialProps(...args);
+      return Component.getInitialProps && Component.getInitialProps(...args);
     }
 
     render() {

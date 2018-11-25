@@ -210,7 +210,13 @@ module.exports = {
     usernamePlaceholder: "your-username",
     passwordPlaceholder: "Your password",
     cookieRequired: "The cookie is required to sign you in.",
-    acceptCookie: "I agree to this website using a cookie to sign me into my account."
+    acceptCookie: "I agree to this website using a cookie to sign me into my account.",
+    notification: {
+      updated: {
+        title: "Account updated",
+        description: "Your account has been updated. View your public changes here: {link}"
+      }
+    }
   },
   pages: {
     blog: {

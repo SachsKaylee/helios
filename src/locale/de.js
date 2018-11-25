@@ -208,7 +208,13 @@ module.exports = {
     usernamePlaceholder: "ihr-username",
     passwordPlaceholder: "Ihr Passwort",
     cookieRequired: "Der Cookie wird benötigt um Sie anzumelden.",
-    acceptCookie: "Ich bin einverstanden, dass ein Cookie in meinem Browser gespeichert wird um mich einzuloggen."
+    acceptCookie: "Ich bin einverstanden, dass ein Cookie in meinem Browser gespeichert wird um mich einzuloggen.",
+    notification: {
+      updated: {
+        title: "Benutzerkonto aktualisiert",
+        description: "Ihr Benutzerkonto wurde aktualisiert. Sie können sich die öffentlichen Änderungen hier ansehen: {link}"
+      }
+    }
   },
   pages: {
     blog: {

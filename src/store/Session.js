@@ -33,10 +33,11 @@ export class SessionProvider extends React.PureComponent {
       .catch(error => rej(error.response.data)));
 
   setSession = (session, callback) => {
+    const cb = () => callback && callback(this.state.session);
     if (session === undefined || session === null) {
-      this.setState({ session: null }, callback);
+      this.setState({ session: null }, cb);
     } else {
-      this.setState({ session }, callback);
+      this.setState({ session }, cb);
     }
   }
 
