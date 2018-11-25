@@ -73,11 +73,22 @@ const install = ({ server }) => {
         }
       }));
 
-  server.delete("/api/post/:id", (req, res) =>
-    Post
-      .deleteOne({ _id: req.params.id })
-      .then(post => res.sendData({ data: post }))
-      .catch(error => res.error.server(error)));
+  server.delete("/api/post/:id", async (req, res) => {
+    try {
+      const user = await req.user.getUser();
+      if (!user.hasPermission("author")) {
+        return res.error.missingPermission("author");
+      }
+      const post = await Post.deleteOne({ _id: req.params.id });
+      return res.sendData({ data: post });
+    } catch (error) {
+      if (error === "not-logged-in") {
+        return res.error.notLoggedIn();
+      } else {
+        return res.error.server(error);
+      }
+    }
+  });
 
   server.get("/api/post-count", (req, res) =>
     Post

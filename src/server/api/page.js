@@ -72,11 +72,22 @@ const install = ({ server }) => {
         }
       }));
 
-  server.delete("/api/page/:id", (req, res) =>
-    Page
-      .deleteOne({ _id: req.params.id })
-      .then(page => res.sendData({ data: page }))
-      .catch(error => res.error.server(error)));
+  server.delete("/api/page/:id", async (req, res) => {
+    try {
+      const user = await req.user.getUser();
+      if (!user.hasPermission("maintainer")) {
+        return res.error.missingPermission("maintainer");
+      }
+      const page = await Page.deleteOne({ _id: req.params.id });
+      return res.sendData({ data: page });
+    } catch (error) {
+      if (error === "not-logged-in") {
+        return res.error.notLoggedIn();
+      } else {
+        return res.error.server(error);
+      }
+    }
+  });
 
   server.get("/api/page-paths", (req, res) =>
     Page
