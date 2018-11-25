@@ -4,30 +4,28 @@ import React from "react";
 import Card from "../../components/layout/Card"
 import EditablePost from "../../components/post/PostEditor";
 import axios from "axios";
-import NotificationProvider from "../../components/NotificationProvider"
+import NotificationStore from "../../store/Notification";
+import withStores from "../../store/withStores";
 import { FormattedMessage, injectIntl } from "react-intl";
 import config from "../../config/client";
 import DeleteIcon from "mdi-react/DeleteIcon";
-import WarningIcon from "mdi-react/WarningIcon";
+import TrashIcon from "mdi-react/TrashIcon";
 import LoadingIcon from "mdi-react/LoadingIcon";
-import ErrorIcon from "mdi-react/ErrorIcon";
 import CakeIcon from "mdi-react/CakeIcon";
-import { SlimError, FullError } from "../../components/Error";
+import { FullError } from "../../components/Error";
 import PostForm from "../../components/forms/PostForm";
 
-export default injectIntl(class PostPage extends React.PureComponent {
+export default withStores(NotificationStore, injectIntl(class PostPage extends React.PureComponent {
   constructor(p) {
     super(p);
-    this.notifications = React.createRef();
-    this.editorRef = React.createRef();
     this.state = {
       state: "loading",
       allTags: []
     };
   }
 
-  static async getInitialProps({ query: { id } }) {
-    return { id };
+  static async getInitialProps({ query }) {
+    return { id: query.id, query };
   }
 
   componentDidMount() {
@@ -63,10 +61,10 @@ export default injectIntl(class PostPage extends React.PureComponent {
         .catch((data) => this.setState({ error: data, state: "error" }));
     axios.get("/api/tag")
       .then(({ data }) => this.setState({ allTags: data.tags }))
-      .catch(data => this.setState({ error: data, state: "error" }));
+      .catch(error => this.props.notificationStore.pushError(error));
   }
 
-  stateFromData = ({ _id, date, author, title, content, tags, notes }, oldState) => {
+  stateFromData = ({ _id, date, author, title, content, tags, notes }) => {
     return {
       id: _id,
       isNew: !_id,
@@ -90,24 +88,26 @@ export default injectIntl(class PostPage extends React.PureComponent {
           isNew: true,
           date: new Date()
         }, () => {
-          this.notifications.push({
-            canClose: true,
+          this.props.notificationStore.push({
             type: "success",
-            children: this.renderDeleteSuccessNotification()
+            icon: DeleteIcon,
+            title: (<FormattedMessage id="post.editor.notification.deleted.title" />),
+            children: (<FormattedMessage id="post.editor.notification.deleted.description" />)
           });
         });
-      }).catch(error => {
-        this.notifications.push({
-          canClose: true,
-          type: "danger",
-          children: this.renderErrorNotification({ error })
-        });
-      });
+      }).catch(error => this.props.notificationStore.pushError(error));
     } else {
-      this.notifications.push({
-        canClose: true,
+      this.props.notificationStore.push({
         type: "danger",
-        children: this.renderDeleteConfirmNotification()
+        icon: TrashIcon,
+        title: (<FormattedMessage id="post.editor.notification.delete.title" />),
+        children: (<FormattedMessage id="post.editor.notification.delete.description" />),
+        buttons: [
+          {
+            text: (<FormattedMessage id="post.editor.notification.delete.confirm" />),
+            action: this.onDelete(true)
+          }
+        ]
       });
     }
   }
@@ -119,23 +119,21 @@ export default injectIntl(class PostPage extends React.PureComponent {
       title: title,
       content: content
     };
-    (isNew
-      ? axios.post("/api/post", data)
-      : axios.put(`/api/post/${id}`, data)).then(({ data }) => {
-        this.setState(this.stateFromData(data, this.state), () => {
-          this.notifications.push({
-            canClose: true,
-            type: "success",
-            children: this.renderPublishSuccessNotification(data)
-          });
+    const promise = isNew ? axios.post("/api/post", data) : axios.put(`/api/post/${id}`, data);
+    promise
+      .then(({ data }) => this.setState(this.stateFromData(data, this.state), () => {
+        this.props.notificationStore.push({
+          type: "success",
+          icon: CakeIcon,
+          title: (<FormattedMessage id="post.editor.notification.published.title" values={{
+            link: (<A href={`/post/${data._id}`}>{data.title}</A>)
+          }} />),
+          children: (<FormattedMessage id="post.editor.notification.published.description" values={{
+            link: (<A href={`/post/${data._id}`}>{data.title}</A>)
+          }} />)
         });
-      }).catch(error => {
-        this.notifications.push({
-          canClose: true,
-          type: "error",
-          children: this.renderErrorNotification({ error })
-        });
-      });
+      }))
+      .catch(error => this.props.notificationStore.pushError(error));
   }
 
   renderDeleteSuccessNotification() {
@@ -150,49 +148,8 @@ export default injectIntl(class PostPage extends React.PureComponent {
     </div>);
   }
 
-  renderDeleteConfirmNotification() {
-    return (<div>
-      <p className="subtitle">
-        <WarningIcon className="mdi-icon-spacer" />
-        <FormattedMessage id="post.editor.notification.delete.title" />
-      </p>
-      <p>
-        <FormattedMessage id="post.editor.notification.delete.description" />
-      </p>
-      <p><a onClick={this.onDelete(true)}>
-        <FormattedMessage id="post.editor.notification.delete.confirm" />
-      </a></p>
-    </div>);
-  }
-
-  renderPublishSuccessNotification(data) {
-    const { title, _id: id } = data;
-    const args = {
-      link: (<A href={`/post/${id}`}>{title}</A>)
-    };
-    return (<div>
-      <p className="subtitle">
-        <CakeIcon className="mdi-icon-spacer" />
-        <FormattedMessage id="post.editor.notification.published.title" values={args} />
-      </p>
-      <p>
-        <FormattedMessage id="post.editor.notification.published.description" values={args} />
-      </p>
-    </div>);
-  }
-
-  renderErrorNotification(error) {
-    return (<div>
-      <p className="subtitle">
-        <ErrorIcon className="mdi-icon-spacer" />
-        <FormattedMessage id="error" />
-      </p>
-      <SlimError error={error} />
-    </div>);
-  }
-
   renderLoading() {
-    // todo: spinner
+    // TODO: spinner
     return (<Card title={(<p><FormattedMessage id="loading" /></p>)}>
       <LoadingIcon className="mdi-icon-titanic" />
     </Card>);
@@ -217,7 +174,6 @@ export default injectIntl(class PostPage extends React.PureComponent {
                 onPublish={this.onPublish}
                 onDelete={!isNew && (this.onDelete(false))}
               />
-              <NotificationProvider ref={ref => this.notifications = ref} />
             </Card>
           </div>)}>
           <EditablePost
@@ -226,7 +182,6 @@ export default injectIntl(class PostPage extends React.PureComponent {
             content={content}
             date={date}
             title={title}
-            editorRef={this.editorRef}
             onChange={this.onChange}
           />
         </Columns>
@@ -242,7 +197,7 @@ export default injectIntl(class PostPage extends React.PureComponent {
       case "error": return this.renderError();
     }
   }
-});
+}));
 
 const defaultPostData = () => ({
   tags: config.defaultTags,

@@ -1,15 +1,20 @@
 import React from "react";
 import { uuid } from "../utils/uuid";
+import ErrorIcon from "mdi-react/ErrorIcon";
+import { FormattedMessage } from "react-intl";
 
 const Context = React.createContext();
 
 const TICK_INTERVAL = 15;
+const DEFAULT_TIMEOUT = 5000;
+const DEFAULT_BUTTON_TIMEOUT = 0;
 
 export class NotificationProvider extends React.PureComponent {
   constructor(p) {
     super(p);
     this.notifications = React.createRef();
     this.push = this.push.bind(this);
+    this.pushError = this.pushError.bind(this);
     this.close = this.close.bind(this);
     this.interval = this.interval.bind(this);
     this.maybeStartTimer = this.maybeStartTimer.bind(this);
@@ -55,13 +60,31 @@ export class NotificationProvider extends React.PureComponent {
     }), this.maybeEndTimer);
   }
 
-  push({ _id, title, icon, type, timeout, canClose, children }) {
+  push({ _id, title, icon, type, timeout, canClose, children, buttons }) {
     this.setState(s => ({
       notifications: [
         ...s.notifications,
-        { _id: _id || uuid(), elapsed: 0, title, icon, type, timeout, children, canClose }
+        {
+          _id: _id || uuid(),
+          timeout: timeout !== undefined ? timeout : buttons && buttons.length ? DEFAULT_BUTTON_TIMEOUT : DEFAULT_TIMEOUT,
+          buttons: buttons || [],
+          canClose: !!canClose,
+          elapsed: 0,
+          title, icon, type, children
+        }
       ]
     }), this.maybeStartTimer);
+  }
+
+  pushError(error, args) {
+    this.push({
+      canClose: true,
+      type: "danger",
+      icon: ErrorIcon,
+      title: (<FormattedMessage id="error" />),
+      children: (<SlimError error={error} />),
+      ...args
+    });
   }
 
   close(id) {
@@ -74,6 +97,7 @@ export class NotificationProvider extends React.PureComponent {
     return (<Context.Provider value={{
       notifications: this.state.notifications,
       push: this.push,
+      pushError: this.pushError,
       close: this.close
     }}>
       {this.props.children}
