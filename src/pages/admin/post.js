@@ -14,18 +14,31 @@ import LoadingIcon from "mdi-react/LoadingIcon";
 import CakeIcon from "mdi-react/CakeIcon";
 import { FullError } from "../../components/Error";
 import PostForm from "../../components/forms/PostForm";
+import crossuser from "../../utils/crossuser";
 
 export default withStores(NotificationStore, injectIntl(class PostPage extends React.PureComponent {
   constructor(p) {
     super(p);
     this.state = {
-      state: "loading",
-      allTags: []
+      ...defaultPostData(),
+      ...p.data
     };
   }
 
-  static async getInitialProps({ query }) {
-    return { id: query.id, query };
+  static async getInitialProps({ query, req }) {
+    const opts = crossuser(req);
+    const { data: tags } = await axios.get("/api/tag", opts);
+    if (query.id) {
+      const { data } = await axios.get(`/api/post/${id}`, opts);
+      return { data };
+    } else {
+      const { data } = await axios.get("/api/session", opts);
+      return {
+        tags, data: {
+          author: data.id
+        }
+      };
+    }
   }
 
   componentDidMount() {
@@ -48,31 +61,6 @@ export default withStores(NotificationStore, injectIntl(class PostPage extends R
       }
     }
     this.props.setPageTitle(title);
-  }
-
-  componentDidMount() {
-    const { id } = this.props;
-    id
-      ? axios.get(`/api/post/${id}`)
-        .then(({ data }) => this.setState({ ...this.stateFromData(data), state: "loaded" }))
-        .catch((data) => this.setState({ error: data, state: "error" }))
-      : axios.get("/api/session")
-        .then(({ data }) => this.setState({ ...this.stateFromData({ ...defaultPostData(), author: data.id, }), state: "loaded" }))
-        .catch((data) => this.setState({ error: data, state: "error" }));
-    axios.get("/api/tag")
-      .then(({ data }) => this.setState({ allTags: data.tags }))
-      .catch(error => this.props.notificationStore.pushError(error));
-  }
-
-  stateFromData = ({ _id, date, author, title, content, tags, notes }) => {
-    return {
-      id: _id,
-      isNew: !_id,
-      author, tags, notes,
-      date: date ? new Date(date) : new Date(),
-      title: title,
-      content: content
-    }
   }
 
   onChange = what => (value) => {
@@ -148,20 +136,8 @@ export default withStores(NotificationStore, injectIntl(class PostPage extends R
     </div>);
   }
 
-  renderLoading() {
-    // TODO: spinner
-    return (<Card title={(<p><FormattedMessage id="loading" /></p>)}>
-      <LoadingIcon className="mdi-icon-titanic" />
-    </Card>);
-  }
-
-  renderError() {
-    const { error } = this.state;
-    return (<FullError error={error} />);
-  }
-
-  renderLoaded() {
-    const { title, content, isNew, date, author, tags, notes } = this.state;
+  render() {
+    const { _id, title, content, date, author, tags, notes } = this.state;
     return (
       <div className="container">
         <Columns size={3} sidebar={(
@@ -172,7 +148,7 @@ export default withStores(NotificationStore, injectIntl(class PostPage extends R
                 notes={notes}
                 allTags={this.state.allTags}
                 onPublish={this.onPublish}
-                onDelete={!isNew && (this.onDelete(false))}
+                onDelete={_id ? this.onDelete(false) : undefined}
               />
             </Card>
           </div>)}>
@@ -187,15 +163,6 @@ export default withStores(NotificationStore, injectIntl(class PostPage extends R
         </Columns>
       </div>
     );
-  }
-
-  render() {
-    const { state } = this.state;
-    switch (state) {
-      case "loaded": return this.renderLoaded();
-      case "loading": return this.renderLoading();
-      case "error": return this.renderError();
-    }
   }
 }));
 

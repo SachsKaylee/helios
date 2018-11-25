@@ -4,25 +4,25 @@ import Card from "../../components/layout/Card";
 import A from "../../components/system/A";
 import { get } from "axios";
 import Media from "../../components/layout/Media";
+import crossuser from "../../utils/crossuser";
 
 export default injectIntl(class PagesPage extends React.Component {
   constructor(p) {
     super(p);
-    this.state = {
-      pages: []
-    }
+  }
+
+  static async getInitialProps({ req }) {
+    const { data } = await get("/api/page", crossuser(req));
+    return { pages: data };
   }
 
   componentDidMount() {
     const title = this.props.intl.formatMessage({ id: "page.manage.title" });
     this.props.setPageTitle(title);
-    get("/api/page")
-      .then(({ data }) => this.setState({ pages: data }))
-      .catch(console.error);
   }
 
   render() {
-    const { pages } = this.state;
+    const { pages } = this.props;
     return (
       <div className="container">
         <Card
@@ -30,10 +30,10 @@ export default injectIntl(class PagesPage extends React.Component {
           subtitle={(<span><A className="button" href="/admin/page"><FormattedMessage id="page.manage.newPage" /></A></span>)}>
           {pages.map(page => (<Media key={page._id} title={(<span>
             <strong style={{ marginRight: 2 }}><A href={`/admin/page/${page._id}`}>{page.title}</A></strong>
-              {page.notes}
-            </span>)}>
+            {page.notes}
+          </span>)}>
           </Media>))}
         </Card>
-    </div>);
+      </div>);
   }
 });

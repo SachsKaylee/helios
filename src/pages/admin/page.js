@@ -9,6 +9,7 @@ import { FullError, SlimError } from "../../components/Error";
 import PageForm from "../../components/forms/PageForm";
 import Editor from "../../components/page/Editor";
 import NotificationStore from "../../store/Notification";
+import crossuser from "../../utils/crossuser";
 import withStores from "../../store/withStores";
 import A from "../../components/system/A";
 
@@ -21,59 +22,46 @@ export default withStores(NotificationStore, injectIntl(class PagePage extends R
     this.previewForm = React.createRef();
     this.notification = React.createRef();
     this.state = {
-      state: "loading",
-      allPaths: [],
-      elements: []
+      ...this.props.data,
+      allPaths: []
     };
   }
 
-  static async getInitialProps({ query }) {
-    return { id: query.id, query };
+  static async getInitialProps({ query, req }) {
+    const { id } = query;
+    const { data: pathData } = await axios.get("/api/page-paths", crossuser(req));
+    // Load full page data.
+    if (id) {
+      try {
+        const { data } = await axios.get(`/api/page/${id}`, crossuser(req));
+        return { id, pathData, data };
+      } catch (error) {
+        return { id, pathData, error };
+      }
+    } else {
+      return {
+        pathData, data: {
+          elements: [{ type: "card", id: "root" }]
+        }
+      };
+    }
   }
 
   updateTitle() {
     let title = "";
-    const { state } = this.state;
-    switch (state) {
-      case "loaded": {
-        title = this.state.isNew
-          ? this.props.intl.formatMessage({ id: "page.manage.new" })
-          : this.props.intl.formatMessage({ id: "page.manage.edit" }, { title: this.state.title })
-        break;
-      }
-      case "loading": {
-        title = this.props.intl.formatMessage({ id: "loading" });
-        break;
-      }
-      case "error": {
-        title = this.props.intl.formatMessage({ id: "error" });
-        break;
-      }
+    const { error } = this.props;
+    if (error) {
+      title = this.props.intl.formatMessage({ id: "error" });
+    } else {
+      title = this.state._id
+        ? this.props.intl.formatMessage({ id: "page.manage.edit" }, { title: this.state.title })
+        : this.props.intl.formatMessage({ id: "page.manage.new" });
     }
     this.props.setPageTitle(title);
   }
 
-  async componentDidMount() {
-    const { id } = this.props;
-    // Load full page data.
-    if (id) {
-      try {
-        const { data: pageData } = await axios.get(`/api/page/${id}`);
-        this.setState({ ...pageData, state: "loaded", isNew: false }, () => this.updateTitle());
-      } catch (e) {
-        console.error("Failed to load page", e);
-        this.setState({ error: e, state: "error" }, () => this.updateTitle());
-      }
-    } else {
-      this.setState({ elements: [{ type: "card", id: "root" }], state: "loaded", isNew: true }, () => this.updateTitle());
-    }
-    // Load all navigation tags available.
-    try {
-      const { data: pathData } = await axios.get("/api/page-paths");
-      this.setState({ allPaths: pathData.paths });
-    } catch (e) {
-      console.error("Failed to load page paths", e);
-    }
+  componentDidMount() {
+    this.updateTitle();
   }
 
   onDelete() {
@@ -88,7 +76,7 @@ export default withStores(NotificationStore, injectIntl(class PagePage extends R
           text: (<FormattedMessage id="page.notification.delete.confirm" />),
           action: () => axios
             .delete(`/api/page/${this.state._id}`)
-            .then(() => this.setState({ _id: null, isNew: true }, () => {
+            .then(() => this.setState({ _id: null }, () => {
               this.updateTitle();
               this.props.notificationStore.push({
                 canClose: true,
@@ -108,12 +96,12 @@ export default withStores(NotificationStore, injectIntl(class PagePage extends R
   }
 
   onPublish = ({ title, notes, path }) => {
-    const { _id, elements, isNew } = this.state;
+    const { _id, elements } = this.state;
     const data = { _id, title, elements, notes, path };
-    const promise = isNew ? axios.post("/api/page", data) : axios.put(`/api/page/${_id}`, data);
+    const promise = _id ? axios.put(`/api/page/${_id}`, data) : axios.post("/api/page", data);
     promise
       .then(({ data }) => {
-        this.setState({ ...data, isNew: false }, () => {
+        this.setState({ ...data }, () => {
           this.updateTitle();
           this.props.notificationStore.push({
             canClose: true,
@@ -137,20 +125,13 @@ export default withStores(NotificationStore, injectIntl(class PagePage extends R
     form.submit();
   }
 
-  renderLoading() {
-    // TODO: Spinner
-    return (<Card title={(<p><FormattedMessage id="loading" /></p>)}>
-      <LoadingIcon className="mdi-icon-titanic" />
-    </Card>);
-  }
-
   renderError() {
     const { error } = this.state;
     return (<FullError error={error} />);
   }
 
   renderLoaded() {
-    const { elements, title, path, notes, isNew } = this.state;
+    const { elements, title, path, notes, _id } = this.state;
     return (
       <div className="container">
         <Editor onChange={this.onChange} elements={elements} />
@@ -162,7 +143,7 @@ export default withStores(NotificationStore, injectIntl(class PagePage extends R
             allPaths={this.state.allPaths}
             onPublish={this.onPublish}
             onPreview={this.onPreview}
-            onDelete={isNew ? undefined : this.onDelete}
+            onDelete={_id ? this.onDelete : undefined}
           />
         </Card>
 
@@ -176,11 +157,11 @@ export default withStores(NotificationStore, injectIntl(class PagePage extends R
   }
 
   render() {
-    const { state } = this.state;
-    switch (state) {
-      case "loaded": return this.renderLoaded();
-      case "loading": return this.renderLoading();
-      case "error": return this.renderError();
+    const { error } = this.props;
+    if (error) {
+      return this.renderError();
+    } else {
+      return this.renderLoaded();
     }
   }
 }));

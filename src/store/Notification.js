@@ -2,6 +2,7 @@ import React from "react";
 import { uuid } from "../utils/uuid";
 import ErrorIcon from "mdi-react/ErrorIcon";
 import { FormattedMessage } from "react-intl";
+import { SlimError } from "../components/Error";
 
 const Context = React.createContext();
 

@@ -194,7 +194,7 @@ const install = ({ server }) => {
 
   server.get("/api/avatar/:id", (req, res) =>
     User.findOne({ _id: req.params.id })
-      .then(user => user.avatar
+      .then(user => user && user.avatar
         ? res.blob(user.avatar)
         : res.redirect("/static/content/system/default-avatar.png"))
       .catch(error => res.error.server(error)));

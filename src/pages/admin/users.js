@@ -4,6 +4,7 @@ import Card from "../../components/layout/Card";
 import A from "../../components/system/A";
 import { get } from "axios";
 import Media from "../../components/layout/Media";
+import crossuser from "../../utils/crossuser";
 
 export default injectIntl(class Admin extends React.Component {
   constructor(p) {
@@ -13,16 +14,18 @@ export default injectIntl(class Admin extends React.Component {
     }
   }
 
+  static async getInitialProps({ req }) {
+    const { data } = await get("/api/users", crossuser(req));
+    return { users: data };
+  }
+
   componentDidMount() {
     const title = this.props.intl.formatMessage({ id: "users.title" });
     this.props.setPageTitle(title);
-    get("/api/users")
-      .then(({ data }) => this.setState({ users: data }))
-      .catch(console.error);
   }
 
   render() {
-    const { users } = this.state;
+    const { users } = this.props;
     return (
       <div className="container">
         <Card
