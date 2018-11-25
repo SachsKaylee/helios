@@ -1,14 +1,18 @@
 import React from "react";
 import Card from "../../components/layout/Card";
+import withStores from "../../store/withStores";
+import NotificationStore from "../../store/Notification";
 import { FormattedMessage, injectIntl } from "react-intl";
 import Session from "../../store/Session";
 import LogoutIcon from "mdi-react/LogoutIcon";
 import EarthIcon from "mdi-react/EarthIcon";
+import CakeIcon from "mdi-react/CakeIcon";
 import LogInForm from "../../components/forms/LogInForm";
+import A from "../../components/system/A";
 import EditProfileForm from "../../components/forms/EditProfileForm";
 import { Router } from "../../routes";
 
-export default injectIntl(class Account extends React.Component {
+export default withStores(NotificationStore, injectIntl(class Account extends React.Component {
   componentDidMount() {
     const title = this.props.intl.formatMessage({ id: "account.title" });
     this.props.setPageTitle(title);
@@ -82,15 +86,24 @@ export default injectIntl(class Account extends React.Component {
           type: "danger"
         }*/
       ]}
-      onSubmit={values => session.updateProfile({
-        password: values.password,
-        passwordNew: values.passwordNew,
-        avatar: values.avatar.data,
-        bio: values.bio
-      }).then(() => ({}))
+      onSubmit={values => session
+        .updateProfile({
+          password: values.password,
+          passwordNew: values.passwordNew,
+          avatar: values.avatar.data,
+          bio: values.bio
+        })
+        .then(data => this.props.notificationStore.push({
+          icon: CakeIcon,
+          type: "success",
+          title: (<FormattedMessage id="account.notification.updated.title" />),
+          children: (<FormattedMessage id="account.notification.updated.description" values={{
+            link: (<A href={`/about/${data.id}`}>{data.id}</A>)
+          }} />)
+        }))
         .catch(error => errorToMessage(error))} />
   }
-});
+}));
 
 const errorToMessage = error => {
   switch (error) {

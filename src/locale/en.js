@@ -107,6 +107,21 @@ module.exports = {
       newPage: "New page",
       new: "Creating new page…",
       edit: "Editing page: {title}"
+    },
+    notification: {
+      deleted: {
+        title: "Page deleted.",
+        description: "The page has been deleted. The contents of the page will stay in the editor in case you wish to re-publish it."
+      },
+      delete: {
+        title: "Are you sure?",
+        description: "You are about to delete this page. This cannot be undone.",
+        confirm: "Understood - Delete regardless"
+      },
+      published: {
+        title: "Published!",
+        description: "The page {link} has been published."
+      }
     }
   },
   // Strings used for displaying and editing posts
@@ -195,7 +210,13 @@ module.exports = {
     usernamePlaceholder: "your-username",
     passwordPlaceholder: "Your password",
     cookieRequired: "The cookie is required to sign you in.",
-    acceptCookie: "I agree to this website using a cookie to sign me into my account."
+    acceptCookie: "I agree to this website using a cookie to sign me into my account.",
+    notification: {
+      updated: {
+        title: "Account updated",
+        description: "Your account has been updated. View your public changes here: {link}"
+      }
+    }
   },
   pages: {
     blog: {

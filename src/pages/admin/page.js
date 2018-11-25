@@ -1,20 +1,25 @@
 import React from "react";
 import Card from "../../components/layout/Card"
 import axios from "axios";
-import NotificationProvider from "../../components/NotificationProvider"
 import { FormattedMessage, injectIntl } from "react-intl";
 import LoadingIcon from "mdi-react/LoadingIcon";
-import { FullError } from "../../components/Error";
+import CakeIcon from "mdi-react/CakeIcon";
+import TrashIcon from "mdi-react/TrashIcon";
+import { FullError, SlimError } from "../../components/Error";
 import PageForm from "../../components/forms/PageForm";
 import Editor from "../../components/page/Editor";
+import NotificationStore from "../../store/Notification";
+import withStores from "../../store/withStores";
+import A from "../../components/system/A";
 
-export default injectIntl(class PagePage extends React.PureComponent {
+export default withStores(NotificationStore, injectIntl(class PagePage extends React.PureComponent {
   constructor(p) {
     super(p);
     this.onChange = this.onChange.bind(this);
     this.onPreview = this.onPreview.bind(this);
     this.onDelete = this.onDelete.bind(this);
     this.previewForm = React.createRef();
+    this.notification = React.createRef();
     this.state = {
       state: "loading",
       allPaths: [],
@@ -22,8 +27,8 @@ export default injectIntl(class PagePage extends React.PureComponent {
     };
   }
 
-  static async getInitialProps({ query: { id } }) {
-    return { id };
+  static async getInitialProps({ query }) {
+    return { id: query.id, query };
   }
 
   updateTitle() {
@@ -72,7 +77,30 @@ export default injectIntl(class PagePage extends React.PureComponent {
   }
 
   onDelete() {
-    axios.delete(`/api/page/${this.state._id}`).then(() => this.setState({ _id: null, isNew: true }, () => this.updateTitle()));
+    this.props.notificationStore.push({
+      canClose: true,
+      type: "danger",
+      title: (<FormattedMessage id="page.notification.delete.title" />),
+      icon: TrashIcon,
+      children: (<FormattedMessage id="page.notification.delete.description" />),
+      buttons: [
+        {
+          text: (<FormattedMessage id="page.notification.delete.confirm" />),
+          action: () => axios
+            .delete(`/api/page/${this.state._id}`)
+            .then(() => this.setState({ _id: null, isNew: true }, () => {
+              this.updateTitle();
+              this.props.notificationStore.push({
+                canClose: true,
+                type: "success",
+                title: (<FormattedMessage id="page.notification.deleted.title" />),
+                icon: CakeIcon,
+                children: (<FormattedMessage id="page.notification.deleted.description" />)
+              });
+            }))
+        }
+      ]
+    });
   }
 
   onChange(elements) {
@@ -82,17 +110,23 @@ export default injectIntl(class PagePage extends React.PureComponent {
   onPublish = ({ title, notes, path }) => {
     const { _id, elements, isNew } = this.state;
     const data = { _id, title, elements, notes, path };
-    (isNew
-      ? axios.post("/api/page", data)
-      : axios.put(`/api/page/${_id}`, data)).then(({ data }) => {
-        this.setState({ ...data, isNew: false }, () => this.updateTitle());
-      }).catch(error => {
-        this.notifications.push({
-          canClose: true,
-          type: "error",
-          children: this.renderErrorNotification({ error })
+    const promise = isNew ? axios.post("/api/page", data) : axios.put(`/api/page/${_id}`, data);
+    promise
+      .then(({ data }) => {
+        this.setState({ ...data, isNew: false }, () => {
+          this.updateTitle();
+          this.props.notificationStore.push({
+            canClose: true,
+            type: "success",
+            title: (<FormattedMessage id="page.notification.published.title" />),
+            icon: CakeIcon,
+            children: (<FormattedMessage id="page.notification.published.description" values={{
+              link: (<A href={`/page/${data._id}`}>{data.title}</A>)
+            }} />)
+          });
         });
-      });
+      })
+      .catch(error => this.props.notificationStore.pushError(error));
   }
 
   onPreview(data) {
@@ -130,7 +164,6 @@ export default injectIntl(class PagePage extends React.PureComponent {
             onPreview={this.onPreview}
             onDelete={isNew ? undefined : this.onDelete}
           />
-          <NotificationProvider ref={ref => this.notifications = ref} />
         </Card>
 
         <form method="get" action="/page" target="_blank" ref={this.previewForm}>
@@ -150,4 +183,4 @@ export default injectIntl(class PagePage extends React.PureComponent {
       case "error": return this.renderError();
     }
   }
-});
+}));
