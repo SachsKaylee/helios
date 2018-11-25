@@ -126,8 +126,8 @@ module.exports = {
   },
   // Strings used for displaying and editing posts
   post: {
-    subtitle: "{author} am {date, date, medium}",
-    mediaTitle: "{title} von {author}, {date}",
+    subtitle: "{author} am {date, date, long}",
+    mediaTitle: "{title} von {author}, {date, date, medium}",
     noneFound: "Es konnten keine Posts gefunden werden. Bitte versuchen Sie es später erneut.",
     tags: "Tags zum kategorisieren…",
     notes: {
