@@ -4,16 +4,17 @@ import axios from "axios";
 import config, { locale } from "../config/client";
 import Head from "next/head";
 import Pagination from "../components/layout/Pagination";
+import crossuser from "../utils/crossuser";
 
 export default class IndexPage extends React.PureComponent {
-  static async getInitialProps({ query }) {
+  static async getInitialProps({ query, req }) {
     const [posts, postCount] = await Promise.all([
-      axios.get("/api/post", {
+      axios.get("/api/post", crossuser(req, {
         params: {
           skip: query.page && ((parseInt(query.page, 10) - 1) * config.postsPerPage), limit: config.postsPerPage
         }
-      }),
-      axios.get("/api/post-count")
+      })),
+      axios.get("/api/post-count", crossuser(req))
     ]);
     return {
       count: postCount.data.count,

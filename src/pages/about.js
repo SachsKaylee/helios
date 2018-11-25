@@ -8,12 +8,13 @@ import { FullError } from "../components/Error";
 import PostMedia from "../components/post/PostMedia";
 import Session from "../store/Session";
 import A from "../components/system/A";
+import crossuser from "../utils/crossuser";
 
 export default injectIntl(class AboutPage extends React.Component {
-  static getInitialProps({ query: { id } }) {
+  static getInitialProps({ query: { id }, req }) {
     return Promise.all([
-      axios.get(id ? `/api/user/${id}` : "/api/user"),
-      axios.get(id ? `/api/posts-of/${id}` : "/api/posts-of", { params: { limit: config.postsPerAboutPage } })
+      axios.get(id ? `/api/user/${id}` : "/api/user", crossuser(req)),
+      axios.get(id ? `/api/posts-of/${id}` : "/api/posts-of", crossuser(req, { params: { limit: config.postsPerAboutPage } }))
     ]).then(([userData, postData]) => ({ user: userData.data, latestPosts: postData.data }))
       .catch(error => ({ error: error.response.data }));
   }
@@ -46,11 +47,11 @@ export default injectIntl(class AboutPage extends React.Component {
 
             <p className="content is-small"><FormattedMessage id="permissions" />: {permissions.length
               ? permissions.map(p => (<span className="tag" key={p}>{p}</span>))
-                : <FormattedMessage id="none" />}
-                <br/>
+              : <FormattedMessage id="none" />}
+              <br />
             </p>
 
-            <div dangerouslySetInnerHTML={{ __html: bio }}/>
+            <div dangerouslySetInnerHTML={{ __html: bio }} />
 
             <Session>
               {session => {

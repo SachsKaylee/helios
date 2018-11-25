@@ -50,7 +50,7 @@ const server = redoubt.app;
 server.use((req, res, next) => {
 
   res.sendData = ({ error, data, errorCode, successCode }) => {
-    if (isDevelopment) console.info("sending", { error, data, errorCode, successCode });
+    //if (isDevelopment) console.info("sending", { error, data, errorCode, successCode });
     if (error) {
       res.status(errorCode || 500);
       res.send(transformError(error));

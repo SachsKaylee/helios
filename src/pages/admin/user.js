@@ -5,12 +5,13 @@ import { get, post, put } from "axios";
 import Router from "next/router";
 import { SlimError } from "../../components/Error";
 import CreateUserForm from "../../components/forms/CreateUserForm";
+import crossuser from "../../utils/crossuser";
 
 export default injectIntl(class User extends React.Component {
-  static getInitialProps(p) {
-    const { id } = p.query;
+  static getInitialProps({ query, req }) {
+    const { id } = query;
     return id
-      ? get(`/api/user/${id}`)
+      ? get(`/api/user/${id}`, crossuser(req))
         .then(({ data }) => ({ isNew: false, user: data }))
         .catch(error => ({ error }))
       : { isNew: true };
@@ -53,7 +54,7 @@ export default injectIntl(class User extends React.Component {
         }
       }));
   }
-  
+
   goBack = () => {
     Router.push("/admin/users")
   }

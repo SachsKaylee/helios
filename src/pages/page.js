@@ -6,18 +6,19 @@ import Session from "../store/Session";
 import Page from "../components/page/Page";
 import A from "../components/system/A";
 import { FormattedMessage, injectIntl } from "react-intl";
+import crossuser from "../utils/crossuser";
 
 export default injectIntl(class PagePage extends React.PureComponent {
-  static async getInitialProps(p) {
-    if (p.query.id) {
-      const { data } = await axios.get("/api/page/" + encodeURIComponent(p.query.id));
+  static async getInitialProps({ query, req }) {
+    if (query.id) {
+      const { data } = await axios.get(`/api/page/${encodeURIComponent(query.id)}`, crossuser(req));
       return { page: data };
     } else {
       return {
         page: {
-          elements: JSON.parse(p.query.elements),
-          title: p.query.title,
-          notes: p.query.notes
+          elements: JSON.parse(query.elements),
+          title: query.title,
+          notes: query.notes
         }
       };
     }

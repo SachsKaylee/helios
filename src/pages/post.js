@@ -4,10 +4,11 @@ import axios from "axios"
 import Head from "next/head";
 import config from "../config/client";
 import Session from "../store/Session";
+import crossuser from "../utils/crossuser";
 
 export default class PostPage extends React.PureComponent {
-  static async getInitialProps(p) {
-    const { data } = await axios.get("/api/post/" + p.query.id);
+  static async getInitialProps({ query, req}) {
+    const { data } = await axios.get("/api/post/" + query.id, crossuser(req));
     return { post: data };
   }
   

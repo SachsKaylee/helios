@@ -68,7 +68,7 @@ export class NotificationProvider extends React.PureComponent {
           _id: _id || uuid(),
           timeout: timeout !== undefined ? timeout : buttons && buttons.length ? DEFAULT_BUTTON_TIMEOUT : DEFAULT_TIMEOUT,
           buttons: buttons || [],
-          canClose: !!canClose,
+          canClose: canClose === undefined ? true : !!canClose,
           elapsed: 0,
           title, icon, type, children
         }

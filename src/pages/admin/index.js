@@ -7,11 +7,13 @@ import Card from "../../components/layout/Card";
 import config from "../../config/client";
 import A from "../../components/system/A";
 import { get } from "axios";
+import crossuser from "../../utils/crossuser";
 
 export default injectIntl(class Admin extends React.Component {
-  static getInitialProps() {
+  static getInitialProps({ req }) {
+    const opts = crossuser(req);
     return Promise
-      .all([get("/api/post-count"), get("/api/user-count"), get("/api/page-count")])
+      .all([get("/api/post-count", opts), get("/api/user-count", opts), get("/api/page-count", opts)])
       .then(([post, user, page]) => ({
         postCount: post.data.count,
         userCount: user.data.count,

@@ -1,4 +1,3 @@
-const config = require("../../config/server");
 const niceUri = require("../../utils/nice-uri");
 const mongoose = require('mongoose');
 

@@ -6,16 +6,17 @@ import config from "../config/client";
 import Head from "next/head";
 import Pagination from "../components/layout/Pagination";
 import { injectIntl } from "react-intl";
+import crossuser from "../utils/crossuser";
 
 export default injectIntl(class IndexPage extends React.PureComponent {
   static async getInitialProps({ query }) {
     const [posts, postCount] = await Promise.all([
-      axios.get("/api/tag/posts/" + encodeURIComponent(query.tag || config.defaultTags[0]), {
+      axios.get(`/api/tag/posts/${encodeURIComponent(query.tag || config.defaultTags[0])}`, crossuser(req, {
         params: {
           skip: query.page && ((parseInt(query.page, 10) - 1) * config.postsPerPage), limit: config.postsPerPage
         }
-      }),
-      axios.get("/api/tag/count/" + encodeURIComponent(query.tag || config.defaultTags[0]))
+      })),
+      axios.get(`/api/tag/count/${encodeURIComponent(query.tag || config.defaultTags[0])}`, crossuser(req))
     ]);
     return {
       tag: query.tag || config.defaultTags[0],

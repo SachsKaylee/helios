@@ -17,14 +17,28 @@ const Post = mongoose.model("post", new mongoose.Schema({
 
 const install = ({ server }) => {
   // https://stackoverflow.com/questions/5830513/how-do-i-limit-the-number-of-returned-items
-  server.get("/api/post", (req, res) =>
-    Post
-      .find({})
-      .sort({ date: "descending" })
-      .skip(intOr(parseInt(req.query.skip), 0)) // TODO: skip has poor performance on large collection
-      .limit(intOr(parseInt(req.query.limit), undefined))
-      .then(posts => res.sendData({ data: posts }))
-      .catch(error => res.error.server(error)));
+  server.get("/api/post", async (req, res) => {
+    try {
+      let user = null;
+      try {
+        user = await req.user.getUser();
+      } catch (error) {
+        if (error !== "not-logged-in") {
+          return res.error.server(error);
+        }
+      }
+      const posts = await Post
+        .find({})
+        .sort({ date: "descending" })
+        .skip(intOr(parseInt(req.query.skip), 0)) // TODO: skip has poor performance on large collection
+        .limit(intOr(parseInt(req.query.limit), undefined));
+      console.log("user is", user)
+      const isMaintainer = user && user.hasPermission("maintainer");
+      return res.sendData({ data: isMaintainer ? posts : posts.map(post => { post.notes = ""; return post; }) });
+    } catch (error) {
+      return res.error.server(error);
+    }
+  });
 
   server.post("/api/post", (req, res) =>
     req.user.getUser()

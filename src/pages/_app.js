@@ -10,7 +10,8 @@ import intl from "intl"; // todo: try to make this import lazy!
 import Session, { SessionProvider } from "../store/Session";
 import BookOpenPageVariantIcon from "mdi-react/BookOpenPageVariantIcon";
 import NotificationStore, { NotificationProvider } from "../store/Notification";
-import NotificationRenderer from "../components/NotificationRenderer"
+import NotificationRenderer from "../components/NotificationRenderer";
+import crossuser from "../utils/crossuser";
 
 const g = global || window;
 // Load the locale data for NodeJS if it has not been installed.
@@ -30,11 +31,11 @@ const {
 } = config.locale;
 
 export default class _App extends App {
-  static async getInitialProps({ Component, ctx }) {
+  static async getInitialProps({ Component, ctx, req }) {
     const pageProps = Component.getInitialProps
       ? await Component.getInitialProps(ctx)
       : {};
-    const customPages = await get("/api/page-navigation");
+    const customPages = await get("/api/page-navigation", crossuser(req));
     return { pageProps, customPages: customPages.data };
   }
 
