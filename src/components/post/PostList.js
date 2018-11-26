@@ -6,7 +6,7 @@ import EmoticonSadIcon from "mdi-react/EmoticonSadIcon";
 export default ({ posts }) => (
   <section className="articles">
     {posts && posts.length !== 0
-      ? posts.map(p => (<Post key={p.id} {...p} />))
+      ? posts.map(p => (<Post key={p._id} {...p} />))
       : <Card><p className="subtitle"><EmoticonSadIcon className="mdi-icon-spacer" /> <FormattedMessage id="post.noneFound" /></p></Card>}
   </section>
 );

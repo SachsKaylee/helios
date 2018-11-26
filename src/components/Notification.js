@@ -24,7 +24,7 @@ export default class Notification extends React.PureComponent {
       {children}
       {timeout ? (<progress className="progress is-small overlay-notification-progress" value={elapsed} max={timeout} />) : null}
       {buttons && buttons.length ? (<div className="buttons">
-        {buttons.map(button => <a className={classnames("button", button.type && "is-" + button.type)} onClick={() => {
+        {buttons.map((button, i) => <a key={button._id + "/" + i} className={classnames("button", button.type && "is-" + button.type)} onClick={() => {
           if (button.action) {
             button.action(button, this.state);
           }

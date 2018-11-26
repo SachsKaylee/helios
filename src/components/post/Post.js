@@ -4,11 +4,11 @@ import { FormattedMessage } from "react-intl";
 
 const buttons = (edit) => edit ? !edit.indexOf("show-admin-buttons") : false;
 
-const Post = ({ id, author, date, title, content, edit, tags, notes }) => (
+const Post = ({ _id, author, date, title, content, edit, tags, notes }) => (
   <>
     <Card
       image={`/api/avatar/${author}`}
-      title={<A href={`/post/${id}`}>{title}</A>}
+      title={<A href={`/post/${_id}`}>{title}</A>}
       subtitle={<FormattedMessage id="post.subtitle" values={{
         author: <A href={`/about/${author}`}>{author}</A>,
         date
@@ -22,7 +22,7 @@ const Post = ({ id, author, date, title, content, edit, tags, notes }) => (
     </Card>
     <div className="push-12">
       {notes ? (<p className="is-size-7 has-text-grey margin-2">{notes}</p>) : null}
-      {buttons(edit) && (<A className="button is-link" href={`/admin/post/${id}`}><FormattedMessage id="edit" /></A>)}
+      {buttons(edit) && (<A className="button is-link" href={`/admin/post/${_id}`}><FormattedMessage id="edit" /></A>)}
     </div>
   </>
 );

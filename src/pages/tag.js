@@ -9,7 +9,7 @@ import { injectIntl } from "react-intl";
 import crossuser from "../utils/crossuser";
 
 export default injectIntl(class IndexPage extends React.PureComponent {
-  static async getInitialProps({ query }) {
+  static async getInitialProps({ query, req }) {
     const [posts, postCount] = await Promise.all([
       axios.get(`/api/tag/posts/${encodeURIComponent(query.tag || config.defaultTags[0])}`, crossuser(req, {
         params: {

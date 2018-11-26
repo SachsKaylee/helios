@@ -10,9 +10,7 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import config from "../../config/client";
 import DeleteIcon from "mdi-react/DeleteIcon";
 import TrashIcon from "mdi-react/TrashIcon";
-import LoadingIcon from "mdi-react/LoadingIcon";
 import CakeIcon from "mdi-react/CakeIcon";
-import { FullError } from "../../components/Error";
 import PostForm from "../../components/forms/PostForm";
 import crossuser from "../../utils/crossuser";
 
@@ -29,7 +27,7 @@ export default withStores(NotificationStore, injectIntl(class PostPage extends R
     const opts = crossuser(req);
     const { data: tags } = await axios.get("/api/tag", opts);
     if (query.id) {
-      const { data } = await axios.get(`/api/post/${id}`, opts);
+      const { data } = await axios.get(`/api/post/${query.id}`, opts);
       return { data };
     } else {
       const { data } = await axios.get("/api/session", opts);
@@ -42,25 +40,13 @@ export default withStores(NotificationStore, injectIntl(class PostPage extends R
   }
 
   componentDidMount() {
-    let title = "";
-    const { state } = this.state;
-    switch (state) {
-      case "loaded": {
-        title = isNew
-          ? this.props.intl.formatMessage({ id: "post.title.new" }, { title })
-          : this.props.intl.formatMessage({ id: "post.title.edit" }, { title })
-        break;
-      }
-      case "loading": {
-        title = this.props.intl.formatMessage({ id: "loading" });
-        break;
-      }
-      case "error": {
-        title = this.props.intl.formatMessage({ id: "error" });
-        break;
-      }
+    if (this.state._id) {
+      const title = this.props.intl.formatMessage({ id: "post.title.edit" }, { title: this.state.title })
+      this.props.setPageTitle(title);
+    } else {
+      const title = this.props.intl.formatMessage({ id: "post.title.new" });
+      this.props.setPageTitle(title);
     }
-    this.props.setPageTitle(title);
   }
 
   onChange = what => (value) => {
@@ -69,11 +55,10 @@ export default withStores(NotificationStore, injectIntl(class PostPage extends R
 
   onDelete = (really) => () => {
     if (really) {
-      const { id } = this.state;
-      axios.delete(`/api/post/${id}`).then(() => {
+      const { _id } = this.state;
+      axios.delete(`/api/post/${_id}`).then(() => {
         this.setState({
-          id: undefined,
-          isNew: true,
+          _id: undefined,
           date: new Date()
         }, () => {
           this.props.notificationStore.push({
@@ -101,15 +86,15 @@ export default withStores(NotificationStore, injectIntl(class PostPage extends R
   }
 
   onPublish = ({ tags, notes }) => {
-    const { id, title, content, date, author, isNew } = this.state;
+    const { _id, title, content, date, author } = this.state;
     const data = {
       author, date, tags, notes,
       title: title,
       content: content
     };
-    const promise = isNew ? axios.post("/api/post", data) : axios.put(`/api/post/${id}`, data);
+    const promise = _id ? axios.put(`/api/post/${_id}`, data) : axios.post("/api/post", data);
     promise
-      .then(({ data }) => this.setState(this.stateFromData(data, this.state), () => {
+      .then(({ data }) => this.setState(data, () => {
         this.props.notificationStore.push({
           type: "success",
           icon: CakeIcon,

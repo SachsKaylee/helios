@@ -8,7 +8,7 @@ import crossuser from "../utils/crossuser";
 
 export default class IndexPage extends React.PureComponent {
   static async getInitialProps({ query, req }) {
-    const [posts, postCount] = await Promise.all([
+    const [{ data: posts }, { data: { count } }] = await Promise.all([
       axios.get("/api/post", crossuser(req, {
         params: {
           skip: query.page && ((parseInt(query.page, 10) - 1) * config.postsPerPage), limit: config.postsPerPage
@@ -17,14 +17,9 @@ export default class IndexPage extends React.PureComponent {
       axios.get("/api/post-count", crossuser(req))
     ]);
     return {
-      count: postCount.data.count,
+      count: count,
       page: query.page ? parseInt(query.page, 10) : 1,
-      posts: posts.data.map(({ _id, author, date, title, content, tags, notes }) => ({
-        id: _id,
-        title: title,
-        content: content,
-        date, tags, notes, author
-      })).sort((a, b) => {
+      posts: posts.sort((a, b) => {
         const keyA = new Date(a.date);
         const keyB = new Date(b.date);
         if (keyA < keyB) return 1;

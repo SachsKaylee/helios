@@ -78,6 +78,7 @@ export class NotificationProvider extends React.PureComponent {
   }
 
   pushError(error, args) {
+    console.error("Pushed a notification to the notification store.", error)
     this.push({
       canClose: true,
       type: "danger",

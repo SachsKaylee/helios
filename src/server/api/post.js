@@ -15,30 +15,38 @@ const Post = mongoose.model("post", new mongoose.Schema({
   notes: String
 }));
 
+// Misc operations
+const filterPostData = user => ({ _id, author, title, content, date, tags, notes }) => ({
+  _id, author, title, content, date, tags,
+  notes: user && user.hasPermission("author") ? notes : ""
+});
+
 const install = ({ server }) => {
-  // https://stackoverflow.com/questions/5830513/how-do-i-limit-the-number-of-returned-items
-  server.get("/api/post", async (req, res) => {
-    try {
-      let user = null;
-      try {
-        user = await req.user.getUser();
-      } catch (error) {
-        if (error !== "not-logged-in") {
-          return res.error.server(error);
-        }
-      }
-      const posts = await Post
-        .find({})
-        .sort({ date: "descending" })
-        .skip(intOr(parseInt(req.query.skip), 0)) // TODO: skip has poor performance on large collection
-        .limit(intOr(parseInt(req.query.limit), undefined));
-      console.log("user is", user)
-      const isMaintainer = user && user.hasPermission("maintainer");
-      return res.sendData({ data: isMaintainer ? posts : posts.map(post => { post.notes = ""; return post; }) });
-    } catch (error) {
-      return res.error.server(error);
+  // API specific middlemare
+  server.use((req, res, next) => {
+    // Get User & Session data
+    req.post = {};
+
+    // Senders
+    res.sendPost = async (post, user = req.user.maybeGetUser()) => {
+      user = await user;
+      console.log("sending post ...", {user,post})
+      Array.isArray(post)
+        ? res.sendData({ data: post.map(filterPostData(user)) })
+        : res.sendData({ data: filterPostData(post, user) });
     }
+
+    next();
   });
+
+  // https://stackoverflow.com/questions/5830513/how-do-i-limit-the-number-of-returned-items
+  server.get("/api/post", async (req, res) => Post
+    .find({})
+    .sort({ date: "descending" })
+    .skip(intOr(parseInt(req.query.skip), 0)) // TODO: skip has poor performance on large collection
+    .limit(intOr(parseInt(req.query.limit), undefined))
+    .then(posts => res.sendPost(posts))
+    .catch(error => res.error.server(error)));
 
   server.post("/api/post", (req, res) =>
     req.user.getUser()
@@ -64,7 +72,7 @@ const install = ({ server }) => {
     const idRegExp = new RegExp("^" + req.params.id);
     Post
       .findOne({ _id: idRegExp })
-      .then(post => res.sendData({ data: post }))
+      .then(post => res.sendPost(post))
       .catch(error => res.error.server(error));
   });
 

@@ -55,7 +55,8 @@ const install = ({ server }) => {
     req.user = {};
     req.user.getSession = () => req.session.helios || {};
     req.user.putSession = (values) => req.session.helios = { ...req.user.getSession(), ...values };
-    req.user.getUser = () => req.user.getSession().userId ? User.findOne({ _id: req.user.getSession().userId }) : Promise.reject("not-logged-in");
+    req.user.maybeGetUser = () => req.user.getSession().userId ? User.findOne({ _id: req.user.getSession().userId }) : Promise.resolve(null);
+    req.user.getUser = () => req.user.maybeGetUser().then(user => { if (user) return user; throw "not-logged-in"; });
 
     // Senders
     res.sendUser = (user) => Array.isArray(user)

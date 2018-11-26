@@ -12,7 +12,29 @@ const Page = mongoose.model("page", new mongoose.Schema({
   notes: String
 }));
 
+// Misc operations
+const filterPageData = ({ _id, title, elements, path, notes }, user) => ({
+  _id, title, elements, path,
+  notes: user && user.hasPermission("maintainer") ? notes : ""
+});
+
 const install = ({ server }) => {
+  // API specific middlemare
+  server.use((req, res, next) => {
+    // Get User & Session data
+    req.page = {};
+
+    // Senders
+    res.sendPage = async (page, user = req.user.maybeGetUser()) => {
+      user = await user;
+      Array.isArray(page)
+        ? res.sendData({ data: page.map(page => filterPageData(page, user)) })
+        : res.sendData({ data: filterPageData(page, user) });
+    }
+
+    next();
+  });
+
   // https://stackoverflow.com/questions/5830513/how-do-i-limit-the-number-of-returned-items
   server.get("/api/page", (req, res) =>
     Page
@@ -20,7 +42,7 @@ const install = ({ server }) => {
       .sort({ title: "ascending" })
       .skip(intOr(parseInt(req.query.skip), 0)) // TODO: skip has poor performance on large collection
       .limit(intOr(parseInt(req.query.limit), undefined))
-      .then(pages => res.sendData({ data: pages }))
+      .then(pages => res.sendPage(pages))
       .catch(error => res.error.server(error)));
 
   server.post("/api/page", (req, res) =>
@@ -48,7 +70,7 @@ const install = ({ server }) => {
     const idRegExp = new RegExp("^" + req.params.id);
     Page
       .findOne({ _id: idRegExp })
-      .then(page => res.sendData({ data: page }))
+      .then(page => res.sendPage(page))
       .catch(error => res.error.server(error));
   });
 
