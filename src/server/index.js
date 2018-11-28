@@ -79,6 +79,7 @@ server.use((req, res, next) => {
     console.error("Internal Server Error", error);
     res.sendData({ error: `internal-server-error`, errorCode: 500 });
   };
+  res.error.notFound = () => res.sendData({ error: "not-found", errorCode: 404 });
   res.error.notLoggedIn = () => res.sendData({ error: "not-logged-in", errorCode: 401 });
   res.error.authorizationFailure = () => res.sendData({ error: "authorization-failure", errorCode: 401 });
   res.error.missingPermission = (permission) => res.sendData({ error: `missing-permission-${permission}`, errorCode: 403 });

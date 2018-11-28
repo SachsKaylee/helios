@@ -1,5 +1,6 @@
 import React from "react";
 import Card from "../../components/layout/Card";
+import { SlimError } from "../../components/Error";
 import withStores from "../../store/withStores";
 import NotificationStore from "../../store/Notification";
 import { FormattedMessage, injectIntl } from "react-intl";
@@ -35,7 +36,7 @@ export default withStores(NotificationStore, injectIntl(class Account extends Re
         <LogInForm onSubmit={values => session
           .signIn(values)
           .then(() => ({}))
-          .catch(error => errorToMessage(error))} />
+          .catch(error => ({ error: true, message: (<SlimError error={error} />) }))} />
       </Card>);
   }
 
@@ -62,7 +63,9 @@ export default withStores(NotificationStore, injectIntl(class Account extends Re
       buttons={[
         {
           key: "signOut",
-          action: () => session.signOut().catch(error => errorToMessage(error)),
+          action: () => session
+            .signOut()
+            .catch(error => ({ error: true, message: (<SlimError error={error} />) })),
           name: (<span>
             <LogoutIcon className="mdi-icon-spacer" />
             <FormattedMessage id="account.signOut" />
@@ -101,14 +104,6 @@ export default withStores(NotificationStore, injectIntl(class Account extends Re
             link: (<A href={`/about/${data.id}`}>{data.id}</A>)
           }} />)
         }))
-        .catch(error => errorToMessage(error))} />
+        .catch(error => ({ error: true, message: (<SlimError error={error} />) }))} />
   }
 }));
-
-const errorToMessage = error => {
-  switch (error) {
-    case "no-data": return { id: { error: true, message: "No user with this name could be found!" } };
-    case "incorrect-password": return { password: { error: true, message: "Good news: The username is correct! Bad news: The password isn't..." } };
-    default: return { id: { error: true, message: error } };
-  }
-}

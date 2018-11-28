@@ -2,10 +2,9 @@ import React from "react";
 import Card from "../../components/layout/Card"
 import axios from "axios";
 import { FormattedMessage, injectIntl } from "react-intl";
-import LoadingIcon from "mdi-react/LoadingIcon";
 import CakeIcon from "mdi-react/CakeIcon";
 import TrashIcon from "mdi-react/TrashIcon";
-import { FullError, SlimError } from "../../components/Error";
+import { FullError } from "../../components/Error";
 import PageForm from "../../components/forms/PageForm";
 import Editor from "../../components/page/Editor";
 import NotificationStore from "../../store/Notification";

@@ -10,7 +10,7 @@ module.exports = {
     generic: "Some general error thing occurred. Maybe you can find more details somewhere on this page.",
     missingPermission: "You are missing the permission {permission}.",
     noData: "The requested data could not be found. Please check your query.",
-    incorrectPassword: "The password is incorrect.",
+    authorizationFailure: "The log in data is incorrect. Please check the username and/or password.",
     notLoggedIn: "You are not logged in - This action requires a valid log in.",
     alreadyLoggedIn: "You are already logged in. If you wish to log into a different account you must first sign out.",
     alreadyExists: "This item already exists. Please edit it instead."

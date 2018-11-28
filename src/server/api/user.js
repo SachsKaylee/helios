@@ -4,6 +4,7 @@
 const config = require("../../config/server");
 const crypto = require("crypto");
 const all = require("../../utils/all");
+const escapeRegExp = require("../../utils/escapeRegExp");
 const mongoose = require('mongoose');
 const { error: DbError } = require("../db");
 const { mongoError } = require("../error-transformer");
@@ -73,8 +74,8 @@ const install = ({ server }) => {
       .catch(error => res.error.server(error)));
 
   server.get("/api/user/:id", (req, res) =>
-    User.findOne({ _id: req.params.id })
-      .then(user => res.sendUser(user))
+    User.findOne({ _id: new RegExp("^" + escapeRegExp(req.params.id) + "$", "i") })
+      .then(user => user ? res.sendUser(user) : res.error.notFound())
       .catch(error => res.error.server(error)));
 
   server.get("/api/users", (req, res) =>
@@ -104,7 +105,7 @@ const install = ({ server }) => {
 
   server.put("/api/user/:id", (req, res) =>
     Promise
-      .all([req.user.getUser(), User.findOne({ _id: req.params.id })])
+      .all([req.user.getUser(), User.findOne({ _id: new RegExp("^" + escapeRegExp(req.params.id) + "$", "i") })])
       .then(([session, oldUser]) => {
         if (!session.hasPermission("admin")) {
           return res.error.missingPermission("admin");
@@ -138,9 +139,9 @@ const install = ({ server }) => {
       return res.error.authorizationFailure();
     }
     const { id, password } = req.body;
-    User.findOne({ _id: id })
+    User.findOne({ _id: new RegExp("^" + escapeRegExp(id) + "$", "i") })
       .then(user => {
-        if (user.password !== encrypt(password)) {
+        if (!user || user.password !== encrypt(password)) {
           return res.error.authorizationFailure();
         }
         req.user.putSession({ userId: id })
@@ -194,7 +195,7 @@ const install = ({ server }) => {
       }));
 
   server.get("/api/avatar/:id", (req, res) =>
-    User.findOne({ _id: req.params.id })
+    User.findOne({ _id: new RegExp("^" + escapeRegExp(req.params.id) + "$", "i") })
       .then(user => user && user.avatar
         ? res.blob(user.avatar)
         : res.redirect("/static/content/system/default-avatar.png"))
