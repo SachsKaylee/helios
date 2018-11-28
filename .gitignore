@@ -4,5 +4,6 @@ node_modules
 .next
 # Ignore certs
 src/config/**/
+src/config/style.sass
 src/config/client.js
 src/config/server.js
