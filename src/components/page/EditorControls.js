@@ -8,9 +8,9 @@ import { FormattedMessage } from 'react-intl';
 
 class EditorControls extends React.PureComponent {
   render() {
-    return (<Columns sidebar={this.renderSidebar()} size={1}>
+    return (<><Columns sidebar={this.renderSidebar()} size={1}>
       {this.props.children}
-    </Columns>);
+    </Columns><hr/></>);
   }
 
   renderSidebar() {

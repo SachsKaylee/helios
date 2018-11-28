@@ -1,6 +1,7 @@
 import React from 'react';
 import CardEditor from "./CardEditor";
 import ColumnsEditor from "./ColumnsEditor";
+import HeroEditor from "./hero/Editor";
 import Chooser from "./Chooser";
 import splice from "../../utils/splice";
 import { uuid } from "../../utils/uuid";
@@ -69,6 +70,7 @@ class Editor extends React.PureComponent {
       switch (element.type) {
         case "card": return (<CardEditor key={element.id} {...props} />);
         case "columns": return (<ColumnsEditor key={element.id} {...props} />);
+        case "hero": return (<HeroEditor key={element.id} {...props} />);
         case "chooser": return (<Chooser key={element.id} {...props} />);
         default: return (<p>{JSON.stringify(element)}</p>);
       }

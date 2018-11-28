@@ -1,6 +1,7 @@
 import React from 'react';
 import CardPage from "./CardPage";
 import ColumnsPage from "./ColumnsPage";
+import HeroPage from "./hero/Page";
 
 class Page extends React.PureComponent {
   render() {
@@ -14,6 +15,12 @@ class Page extends React.PureComponent {
         }
         case "columns": {
           return (<ColumnsPage
+            key={element.id}
+            index={index}
+            {...element} />);
+        }
+        case "hero": {
+          return (<HeroPage
             key={element.id}
             index={index}
             {...element} />);

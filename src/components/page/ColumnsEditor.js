@@ -4,7 +4,7 @@ import Columns from "../layout/Columns";
 import EditorRichText from './../EditorRichText';
 import EditorControls from './EditorControls';
 
-class CardEditor extends React.PureComponent {
+class ColumnsEditor extends React.PureComponent {
   render() {
     return (<EditorControls {...this.props} custom={{
       additional: (<input
@@ -51,4 +51,4 @@ class CardEditor extends React.PureComponent {
   }
 }
 
-export default CardEditor;
+export default ColumnsEditor;

@@ -3,11 +3,13 @@ import Card from "../layout/Card";
 import EditorControls from "./EditorControls";
 import CardTextOutlineIcon from "mdi-react/CardTextOutlineIcon";
 import ViewColumnIcon from "mdi-react/ViewColumnIcon";
+import FlagIcon from "mdi-react/FlagIcon";
 import { FormattedMessage } from "react-intl";
 
 const allTypes = [
   { type: "card", icon: CardTextOutlineIcon },
-  { type: "columns", icon: ViewColumnIcon }
+  { type: "columns", icon: ViewColumnIcon },
+  { type: "hero", icon: FlagIcon }
 ];
 
 class Chooser extends React.PureComponent {

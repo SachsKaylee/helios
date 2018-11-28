@@ -15,6 +15,8 @@ module.exports = {
     alreadyLoggedIn: "Sie sind bereits angemeldet. Um sich in einem anderen Account anzumelden, müssen Sie sich zunächst aus diesem abmelden.",
     alreadyExists: "Dieser Datensatz existiert bereits. Bitte bearbeiten Sie ihn stattdessen."
   },
+  title: "Titel",
+  subtitle: "Untertitel",
   tag: "Tag",
   tags: "Tags",
   add: "Hinzufügen",
@@ -96,7 +98,8 @@ module.exports = {
     },
     type: {
       card: "Abschnitt",
-      columns: "Spalten"
+      columns: "Spalten",
+      hero: "Eröffnendes Banner"
     },
     path: {
       field: "Pfad in der Navigation",
@@ -106,7 +109,19 @@ module.exports = {
       title: "Seiten verwalten",
       newPage: "Neue Seite",
       new: "Seite erstellen…",
-      edit: "Bearbeite Seite: {title}"
+      edit: "Bearbeite Seite: {title}",
+      chooseType: "Typ wählen…",
+      currentType: "Aktueller Typ",
+      types: {
+        default: "Standard",
+        primary: "Primär",
+        info: "Information",
+        success: "Erfolg",
+        warning: "Warnung",
+        danger: "Gefahr",
+        light: "Hell",
+        dark: "Dunkel"
+      }
     },
     notification: {
       deleted: {

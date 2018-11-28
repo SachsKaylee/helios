@@ -15,6 +15,8 @@ module.exports = {
     alreadyLoggedIn: "You are already logged in. If you wish to log into a different account you must first sign out.",
     alreadyExists: "This item already exists. Please edit it instead."
   },
+  title: "Title",
+  subtitle: "Subtitle",
   tag: "Tag",
   tags: "Tags",
   add: "Add",
@@ -96,7 +98,8 @@ module.exports = {
     },
     type: {
       card: "Section",
-      columns: "Columns"
+      columns: "Columns",
+      hero: "Hero Banner"
     },
     path: {
       field: "Path in the navigation",
@@ -106,7 +109,19 @@ module.exports = {
       title: "Manage pages",
       newPage: "New page",
       new: "Creating new page…",
-      edit: "Editing page: {title}"
+      edit: "Editing page: {title}",
+      chooseType: "Choose type…",
+      currentType: "Current type",
+      types: {
+        default: "Default",
+        primary: "Primary",
+        info: "Information",
+        success: "Success",
+        warning: "Warning",
+        danger: "Danger",
+        light: "Light",
+        dark: "Dark"
+      }
     },
     notification: {
       deleted: {
