@@ -8,7 +8,11 @@ import flattenObject from "../utils/flattenObject"
 import areIntlLocalesSupported from "intl-locales-supported";
 import intl from "intl"; // todo: try to make this import lazy!
 import Session, { SessionProvider } from "../store/Session";
+import EmailIcon from "mdi-react/EmailIcon";
+import AccountIcon from "mdi-react/AccountIcon";
+import ViewDashboardIcon from "mdi-react/ViewDashboardIcon";
 import BookOpenPageVariantIcon from "mdi-react/BookOpenPageVariantIcon";
+import LogoutIcon from "mdi-react/LogoutIcon";
 import NotificationStore, { NotificationProvider } from "../store/Notification";
 import NotificationRenderer from "../components/NotificationRenderer";
 import crossuser from "../utils/crossuser";
@@ -82,29 +86,31 @@ export default class _App extends App {
                       _id: "admin",
                       children: [
                         session.hasPermission("author") && {
+                          icon: EmailIcon,
                           title: (<FormattedMessage id="navigation.admin.newPost" />),
                           link: "/admin/post",
                           _id: "post"
                         },
                         session.hasPermission("maintainer") && {
-                          title: (<span>
-                            <BookOpenPageVariantIcon className="mdi-icon-spacer" />
-                            <FormattedMessage id="navigation.admin.newPage" />
-                          </span>),
+                          icon: BookOpenPageVariantIcon,
+                          title: (<FormattedMessage id="navigation.admin.newPage" />),
                           link: "/admin/page",
                           _id: "page"
                         },
                         session.hasPermission("admin") && {
+                          icon: ViewDashboardIcon,
                           title: (<FormattedMessage id="navigation.admin.overview" />),
                           link: "/admin",
                           _id: "overview"
                         },
                         {
+                          icon: AccountIcon,
                           title: (<FormattedMessage id="navigation.admin.account" />),
                           link: "/admin/account",
                           _id: "account"
                         },
                         {
+                          icon: LogoutIcon,
                           title: (<FormattedMessage id="navigation.admin.signOut" />),
                           link: "/admin/account",
                           onClick: session.signOut,
