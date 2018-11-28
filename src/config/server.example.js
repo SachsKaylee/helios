@@ -45,8 +45,8 @@ module.exports = {
     allowUnsigned: true,
 
     // Your keys. They are to be placed in this directory.
-    key: require("fs").readFileSync(require("path").resolve(__dirname, "./key.pem")).toString(),
-    cert: require("fs").readFileSync(require("path").resolve(__dirname, "./server.crt")).toString()
+    key: require("fs").readFileSync(require("path").resolve(__dirname, "./ssl-key.pem")).toString(),
+    cert: require("fs").readFileSync(require("path").resolve(__dirname, "./ssl-cert.pem")).toString()
   },*/
 
   // The connection to your database.
