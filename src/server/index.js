@@ -1,6 +1,7 @@
 const axios = require("axios");
 const path = require("path");
 const createNext = require("next");
+const express = require("express");
 const api = require("./api");
 const db = require("./db");
 const routes = require("../routes");
@@ -47,6 +48,7 @@ const redoubt = new Redoubt({
 });
 const server = redoubt.app;
 
+server.use("/node_modules", express.static(path.join(__dirname, "../../node_modules")));
 server.use((req, res, next) => {
 
   res.sendData = ({ error, data, errorCode, successCode }) => {
