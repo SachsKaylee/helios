@@ -8,7 +8,7 @@ export default class CodePage extends React.PureComponent {
       <EditorCode readOnly value={content} mode={mode} />
       <style jsx>{`
         .wrapper {
-          margin: 10px 0 10px 0;
+          margin: 0 0 1.5rem 0;
           height: 200px;
         }
       `}</style>

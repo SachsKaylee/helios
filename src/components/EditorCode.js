@@ -58,7 +58,7 @@ export default class EditorCode extends React.Component {
       .editor {
         height: 100%;
         border: 1px solid #ccc;
-        border-radius: 4px 4px 4px 4px;
+        box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 2px 1px rgba(10, 10, 10, 0.1);
       }
       `}</style>
     </div>);
