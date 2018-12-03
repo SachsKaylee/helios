@@ -30,6 +30,9 @@ export default class EditorRichText extends React.Component {
             '/node_modules/js-beautify/js/lib/beautify.js',
             '/node_modules/js-beautify/js/lib/beautify-html.js'
           ],
+          sourceEditorNativeOptions: {
+            theme: "ace/theme/chrome"
+          },
           ...(this.props.config || {})
         }} />)
     }} />);

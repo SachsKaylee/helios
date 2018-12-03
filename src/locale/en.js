@@ -99,7 +99,8 @@ module.exports = {
     type: {
       card: "Section",
       columns: "Columns",
-      hero: "Hero Banner"
+      hero: "Hero Banner",
+      code: "Code"
     },
     path: {
       field: "Path in the navigation",
