@@ -1,7 +1,7 @@
 # Installed dependencies
 node_modules
 # Ignore compiled Next App
-.next
+.build/
 # Ignore certs
 src/config/**/
 src/config/style.sass

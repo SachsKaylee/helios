@@ -89,18 +89,16 @@ server.use((req, res, next) => {
   next();
 });
 
-const next = createNext({
-  dev: isDevelopment,
-  dir: "./src"
-});
+const next = createNext({ dev: isDevelopment });
 Promise.all([next.prepare(), db.connected]).then(() => {
   redoubt.listen(config.client.port.https, config.client.port.http);
-  for(let key in api) {
+  for (let key in api) {
     console.log("📡", "Installing API:", key);
     api[key].install({ server });
   }
   console.log("📡", "All APIs have been installed.");
   // Fallback
+  server.get("/sw.js", (req, res) => res.sendFile(path.join(__dirname, "./sw.js")))
   server.get("*", routes.getRequestHandler(next));
 }).catch(err => {
   console.error("🔥", "Error while preparing server!", err);

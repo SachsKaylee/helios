@@ -16,6 +16,7 @@ import LogoutIcon from "mdi-react/LogoutIcon";
 import NotificationStore, { NotificationProvider } from "../store/Notification";
 import NotificationRenderer from "../components/NotificationRenderer";
 import crossuser from "../utils/crossuser";
+import * as sw from "next-offline/runtime";
 
 const g = global || window;
 // Load the locale data for NodeJS if it has not been installed.
@@ -49,6 +50,10 @@ export default class _App extends App {
     this.state = {
       title: "…"
     };
+  }
+
+  componentDidMount() {
+    sw.register();
   }
 
   setPageTitle(title) {
