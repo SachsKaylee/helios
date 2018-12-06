@@ -6,9 +6,9 @@
   "author": "Patrick Sachs",
   "license": "MIT",
   "scripts": {
-    "dev": "node ./src/server",
-    "start": "cross-env NODE_ENV=production node ./src/server",
-    "build": "next build src"
+    "dev": "cross-env NODE_ENV=development node ./server",
+    "start": "cross-env NODE_ENV=production node ./server",
+    "build": "cross-env NODE_ENV=production next build"
   },
   "devDependencies": {
     "@types/react-intl": "^2.3.11",

@@ -1,5 +1,5 @@
 import Document, { Head, Main, NextScript } from "next/document";
-import style from "../../styles/style.sass";
+import style from "../styles/style.sass";
 import userStyle from "../config/style.sass";
 import config from "../config/client";
 

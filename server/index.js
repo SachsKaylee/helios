@@ -89,7 +89,7 @@ server.use((req, res, next) => {
   next();
 });
 
-const next = createNext({ dev: isDevelopment });
+const next = createNext({});
 Promise.all([next.prepare(), db.connected]).then(() => {
   redoubt.listen(config.client.port.https, config.client.port.http);
   for (let key in api) {
