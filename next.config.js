@@ -3,8 +3,8 @@ const path = require('path');
 const glob = require('glob');
 const nextOffline = require('next-offline');
 
-console.log("NODE_ENV", process.env.NODE_ENV);
 const isDevelopment = process.env.NODE_ENV !== "production";
+console.log("NODE_ENV", process.env.NODE_ENV, isDevelopment);
 
 module.exports = nextOffline({
 
@@ -13,7 +13,7 @@ module.exports = nextOffline({
   generateSw: false,
   //devSwSrc: path.join(__dirname, "./.build/service-worker.js"),
   workboxOpts: {
-    swDest: "../sw/service-worker.js",
+    swDest: "./service-worker.js",
     swSrc: path.join(__dirname, "./service-worker/index.js"),
     importWorkboxFrom: "local",
     //globPatterns: ['static/**/*'],
@@ -25,7 +25,7 @@ module.exports = nextOffline({
 
   // Next JS,
   dev: isDevelopment,
-  distDir: "./.build/next",
+  distDir: "./.build",
   dir: path.join(__dirname, "./src"),
 
   // Webpack

@@ -6,7 +6,7 @@
   "author": "Patrick Sachs",
   "license": "MIT",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development node ./server",
+    "dev": "node ./server",
     "start": "cross-env NODE_ENV=production node ./server",
     "build": "cross-env NODE_ENV=production next build"
   },

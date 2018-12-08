@@ -43,12 +43,13 @@ const redoubt = new Redoubt({
   letsEncryptCertDirectory: path.resolve(__dirname, "../config"),
   maxPayloadSize: config.maxPayloadSize,
   name: config.client.title,
-  staticFiles: { from: path.resolve(__dirname, "../../static"), serve: "/static" },
+  staticFiles: { from: path.resolve(__dirname, "../static"), serve: "/static" },
   webmasterMail: config.webmasterMail
 });
 const server = redoubt.app;
 
-server.use("/node_modules", express.static(path.join(__dirname, "../../node_modules")));
+server.use("/node_modules", express.static(path.join(__dirname, "../node_modules")));
+server.use("/workbox-v3.6.3", express.static(path.join(__dirname, "../.build/workbox-v3.6.3")));
 server.use((req, res, next) => {
 
   res.sendData = ({ error, data, errorCode, successCode }) => {
@@ -98,7 +99,7 @@ Promise.all([next.prepare(), db.connected]).then(() => {
   }
   console.log("📡", "All APIs have been installed.");
   // Fallback
-  server.get("/sw.js", (req, res) => res.sendFile(path.join(__dirname, "./sw.js")))
+  server.get("/service-worker.js", (req, res) => res.sendFile(path.join(__dirname, "../.build/service-worker.js")))
   server.get("*", routes.getRequestHandler(next));
 }).catch(err => {
   console.error("🔥", "Error while preparing server!", err);
