@@ -16,7 +16,7 @@ const Post = mongoose.model("post", new mongoose.Schema({
 }));
 
 // Misc operations
-const filterPostData = user => ({ _id, author, title, content, date, tags, notes }) => ({
+const filterPostData = ({ _id, author, title, content, date, tags, notes }, user) => ({
   _id, author, title, content, date, tags,
   notes: user && user.hasPermission("author") ? notes : ""
 });
@@ -32,7 +32,7 @@ const install = ({ server }) => {
       user = await user;
       console.log("sending post ...", {user,post})
       Array.isArray(post)
-        ? res.sendData({ data: post.map(filterPostData(user)) })
+        ? res.sendData({ data: post.map(post => filterPostData(post, user)) })
         : res.sendData({ data: filterPostData(post, user) });
     }
 

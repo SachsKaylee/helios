@@ -48,7 +48,7 @@ export default class _App extends App {
     super(p);
     this.setPageTitle = this.setPageTitle.bind(this);
     this.state = {
-      title: "…"
+      title: ""
     };
   }
 
@@ -71,12 +71,12 @@ export default class _App extends App {
         <SessionProvider>
           <NotificationProvider>
             <Head>
-              <title key="title">{title} | {config.title}</title>
+              <title key="title">{title && title + " | "}{config.title}</title>
             </Head>
             <Session>
               {session => (
                 <Navbar
-                  title={(<span>{config.title} - {title}</span>)}
+                  title={(<span>{config.title}{title && " - " + title}</span>)}
                   logo="/static/content/system/logo.png">
                   {[
                     {
