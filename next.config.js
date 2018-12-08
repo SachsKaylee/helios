@@ -25,8 +25,8 @@ module.exports = nextOffline({
 
   // Next JS,
   dev: isDevelopment,
-  distDir: "./.build",
-  dir: path.join(__dirname, "./src"),
+  //distDir: "./.build",
+  //dir: path.join(__dirname, "./src"),
 
   // Webpack
   webpack: (config, { dev }) => {

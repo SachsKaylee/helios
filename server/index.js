@@ -21,6 +21,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = isDevelopment || config.certs.allowUn
 
 console.log("📡", "Helios is starting ...");
 console.log("📡", "Dev-Mode:", isDevelopment);
+console.log("📡", "Working Directory:", process.cwd());
 
 // Load the locale data for NodeJS if it has not been installed.
 if (global.Intl && !areIntlLocalesSupported([config.client.locale.meta.id])) {
@@ -48,8 +49,8 @@ const redoubt = new Redoubt({
 });
 const server = redoubt.app;
 
-server.use("/node_modules", express.static(path.join(__dirname, "../node_modules")));
-server.use("/workbox-v3.6.3", express.static(path.join(__dirname, "../.build/workbox-v3.6.3")));
+server.use("/node_modules", express.static(path.join(__dirname, "./node_modules")));
+server.use("/workbox-v3.6.3", express.static(path.join(__dirname, "../.next/workbox-v3.6.3")));
 server.use((req, res, next) => {
 
   res.sendData = ({ error, data, errorCode, successCode }) => {
@@ -90,7 +91,7 @@ server.use((req, res, next) => {
   next();
 });
 
-const next = createNext({});
+const next = createNext({ dev: isDevelopment });
 Promise.all([next.prepare(), db.connected]).then(() => {
   redoubt.listen(config.client.port.https, config.client.port.http);
   for (let key in api) {
@@ -99,7 +100,7 @@ Promise.all([next.prepare(), db.connected]).then(() => {
   }
   console.log("📡", "All APIs have been installed.");
   // Fallback
-  server.get("/service-worker.js", (req, res) => res.sendFile(path.join(__dirname, "../.build/service-worker.js")))
+  server.get("/service-worker.js", (req, res) => res.sendFile(path.join(__dirname, "../.next/service-worker.js")))
   server.get("*", routes.getRequestHandler(next));
 }).catch(err => {
   console.error("🔥", "Error while preparing server!", err);
