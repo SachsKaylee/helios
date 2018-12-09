@@ -49,7 +49,7 @@ const redoubt = new Redoubt({
 });
 const server = redoubt.app;
 
-server.use("/node_modules", express.static(path.join(__dirname, "./node_modules")));
+server.use("/node_modules", express.static(path.join(__dirname, "../node_modules")));
 server.use("/workbox-v3.6.3", express.static(path.join(__dirname, "../.next/workbox-v3.6.3")));
 server.use((req, res, next) => {
 

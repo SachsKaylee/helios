@@ -26,7 +26,7 @@ export default class EditorCode extends React.Component {
     this.ace.setTheme("ace/theme/chrome");
     this.setMode(this.props.mode);
     this.setReadOnly(this.props.readOnly);
-    this.ace.setValue(this.props.value);
+    this.ace.setValue(this.props.value, 1);
     this.ace.on("change", this.onChange);
   }
 
