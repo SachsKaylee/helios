@@ -8,26 +8,22 @@ import Pagination from "../components/layout/Pagination";
 import { injectIntl } from "react-intl";
 import crossuser from "../utils/crossuser";
 
-export default injectIntl(class IndexPage extends React.PureComponent {
+export default injectIntl(class TagPage extends React.PureComponent {
   static async getInitialProps({ query, req }) {
+    const tag = query.tag || config.defaultTags[0];
     const [posts, postCount] = await Promise.all([
-      axios.get(`/api/tag/posts/${encodeURIComponent(query.tag || config.defaultTags[0])}`, crossuser(req, {
+      axios.get(`/api/tag/posts/${encodeURIComponent(tag)}`, crossuser(req, {
         params: {
           skip: query.page && ((parseInt(query.page, 10) - 1) * config.postsPerPage), limit: config.postsPerPage
         }
       })),
-      axios.get(`/api/tag/count/${encodeURIComponent(query.tag || config.defaultTags[0])}`, crossuser(req))
+      axios.get(`/api/tag/count/${encodeURIComponent(tag)}`, crossuser(req))
     ]);
     return {
-      tag: query.tag || config.defaultTags[0],
+      tag: tag,
       count: postCount.data.count,
       page: query.page ? parseInt(query.page, 10) : 1,
-      posts: posts.data.map(({ _id, author, date, title, content, tags, notes }) => ({
-        id: _id,
-        title: title,
-        content: content,
-        date, tags, notes, author
-      })).sort((a, b) => {
+      posts: posts.data.sort((a, b) => {
         const keyA = new Date(a.date);
         const keyB = new Date(b.date);
         if (keyA < keyB) return 1;
