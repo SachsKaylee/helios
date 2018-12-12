@@ -44,7 +44,7 @@ const redoubt = new Redoubt({
   letsEncryptCertDirectory: path.resolve(__dirname, "../config"),
   maxPayloadSize: config.maxPayloadSize,
   name: config.client.title,
-  staticFiles: { from: path.resolve(__dirname, "../static"), serve: "/static" },
+  staticFiles: null,
   webmasterMail: config.webmasterMail
 });
 const server = redoubt.app;
