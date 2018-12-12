@@ -11,16 +11,14 @@ module.exports = nextOffline({
   // Service Worker
   dontAutoRegisterSw: true,
   generateSw: false,
+  generateInDevMode: true,
   //devSwSrc: path.join(__dirname, "./.build/service-worker.js"),
   workboxOpts: {
     swDest: "./service-worker.js",
     swSrc: path.join(__dirname, "./service-worker/index.js"),
     importWorkboxFrom: "local",
-    //globPatterns: ['static/**/*'],
-    //globDirectory: '.',
-    // TODO: I just copied these. Read up on these settings.
-    // https://github.com/PatrickSachs/next-offline/blob/master/index.js
-    //runtimeCaching: [{ urlPattern: /^https?.*/, handler: 'networkFirst' }],
+    globPatterns: ['static/**/*'],
+    globDirectory: '.'
   },
 
   // Next JS,
