@@ -1,6 +1,8 @@
 const config = require("../../config/server");
 const niceUri = require("../../utils/nice-uri");
 const mongoose = require('mongoose');
+const striptags = require('striptags');
+const { sendPush } = require("./subscription");
 
 const intOr = (int, or) => Number.isInteger(int) ? int : or;
 const stringOr = (string, or) => ("string" === typeof string) ? string : or;
@@ -30,7 +32,6 @@ const install = ({ server }) => {
     // Senders
     res.sendPost = async (post, user = req.user.maybeGetUser()) => {
       user = await user;
-      console.log("sending post ...", {user,post})
       Array.isArray(post)
         ? res.sendData({ data: post.map(post => filterPostData(post, user)) })
         : res.sendData({ data: filterPostData(post, user) });
@@ -57,7 +58,15 @@ const install = ({ server }) => {
         const { title } = req.body;
         const post = new Post({ ...req.body, _id: niceUri(title) });
         post.isNew = true;
-        return post.save().then(post => res.sendData({ data: post }))
+        return post.save().then(post => {
+          res.sendData({ data: post });
+          sendPush({ 
+            _id: "post-" + post._id, 
+            title: post.title,
+            body: striptags(post.content, []).substring(0, 250),
+            url: `https://${config.client.domains[0]}:${config.client.port.https}/post/${post._id}`
+          })
+        });
       })
       .catch(error => {
         if (error === "not-logged-in") {

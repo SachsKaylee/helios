@@ -1,5 +1,5 @@
 import React from "react";
-import { FormattedMessage, FormattedDate, injectIntl } from "react-intl";
+import { FormattedMessage, FormattedDate, FormattedTime, injectIntl } from "react-intl";
 import Card from "../../components/layout/Card";
 import MessageForm from "../../components/forms/MessageForm";
 import withStores from "../../store/withStores";
@@ -79,7 +79,7 @@ export default withStores(NotificationStore, injectIntl(class PagesPage extends 
     return (<Media key={subscriber._id} title={(<span>
       <strong style={{ marginRight: 2 }}>
         <Version detailed {...subscriber.browser} /> (<Version detailed={false} {...subscriber.os} /> - {subscriber.device.family})
-      </strong> - <FormattedDate value={subscriber.since} />
+      </strong> - <FormattedDate value={subscriber.since} /> <FormattedTime value={subscriber.since} />
     </span>)}>
     </Media>);
   }
