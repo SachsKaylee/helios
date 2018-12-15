@@ -49,7 +49,19 @@ webPush.setVapidDetails("mailto:" + config.webmasterMail, vapid.publicKey, vapid
 const sendPush = async (payload) => {
   payload = JSON.stringify(payload);
   const subs = await Subscription.find({});
-  return Promise.all(subs.map(sub => webPush.sendNotification(sub.subscription, payload)));
+  const res = await Promise.all(subs.map(sub => webPush.sendNotification(sub.subscription, payload).catch(error => {
+    if (error.statusCode === 410) {
+      error.subscription = sub;
+      return error;
+    }
+    throw error;
+  })));
+  const oldIds = res.filter(res => res.statusCode === 410).map(res => res.subscription._id);
+  console.log("Old ids are", oldIds);
+  if (oldIds.length) {
+    await Subscription.deleteMany({ _id: { $in: oldIds } });
+  }
+  return res;
 };
 
 // Misc operations
