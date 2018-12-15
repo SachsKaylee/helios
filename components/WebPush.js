@@ -6,6 +6,8 @@ import NotificationStore from "../store/Notification";
 import RssFeedIcon from "mdi-react/RssFeedIcon";
 import { FormattedMessage } from "react-intl";
 
+const STORAGE_DID_SELECT = "subscription:didSelect";
+
 export default withStores(NotificationStore, class WebPush extends React.PureComponent {
   constructor(p) {
     super(p);
@@ -15,10 +17,11 @@ export default withStores(NotificationStore, class WebPush extends React.PureCom
 
   componentDidMount() {
     if ("serviceWorker" in navigator) {
-      console.log("WAIT FOR Service worker ready ...");
       navigator.serviceWorker.ready.then(() => {
-        console.log("Service worker ready ...");
-        setTimeout(this.promptForNotifications, config.promptForNotificationsAfter);
+        const didSelect = localStorage.getItem(STORAGE_DID_SELECT);
+        if (!didSelect) {
+          setTimeout(this.promptForNotifications, config.promptForNotificationsAfter);
+        }
       });
     }
   }
@@ -31,7 +34,7 @@ export default withStores(NotificationStore, class WebPush extends React.PureCom
       applicationServerKey: urlBase64ToUint8Array(key)
     });
     console.log("got subscription", subscription);
-    post("/api/subscription/subscribe", { 
+    post("/api/subscription/subscribe", {
       subscription,
       device: navigator.userAgent
     });
@@ -52,12 +55,18 @@ export default withStores(NotificationStore, class WebPush extends React.PureCom
           _id: "yes",
           type: "success",
           text: (<FormattedMessage id="yesPlease" />),
-          action: () => this.subscribeToNotifications(data.key)
+          action: () => {
+            this.subscribeToNotifications(data.key);
+            localStorage.setItem(STORAGE_DID_SELECT, "true");
+          }
         },
         {
           _id: "no",
           type: "danger",
-          text: (<FormattedMessage id="noThanks" />)
+          text: (<FormattedMessage id="noThanks" />),
+          action: () => {
+            localStorage.setItem(STORAGE_DID_SELECT, "false");
+          }
         }
       ]
     });
