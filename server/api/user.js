@@ -113,7 +113,7 @@ const install = ({ server }) => {
           return res.error.missingPermission("admin");
         }
         const { password, bio, avatar, permissions } = req.body;
-        const user = new models.user({
+        const user = new User({
           _id: req.params.id,
           password: password ? encrypt(password) : oldUser.password,
           permissions: permissions.reduce(
