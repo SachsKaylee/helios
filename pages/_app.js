@@ -15,6 +15,7 @@ import BookOpenPageVariantIcon from "mdi-react/BookOpenPageVariantIcon";
 import LogoutIcon from "mdi-react/LogoutIcon";
 import NotificationStore, { NotificationProvider } from "../store/Notification";
 import NotificationRenderer from "../components/NotificationRenderer";
+import WebPush from "../components/WebPush";
 import crossuser from "../utils/crossuser";
 import * as sw from "next-offline/runtime";
 
@@ -70,6 +71,7 @@ export default class _App extends App {
         messages={flattenObject(localeMessages)}>
         <SessionProvider>
           <NotificationProvider>
+            <WebPush />
             <Head>
               <title key="title">{title && title + " | "}{config.title}</title>
             </Head>

@@ -12,7 +12,6 @@ module.exports = nextOffline({
   dontAutoRegisterSw: true,
   generateSw: false,
   generateInDevMode: true,
-  //devSwSrc: path.join(__dirname, "./.build/service-worker.js"),
   workboxOpts: {
     swDest: "./service-worker.js",
     swSrc: path.join(__dirname, "./service-worker/index.js"),

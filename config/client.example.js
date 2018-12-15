@@ -52,5 +52,8 @@
   hideLogInButton: false,
 
   // The default tags a post should have.
-  defaultTags: ["uncategorized"]
+  defaultTags: ["uncategorized"],
+
+  // After how many seconds a user has spent on your site will they be prompted to enable notifications?
+  promptForNotificationsAfter: 60
 }
