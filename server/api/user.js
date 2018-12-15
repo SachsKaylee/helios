@@ -2,8 +2,8 @@
  * Contains the user API operations for Helios like logging in
  */
 const config = require("../../config/server");
-const crypto = require("crypto");
 const all = require("../../utils/all");
+const encryptWithSalt = require("../../utils/encrypt");
 const escapeRegExp = require("../../utils/escapeRegExp");
 const mongoose = require('mongoose');
 const { error: DbError } = require("../db");
@@ -17,7 +17,9 @@ const allPermissions = {
   author: "author",
   // The maintainer can manage pages. 
   // TODO: Figure out a better name
-  maintainer: "maintainer"
+  maintainer: "maintainer",
+  // This person can manage community members.
+  communityCanager: "community-manager"
 };
 
 // ===============================================
@@ -250,7 +252,7 @@ const createUpdatedModel = (user, { password, avatar, permissions, bio }) => {
 
 // Misc operations
 const filterUserData = ({ _id, avatar, bio, permissions }) => ({ id: _id, avatar, bio, permissions });
-const encrypt = password => crypto.createHmac("sha256", config.passwordSecret).update(password).digest("hex");
+const encrypt = password => encryptWithSalt(password, config.passwordSecret);
 
 // ===============================================
 // === EXPORTS

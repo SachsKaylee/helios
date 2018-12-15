@@ -2,6 +2,7 @@ import React from "react";
 import BookOpenPageVariantIcon from "mdi-react/BookOpenPageVariantIcon";
 import AccountsIcon from "mdi-react/AccountsIcon";
 import EmailIcon from "mdi-react/EmailIcon";
+import RssFeedIcon from "mdi-react/RssFeedIcon";
 import { FormattedMessage, FormattedNumber, injectIntl } from "react-intl";
 import Card from "../../components/layout/Card";
 import config from "../../config/client";
@@ -13,11 +14,17 @@ export default injectIntl(class Admin extends React.Component {
   static getInitialProps({ req }) {
     const opts = crossuser(req);
     return Promise
-      .all([get("/api/post-count", opts), get("/api/user-count", opts), get("/api/page-count", opts)])
-      .then(([post, user, page]) => ({
+      .all([
+        get("/api/post-count", opts), 
+        get("/api/user-count", opts), 
+        get("/api/page-count", opts), 
+        get("/api/subscription/count", opts)
+      ])
+      .then(([post, user, page, subscription]) => ({
         postCount: post.data.count,
         userCount: user.data.count,
-        pageCount: page.data.count
+        pageCount: page.data.count,
+        subscriptionCount: subscription.data.count
       }));
   }
 
@@ -27,7 +34,7 @@ export default injectIntl(class Admin extends React.Component {
   }
 
   render() {
-    const { postCount, userCount, pageCount } = this.props;
+    const { postCount, userCount, pageCount, subscriptionCount } = this.props;
     return (
       <div className="container">
         <Card title={config.title} subtitle={config.description}>
@@ -48,6 +55,12 @@ export default injectIntl(class Admin extends React.Component {
               <div>
                 <p className="heading"><A href="/admin/users"><AccountsIcon /> <FormattedMessage id="admin.users" /></A></p>
                 <p className="title"><FormattedNumber value={userCount} /></p>
+              </div>
+            </div>
+            <div className="level-item has-text-centered">
+              <div>
+                <p className="heading"><A href="/admin/subscribers"><RssFeedIcon /> <FormattedMessage id="admin.subscribers" /></A></p>
+                <p className="title"><FormattedNumber value={subscriptionCount} /></p>
               </div>
             </div>
           </nav>

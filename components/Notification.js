@@ -20,7 +20,7 @@ export default class Notification extends React.PureComponent {
     const { closed } = this.state;
     return (!closed && (<div className={classnames("pop-in", "notification", type && "is-" + type)}>
       {canClose && (<button className="delete" onClick={this.onClose}></button>)}
-      {(title || Icon) && <p><Icon className="mdi-icon-spacer" /><strong>{title}</strong></p>}
+      {(title || Icon) && <p>{Icon ? <Icon className="mdi-icon-spacer" /> : null}<strong>{title}</strong></p>}
       {children}
       {timeout ? (<progress className="progress is-small overlay-notification-progress" value={elapsed} max={timeout} />) : null}
       {buttons && buttons.length ? (<div className="buttons">

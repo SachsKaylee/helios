@@ -53,7 +53,6 @@ export class NotificationProvider extends React.PureComponent {
    * Called at regular intervals to update the notifications.
    */
   interval() {
-    console.log("tick....")
     this.setState(s => ({
       notifications: s.notifications
         .map(n => ({ ...n, elapsed: n.elapsed + TICK_INTERVAL }))

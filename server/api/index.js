@@ -3,5 +3,5 @@ module.exports = {
   post: require("./post"),
   page: require("./page"),
   robots: require("./robots"),
-  push: require("./push")
+  subscription: require("./subscription")
 }

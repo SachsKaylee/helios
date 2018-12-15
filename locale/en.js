@@ -15,6 +15,8 @@ module.exports = {
     alreadyLoggedIn: "You are already logged in. If you wish to log into a different account you must first sign out.",
     alreadyExists: "This item already exists. Please edit it instead."
   },
+  yesPlease: "Yes please",
+  noThanks: "No thanks",
   title: "Title",
   subtitle: "Subtitle",
   tag: "Tag",
@@ -34,6 +36,7 @@ module.exports = {
   cancel: "Cancel",
   preview: "Preview",
   permissions: "Permissions",
+  send: "Send",
   formValueRequired: "\"{field}\" is required!",
   form: {
     submit: "Submit",
@@ -65,7 +68,8 @@ module.exports = {
     title: "Overview",
     posts: "Posts",
     users: "Users",
-    pages: "Pages"
+    pages: "Pages",
+    subscribers: "Subscribers"
   },
   // Admin accounts overview page
   users: {
@@ -231,6 +235,31 @@ module.exports = {
       updated: {
         title: "Account updated",
         description: "Your account has been updated. View your public changes here: {link}"
+      }
+    }
+  },
+  subscribers: {
+    title: "Subscribers",
+    subtitle: "Here you can see all current subscribers of your website and manually send messages to them.",
+    newMessage: "Send a new message",
+    messageRecipients: "Message recipients: {recipients}",
+    allSubscribers: "All subscribers",
+    prompt: {
+      title: "Turn on notifications?",
+      content: "You've been on this site for some time. Turn on notifications to ensure that you won't miss anything!"
+    },
+    message: {
+      title: {
+        field: "Message title",
+        placeholder: "The title of the message"
+      },
+      body: {
+        field: "Message text",
+        placeholder: "The primary message text - Try to keep the message as short as possible since it might get cut off on some devices otherwise"
+      },
+      url: {
+        field: "Message link",
+        placeholder: "The link to open if a user clicks on the notification"
       }
     }
   },

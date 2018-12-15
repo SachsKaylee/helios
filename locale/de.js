@@ -15,6 +15,8 @@ module.exports = {
     alreadyLoggedIn: "Sie sind bereits angemeldet. Um sich in einem anderen Account anzumelden, müssen Sie sich zunächst aus diesem abmelden.",
     alreadyExists: "Dieser Datensatz existiert bereits. Bitte bearbeiten Sie ihn stattdessen."
   },
+  yesPlease: "Ja, gern",
+  noThanks: "Nein, danke",
   title: "Titel",
   subtitle: "Untertitel",
   tag: "Tag",
@@ -34,6 +36,7 @@ module.exports = {
   cancel: "Abbrechen",
   preview: "Vorschau",
   permissions: "Berechtigungen",
+  send: "Senden",
   formValueRequired: "\"{field}\" muss angegeben werden!",
   form: {
     submit: "Senden",
@@ -66,6 +69,7 @@ module.exports = {
     posts: "Posts",
     users: "Benutzer",
     pages: "Seiten",
+    subscribers: "Abonnenten"
   },
   // Admin accounts overview page
   users: {
@@ -229,6 +233,31 @@ module.exports = {
       updated: {
         title: "Benutzerkonto aktualisiert",
         description: "Ihr Benutzerkonto wurde aktualisiert. Sie können sich die öffentlichen Änderungen hier ansehen: {link}"
+      }
+    }
+  },
+  subscribers: {
+    title: "Abonnenten",
+    subtitle: "Hier können Sie alle aktuellen Abonnenten Ihrer Seite einsehen und diesen manuell Nachrichten zusenden.",
+    newMessage: "Neue Nachricht verfassen",
+    messageRecipients: "Nachrichtenempfänger: {recipients}",
+    allSubscribers: "Alle Abonnenten",
+    prompt: {
+      title: "Benachrichtigungen aktivieren?",
+      content: "Sie sind seit einiger Zeit auf dieser Seite aktiv. Aktivieren Sie Benachrichtigungen um nichts mehr zu verpassen!"
+    },
+    message: {
+      title: {
+        field: "Nachrichtentitel",
+        placeholder: "Der Titel der Nachricht"
+      },
+      body: {
+        field: "Nachrichtentext",
+        placeholder: "Der primäre Nachrichtentext - Versuchen Sie sich so kurz wie möglich zu fasen um zu verhindern, dass der Text auf machen Geräten abgeschnitten wird"
+      },
+      url: {
+        field: "Nachrichtenlink",
+        placeholder: "Dieser Link wird geöffnet wenn ein Benutzer auf die Nachricht klickt"
       }
     }
   },

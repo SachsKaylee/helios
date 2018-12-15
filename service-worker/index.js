@@ -1,4 +1,5 @@
 // Warning: This code is not being transpiled and served 1:1.
+// We can use ES6 regardless since (almost) all browsers that support service workers also support ES6.
 console.log("Hello from the Service Worker");
 
 self.addEventListener('push', ev => {
@@ -20,19 +21,19 @@ self.addEventListener('notificationclick', function (event) {
   // This looks to see if the current is already open and
   // focuses if it is
   const { url } = event.notification.data;
-  event
-    .waitUntil(clients.matchAll({ type: "window" })
-      .then(clientList => {
-        for (let i = 0; i < clientList.length; i++) {
-          const client = clientList[i];
-          if (client.url == url && 'focus' in client) {
-            return client.focus();
-          }
+  if (url) {
+    event.waitUntil(clients.matchAll({ type: "window" }).then(clientList => {
+      for (let i = 0; i < clientList.length; i++) {
+        const client = clientList[i];
+        if (client.url == url && 'focus' in client) {
+          return client.focus();
         }
-        if (clients.openWindow) {
-          return clients.openWindow(url);
-        }
-      }));
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(url);
+      }
+    }));
+  }
 });
 
 /*

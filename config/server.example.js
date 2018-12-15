@@ -18,6 +18,10 @@ module.exports = {
   // encrypted data is stored on the client.
   cookieSecret: "7-rays-of-light",
 
+  // The secret used to encrypt subscriptions such as push notification. The encryption 
+  // is done on the server, the encrypted data is sent to various clients.
+  subscriptionSecret: "winterborn",
+
   // The Webmaster mail. This MUST be valid Mail or you won't get a SSL certificate
   webmasterMail: "webmaster@example.com",
 

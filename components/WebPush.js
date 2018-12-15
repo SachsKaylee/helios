@@ -3,6 +3,7 @@ import config from "../config/client";
 import { get, post } from "axios";
 import withStores from "../store/withStores";
 import NotificationStore from "../store/Notification";
+import RssFeedIcon from "mdi-react/RssFeedIcon";
 import { FormattedMessage } from "react-intl";
 
 export default withStores(NotificationStore, class WebPush extends React.PureComponent {
@@ -30,28 +31,33 @@ export default withStores(NotificationStore, class WebPush extends React.PureCom
       applicationServerKey: urlBase64ToUint8Array(key)
     });
     console.log("got subscription", subscription);
-    post("/api/push/subscribe", subscription);
+    post("/api/subscription/subscribe", { 
+      subscription,
+      device: navigator.userAgent
+    });
   }
 
   /**
    * Asks the user if they want to install notifications.
    */
   async promptForNotifications() {
-    const { data } = await get("/api/push/vapid");
+    const { data } = await get("/api/subscription/vapid");
     this.props.notificationStore.push({
       type: "info",
-      children: "puuush?",
+      icon: RssFeedIcon,
+      title: (<FormattedMessage id="subscribers.prompt.title" />),
+      children: (<FormattedMessage id="subscribers.prompt.content" />),
       buttons: [
         {
           _id: "yes",
           type: "success",
-          text: (<FormattedMessage id="yes" />),
+          text: (<FormattedMessage id="yesPlease" />),
           action: () => this.subscribeToNotifications(data.key)
         },
         {
           _id: "no",
           type: "danger",
-          text: (<FormattedMessage id="no" />)
+          text: (<FormattedMessage id="noThanks" />)
         }
       ]
     });
@@ -67,10 +73,10 @@ function urlBase64ToUint8Array(base64String) {
   const base64 = (base64String + padding)
     .replace(/\-/g, '+')
     .replace(/_/g, '/');
- 
+
   const rawData = window.atob(base64);
   const outputArray = new Uint8Array(rawData.length);
- 
+
   for (let i = 0; i < rawData.length; ++i) {
     outputArray[i] = rawData.charCodeAt(i);
   }
