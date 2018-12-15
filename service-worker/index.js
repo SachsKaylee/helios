@@ -2,13 +2,37 @@
 console.log("Hello from the Service Worker");
 
 self.addEventListener('push', ev => {
-  const { _id, title, ...data } = ev.data.json();
-  console.log("Push(" + _id + "):", title, data);
+  const data = ev.data.json();
+  const { _id, title, ...args } = data;
+  console.log("Push(" + _id + "):", title, args);
   self.registration.showNotification(title, {
     tag: _id,
     icon: '/static/content/system/logo.png',
-    ...data
+    ...args,
+    data: data
   });
+});
+
+self.addEventListener('notificationclick', function (event) {
+  console.log('On notification click: ', event.notification);
+  event.notification.close();
+
+  // This looks to see if the current is already open and
+  // focuses if it is
+  const { url } = event.notification.data;
+  event
+    .waitUntil(clients.matchAll({ type: "window" })
+      .then(clientList => {
+        for (let i = 0; i < clientList.length; i++) {
+          const client = clientList[i];
+          if (client.url == url && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        if (clients.openWindow) {
+          return clients.openWindow(url);
+        }
+      }));
 });
 
 /*
