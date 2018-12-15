@@ -56,7 +56,7 @@ const install = ({ server }) => {
           return res.error.missingPermission("author");
         }
         const { title } = req.body;
-        const post = new Post({ ...req.body, _id: niceUri(title) });
+        const post = new Post({ ...req.body, date: new Date(), _id: niceUri(title) });
         post.isNew = true;
         return post.save().then(post => {
           res.sendData({ data: post });

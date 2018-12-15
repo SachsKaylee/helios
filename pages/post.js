@@ -28,7 +28,7 @@ export default class PostPage extends React.PureComponent {
         <Session>
           {session => (<Post
             {...post}
-            edit={[session && session.hasPermission("author") && "show-admin-buttons"]}
+            admin={session && session.hasPermission("author")}
             id={post._id}
             date={new Date(post.date)} />)}
         </Session>

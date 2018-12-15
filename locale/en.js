@@ -150,6 +150,7 @@ module.exports = {
     mediaTitle: "{title} by {author}, {date, date, medium}",
     noneFound: "No posts could be found. Please try again later.",
     tags: "Tags for categorization…",
+    adminArea: "Post admin area",
     notes: {
       field: "Notes", 
       placeholder: "Take some quick notes about your post. They are only visible to other authors."

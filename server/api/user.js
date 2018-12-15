@@ -196,6 +196,13 @@ const install = ({ server }) => {
         }
       }));
 
+  server.get("/api/avatar/", (req, res) =>
+    req.user.getUser()
+      .then(user => user && user.avatar
+        ? res.blob(user.avatar)
+        : res.redirect("/static/content/system/default-avatar.png"))
+      .catch(error => res.error.server(error)));
+
   server.get("/api/avatar/:id", (req, res) =>
     User.findOne({ _id: new RegExp("^" + escapeRegExp(req.params.id) + "$", "i") })
       .then(user => user && user.avatar
