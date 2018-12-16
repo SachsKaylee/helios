@@ -37,6 +37,8 @@ module.exports = {
   preview: "Vorschau",
   permissions: "Berechtigungen",
   send: "Senden",
+  hidden: "Versteckt",
+  root: "Basisebene",
   formValueRequired: "\"{field}\" muss angegeben werden!",
   form: {
     submit: "Senden",
@@ -258,7 +260,7 @@ module.exports = {
       },
       body: {
         field: "Nachrichtentext",
-        placeholder: "Der primäre Nachrichtentext - Versuchen Sie sich so kurz wie möglich zu fasen um zu verhindern, dass der Text auf machen Geräten abgeschnitten wird"
+        placeholder: "Der primäre Nachrichtentext - Versuchen Sie sich so kurz wie möglich zu fasen um zu verhindern, dass der Text auf manchen Geräten abgeschnitten wird"
       },
       url: {
         field: "Nachrichtenlink",

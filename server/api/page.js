@@ -134,6 +134,9 @@ const install = ({ server }) => {
           // Create the containing folder
           let navigationNode = navigation;
           for (let i = 0; i < path.length; i++) {
+            if (path[i] === "null") {
+              return navigation;
+            }
             let child = navigationNode.children.find(child => child.title === path[i]);
             // Create folder path if it does not exist. Flag navigation nodes that are just folders as "synthetic"
             if (!child) {

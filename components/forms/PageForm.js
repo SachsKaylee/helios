@@ -6,9 +6,12 @@ import TextField from "@react-formilicious/bulma/TextField";
 import required from "@react-formilicious/core/validators/required";
 import PublishIcon from "mdi-react/PublishIcon";
 import EarthIcon from "mdi-react/EarthIcon";
+import EyeOffIcon from "mdi-react/EyeOffIcon";
 import DeleteIcon from "mdi-react/DeleteIcon";
 import { FormattedMessage, injectIntl } from "react-intl";
 import onlyTruthy from "../../utils/onlyTruthy";
+
+const Hidden = (<span><EyeOffIcon className="mdi-icon-spacer"/><FormattedMessage id="hidden" /></span>);
 
 export default injectIntl(class PageForm extends React.PureComponent {
   render() {
@@ -31,7 +34,7 @@ export default injectIntl(class PageForm extends React.PureComponent {
           key: "path",
           limit: 1,
           name: (<FormattedMessage id="page.path.field" />),
-          tags: this.props.allPaths,
+          tags: [{ id: "null", name: Hidden }, ...this.props.allPaths],
           addCustomTagText: this.props.intl.formatMessage({ id: "page.path.placeholder" }),
           addCustomTagButtonText: (<FormattedMessage id="add" />)
         },

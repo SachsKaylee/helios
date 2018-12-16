@@ -5,6 +5,11 @@ import A from "../../components/system/A";
 import { get } from "axios";
 import Media from "../../components/layout/Media";
 import crossuser from "../../utils/crossuser";
+import EyeOffIcon from "mdi-react/EyeOffIcon";
+import HomeIcon from "mdi-react/HomeIcon";
+
+const Hidden = (<span><EyeOffIcon className="mdi-icon-spacer" /><FormattedMessage id="hidden" /></span>);
+const Root = (<span><HomeIcon className="mdi-icon-spacer" /><FormattedMessage id="root" /></span>);
 
 export default injectIntl(class PagesPage extends React.Component {
   constructor(p) {
@@ -30,8 +35,11 @@ export default injectIntl(class PagesPage extends React.Component {
           subtitle={(<span><A className="button" href="/admin/page"><FormattedMessage id="page.manage.newPage" /></A></span>)}>
           {pages.map(page => (<Media key={page._id} title={(<span>
             <strong style={{ marginRight: 2 }}><A href={`/admin/page/${page._id}`}>{page.title}</A></strong>
-            {page.notes}
           </span>)}>
+            <p><FormattedMessage id="page.path.field" />: {page.path.length
+              ? page.path.map(path => (<span className="tag">{path === "null" ? Hidden : path}</span>))
+              : (<span className="tag">{Root}</span>)}</p>
+            {page.notes && (<p className="is-size-7">{page.notes}</p>)}
           </Media>))}
         </Card>
       </div>);

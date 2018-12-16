@@ -37,6 +37,8 @@ module.exports = {
   preview: "Preview",
   permissions: "Permissions",
   send: "Send",
+  hidden: "Hidden",
+  root: "Root",
   formValueRequired: "\"{field}\" is required!",
   form: {
     submit: "Submit",
