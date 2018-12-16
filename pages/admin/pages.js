@@ -37,7 +37,7 @@ export default injectIntl(class PagesPage extends React.Component {
             <strong style={{ marginRight: 2 }}><A href={`/admin/page/${page._id}`}>{page.title}</A></strong>
           </span>)}>
             <p><FormattedMessage id="page.path.field" />: {page.path.length
-              ? page.path.map(path => (<span className="tag">{path === "null" ? Hidden : path}</span>))
+              ? page.path.map(path => (<span key={path} className="tag">{path === "null" ? Hidden : path}</span>))
               : (<span className="tag">{Root}</span>)}</p>
             {page.notes && (<p className="is-size-7">{page.notes}</p>)}
           </Media>))}
