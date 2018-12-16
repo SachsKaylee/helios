@@ -249,6 +249,10 @@ module.exports = {
       title: "Turn on notifications?",
       content: "You've been on this site for some time. Turn on notifications to ensure that you won't miss anything!"
     },
+    pwaPrompt: {
+      title: "Add to home screen?",
+      content: "Add this site to your homescreen to access it with just a single tap."
+    },
     message: {
       title: {
         field: "Message title",

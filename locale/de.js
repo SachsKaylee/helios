@@ -247,6 +247,10 @@ module.exports = {
       title: "Benachrichtigungen aktivieren?",
       content: "Sie sind seit einiger Zeit auf dieser Seite aktiv. Aktivieren Sie Benachrichtigungen um nichts mehr zu verpassen!"
     },
+    pwaPrompt: {
+      title: "Zum Startbildschirm hinzufügen?",
+      content: "Fügen Sie diese Seite zu Ihrem Startbildschirm hinzu um mit nur einem Klick darauf zugreifen zu können."
+    },
     message: {
       title: {
         field: "Nachrichtentitel",

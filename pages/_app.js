@@ -18,6 +18,7 @@ import NotificationRenderer from "../components/NotificationRenderer";
 import WebPush from "../components/WebPush";
 import crossuser from "../utils/crossuser";
 import * as sw from "next-offline/runtime";
+import PWA from "../components/PWA";
 
 const g = global || window;
 // Load the locale data for NodeJS if it has not been installed.
@@ -72,6 +73,7 @@ export default class _App extends App {
         <SessionProvider>
           <NotificationProvider>
             <WebPush />
+            <PWA />
             <Head>
               <title key="title">{title && title + " | "}{config.title}</title>
             </Head>

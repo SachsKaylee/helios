@@ -36,6 +36,11 @@ self.addEventListener('notificationclick', function (event) {
   }
 });
 
+// Dummy fetch handler to allow us to pose as a proper offline-enabled PWA for now.
+self.addEventListener("fetch", async event => {
+  return fetch(event.request);
+});
+
 /*
 const transformCacheEntry = ({ url }) => url;
 

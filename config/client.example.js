@@ -54,6 +54,11 @@
   // The default tags a post should have.
   defaultTags: ["uncategorized"],
 
-  // After how many milliseconds a user has spent on your site will they be prompted to enable notifications?
-  promptForNotificationsAfter: 30000
+  // After how many milliseconds a user has spent on your site will they be prompted to enable 
+  // notifications?
+  promptForNotificationsAfter: 30000,
+
+  // After how many milliseconds a user has spent on your site will they be prompted to add the 
+  // site to their homescreen?
+  promptForAddToHomeScreenAfter: 10000
 }

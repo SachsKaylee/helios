@@ -18,6 +18,7 @@ export default class _Document extends Document {
           <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
           <meta name="robots" content="index, follow" />
           <meta name="generator" content="Helios" />
+          <meta key="theme-color" name="theme-color" content="aliceblue" />
           <meta key="description" name="description" content={config.description} />
           <meta key="keywords" name="keywords" content={config.topics.join(", ")} />
           <link key="manifest" rel="manifest" href="/manifest.json" />
