@@ -14,7 +14,7 @@ module.exports = nextOffline({
   generateInDevMode: true,
   workboxOpts: {
     swDest: "./service-worker.js",
-    swSrc: path.join(__dirname, "./service-worker/index.js"),
+    swSrc: "./service-worker/index.js",
     importWorkboxFrom: "local",
     globPatterns: ['static/**/*'],
     globDirectory: '.'
@@ -22,8 +22,8 @@ module.exports = nextOffline({
 
   // Next JS,
   dev: isDevelopment,
-  //distDir: "./.build",
-  //dir: path.join(__dirname, "./src"),
+  distDir: "./.helios/next",
+  dir: "./.helios/next",
 
   // Webpack
   webpack: (config, { dev }) => {

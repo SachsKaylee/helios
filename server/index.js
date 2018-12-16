@@ -41,7 +41,7 @@ const redoubt = new Redoubt({
   cookieSecret: config.cookieSecret,
   domains: config.client.domains,
   isDevelopment: config.$certsForceProductionServer !== undefined ? !config.$certsForceProductionServer : isDevelopment,
-  letsEncryptCertDirectory: path.resolve(__dirname, "../config"),
+  letsEncryptCertDirectory: "./.helios/certs",
   maxPayloadSize: config.maxPayloadSize,
   name: config.client.title,
   staticFiles: null,
@@ -49,8 +49,8 @@ const redoubt = new Redoubt({
 });
 const server = redoubt.app;
 
-server.use("/node_modules", express.static(path.join(__dirname, "../node_modules")));
-server.use("/workbox-v3.6.3", express.static(path.join(__dirname, "../.next/workbox-v3.6.3")));
+server.use("/node_modules", express.static("./node_modules"));
+server.use("/workbox-v3.6.3", express.static("./.helios/next/workbox-v3.6.3"));
 server.use((req, res, next) => {
 
   res.sendData = ({ error, data, errorCode, successCode }) => {
@@ -80,7 +80,7 @@ server.use((req, res, next) => {
 
   res.error = {};
   res.error.server = (error) => {
-    console.error("Internal Server Error", error);
+    console.error("Internal Server Error\n", error, "\nStack Trace:\n", new Error("Internal Server Error"));
     res.sendData({ error: `internal-server-error`, errorCode: 500 });
   };
   res.error.notFound = () => res.sendData({ error: "not-found", errorCode: 404 });
@@ -100,7 +100,7 @@ Promise.all([next.prepare(), db.connected]).then(() => {
   }
   console.log("📡", "All APIs have been installed.");
   // Fallback
-  server.get("/service-worker.js", (req, res) => res.sendFile(path.join(__dirname, "../.next/service-worker.js")))
+  server.get("/service-worker.js", (req, res) => res.sendFile("./.helios/next/service-worker.js", { root: process.cwd() }))
   server.get("*", routes.getRequestHandler(next));
 }).catch(err => {
   console.error("🔥", "Error while preparing server!", err);

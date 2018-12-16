@@ -22,9 +22,9 @@ export default withStores(NotificationStore, class PWA extends React.PureCompone
       e.preventDefault();
       console.log("Add to home screen?", e);
       // Stash the event so it can be triggered later.
-      this.setState({ promptEvent: e });
       const didSelect = localStorage.getItem(STORAGE_DID_SELECT);
       if (!didSelect) {
+        this.setState({ promptEvent: e });
         window.setTimeout(this.promptForPwa, config.promptForAddToHomeScreenAfter);
       }
     });

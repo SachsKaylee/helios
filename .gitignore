@@ -1,7 +1,6 @@
 # Installed dependencies
 node_modules
 # Ignore compiled Next App
-.next
 .helios
 # Ignore certs
 config/**/
