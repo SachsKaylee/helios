@@ -1,12 +1,31 @@
 require('dotenv').config();
-//const webpack = require('webpack');
 const path = require('path');
 const glob = require('glob');
-//const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const nextOffline = require('next-offline');
 
-console.log("NODE_ENV", process.env.NODE_ENV);
+const isDevelopment = process.env.NODE_ENV !== "production";
+console.log("NODE_ENV", process.env.NODE_ENV, isDevelopment);
 
-module.exports = {
+module.exports = nextOffline({
+
+  // Service Worker
+  dontAutoRegisterSw: true,
+  generateSw: false,
+  generateInDevMode: true,
+  workboxOpts: {
+    swDest: "./service-worker.js",
+    swSrc: path.join(__dirname, "./service-worker/index.js"),
+    importWorkboxFrom: "local",
+    globPatterns: ['static/**/*'],
+    globDirectory: '.'
+  },
+
+  // Next JS,
+  dev: isDevelopment,
+  //distDir: "./.build",
+  //dir: path.join(__dirname, "./src"),
+
+  // Webpack
   webpack: (config, { dev }) => {
     // Setup SASS
     config.module.rules.push(
@@ -47,4 +66,5 @@ module.exports = {
 
     return config;
   }
-};
+
+});

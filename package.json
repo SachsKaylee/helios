@@ -6,9 +6,9 @@
   "author": "Patrick Sachs",
   "license": "MIT",
   "scripts": {
-    "dev": "node ./src/server",
-    "start": "cross-env NODE_ENV=production node ./src/server",
-    "build": "next build src"
+    "dev": "node ./server",
+    "start": "cross-env NODE_ENV=production node ./server",
+    "build": "cross-env NODE_ENV=production next build"
   },
   "devDependencies": {
     "@types/react-intl": "^2.3.11",
@@ -36,6 +36,7 @@
     "mdi-react": "^5.0.0",
     "mongoose": "^5.3.10",
     "next": "^7.0.2",
+    "next-offline": "^3.3.1",
     "next-routes": "^1.4.2",
     "node-sass": "^4.10.0",
     "postcss-easy-import": "^3.0.0",
@@ -45,6 +46,9 @@
     "react-dom": "^16.6.1",
     "react-intl": "^2.7.2",
     "react-tooltip": "^3.9.0",
-    "redoubt": "^1.1.0"
+    "redoubt": "^1.1.0",
+    "striptags": "^3.1.1",
+    "useragent": "^2.3.0",
+    "web-push": "^3.3.3"
   }
 }

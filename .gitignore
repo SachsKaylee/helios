@@ -2,8 +2,9 @@
 node_modules
 # Ignore compiled Next App
 .next
+.helios
 # Ignore certs
-src/config/**/
-src/config/style.sass
-src/config/client.js
-src/config/server.js
+config/**/
+config/style.sass
+config/client.js
+config/server.js
