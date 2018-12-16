@@ -6,10 +6,13 @@ export default class EditorCode extends React.Component {
     super(p);
     this.ref = React.createRef();
     this.onChange = this.onChange.bind(this);
+    this.aceLoaded = this.aceLoaded.bind(this);
   }
 
   onChange() {
-    this.props.onChange(this.ace.getValue());
+    if (this.ace) {
+      this.props.onChange(this.ace.getValue());
+    }
   }
 
   UNSAFE_componentWillReceiveProps(next) {
@@ -21,13 +24,35 @@ export default class EditorCode extends React.Component {
     }
   }
 
-  componentDidMount() {
+  aceLoaded() {
+    this.initAce();
+  }
+
+  initAce() {
     this.ace = window.ace.edit(this.ref.current);
     this.ace.setTheme("ace/theme/chrome");
     this.setMode(this.props.mode);
     this.setReadOnly(this.props.readOnly);
     this.ace.setValue(this.props.value, 1);
     this.ace.on("change", this.onChange);
+  }
+
+  componentDidMount() {
+    if ("ace" in window) {
+      this.initAce();
+    } else {
+      let script = document.getElementById("jodit_ace_editor");
+      if (!script) {
+        script = document.createElement("script");
+        script.className = "jodit_ace_editor";
+        script.id = "jodit_ace_editor";
+        script.src = "/node_modules/ace-builds/src-min/ace.js";
+        script.type = "text/javascript";
+        script.async = true;
+        document.head.appendChild(script);
+      }
+      script.addEventListener("load", this.aceLoaded);
+    }
   }
 
   componentWillUnmount() {
@@ -38,18 +63,19 @@ export default class EditorCode extends React.Component {
   }
 
   setReadOnly(readOnly) {
-    this.ace.setReadOnly(!!readOnly);
+    if (this.ace) {
+      this.ace.setReadOnly(!!readOnly);
+    }
   }
 
   setMode(mode) {
-    this.ace.session.setMode(`ace/mode/${mode || "jsx"}`);
+    if (this.ace) {
+      this.ace.session.setMode(`ace/mode/${mode || "jsx"}`);
+    }
   }
 
   render() {
     return (<div className="wrapper">
-      <Head>
-        <script key="ace" class="jodit_ace_editor" type="text/javascript" src="/node_modules/ace-builds/src-min/ace.js"></script>
-      </Head>
       <div className="editor" ref={this.ref} />
       <style jsx>{`
       .wrapper {

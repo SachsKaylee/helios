@@ -1,6 +1,5 @@
 import React from 'react';
 import EditorControls from './../EditorControls';
-import { FormattedMessage } from "react-intl";
 import EditorCode from "../../EditorCode";
 
 export default class CodeEditor extends React.PureComponent {
