@@ -86,6 +86,12 @@ module.exports = {
     }
   },  
   page: {
+    editor: {
+      stash: {
+        title: "Stashed version found",
+        hint: "A stashed version of this page was found. If you want to, this version can be loaded so that you can carry on exactly where you left off."
+      }
+    },
     title: {
       field: "Page name",
       placeholder: "The name of the page - this is displayed e.g. in the browser title."

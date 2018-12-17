@@ -24,6 +24,7 @@ export default withStores(NotificationStore, injectIntl(class PostPage extends R
       ...p.data
     };
     this.onChangeForm = this.onChangeForm.bind(this);
+    this.saveStash = this.saveStash.bind(this);
   }
 
   static async getInitialProps({ query, req }) {
@@ -57,11 +58,11 @@ export default withStores(NotificationStore, injectIntl(class PostPage extends R
   }
 
   onChange = what => (value) => {
-    this.setState({ [what]: value }, () => this.saveStash());
+    this.setState({ [what]: value }, this.saveStash);
   }
 
   onChangeForm(form) {
-    this.setState({ ...form }, () => this.saveStash());
+    this.setState({ ...form }, this.saveStash);
   }
 
   /**
@@ -97,7 +98,7 @@ export default withStores(NotificationStore, injectIntl(class PostPage extends R
    * @param {string} _id The ID of the stash. By default the current one is used.
    */
   getStashKey(_id = this.state._id) {
-    return "post-stash:" + (_id || "$new-post");
+    return "post-stash:" + (_id || "$new");
   }
 
   /** 
@@ -169,7 +170,7 @@ export default withStores(NotificationStore, injectIntl(class PostPage extends R
     const promise = _id ? axios.put(`/api/post/${_id}`, data) : axios.post("/api/post", data);
     promise
       .then(({ data }) => {
-        this.deleteStash();
+        this.deleteStash(_id);
         this.setState(data, () => {
           this.props.notificationStore.push({
             type: "success",

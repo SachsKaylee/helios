@@ -21,6 +21,7 @@ export default injectIntl(class PageForm extends React.PureComponent {
         notes: this.props.notes,
         path: this.props.path
       }}
+      onChange={this.props.onChange}
       elements={[
         {
           type: TextField,

@@ -86,6 +86,12 @@ module.exports = {
     }
   },
   page: {
+    editor: {
+      stash: {
+        title: "Zwischengespeicherte Version gefunden",
+        hint: "Eine zwischengespeicherte Version dieser Seite wurde gefunden. Wenn Sie möchten, kann diese eingespielt werden um direkt dort fortzusetzen wo Sie aufgehört haben."
+      },
+    },
     title: {
       field: "Seitenname",
       placeholder: "Der Name der Seite - wird unter anderen im Browsertitel angezeigt."
