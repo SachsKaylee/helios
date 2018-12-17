@@ -39,6 +39,7 @@ module.exports = {
   send: "Senden",
   hidden: "Versteckt",
   root: "Basisebene",
+  apply: "Anwenden",
   formValueRequired: "\"{field}\" muss angegeben werden!",
   form: {
     submit: "Senden",
@@ -158,6 +159,10 @@ module.exports = {
       placeholder: "Hier können Sie Notizen zu diesem Post festhalten. Diese sind nur von anderen Authoren sichtbar."
     },
     editor: {
+      stash: {
+        title: "Zwischengespeicherte Version gefunden",
+        hint: "Eine zwischengespeicherte Version dieses Posts wurde gefunden. Wenn Sie möchten, kann diese eingespielt werden um direkt dort fortzusetzen wo Sie aufgehört haben."
+      },
       format: {
         bold: "Fett",
         italic: "Kursiv",

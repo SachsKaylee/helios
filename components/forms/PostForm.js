@@ -15,6 +15,7 @@ export default injectIntl(class PostForm extends React.PureComponent {
         tags: this.props.tags,
         notes: this.props.notes
       }}
+      onChange={this.props.onChange}
       elements={[
         {
           type: TextArea,

@@ -39,6 +39,7 @@ module.exports = {
   send: "Send",
   hidden: "Hidden",
   root: "Root",
+  apply: "Apply",
   formValueRequired: "\"{field}\" is required!",
   form: {
     submit: "Submit",
@@ -158,6 +159,10 @@ module.exports = {
       placeholder: "Take some quick notes about your post. They are only visible to other authors."
     },
     editor: {
+      stash: {
+        title: "Stashed version found",
+        hint: "A stashed version of this post was found. If you want to, this version can be loaded so that you can carry on exactly where you left off."
+      },
       format: {
         bold: "Bold",
         italic: "Italic",

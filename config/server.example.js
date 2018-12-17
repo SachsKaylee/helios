@@ -33,7 +33,7 @@ module.exports = {
   },
 
   // The max size of data that can be sent in a single request.
-  maxPayloadSize: client.maxAvatarSize + 100 * 1024,
+  maxPayloadSize: require("./client").maxAvatarSize + 100 * 1024,
 
   // By default we let Let's Encrypt create a nice and free cert for us. If you are
   // hosting on an intranet this is not possible though, so you may prefer the config
