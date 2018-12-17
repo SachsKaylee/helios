@@ -3,6 +3,15 @@ import JoditStyle from 'jodit/build/jodit.min.css';
 import Dynamic from "./system/Dynamic";
 
 export default class EditorRichText extends React.Component {
+  constructor(p) {
+    super(p);
+    this.state = {
+      value: p.value || ""
+    };
+    this.onChange = this.onChange.bind(this);
+    this.jodit = React.createRef();
+  }
+
   shouldComponentUpdate() {
     return false;
   }
@@ -17,11 +26,28 @@ export default class EditorRichText extends React.Component {
     }
   }
 
+  UNSAFE_componentWillReceiveProps({ value }) {
+    if (this.jodit.current && value !== this.state.value) {
+      this.setState({ value });
+      this.jodit.current.editor.value = value;
+    }
+  }
+
+  onChange(value) {
+    console.log("changed", value)
+    this.setState({ value });
+    if (this.props.onChange) {
+      this.props.onChange(value);
+    }
+  }
+
   render() {
     return (<Dynamic dynamic={{
       loader: () => import("jodit").then(() => import("jodit-react")),
       render: Jodit => (<Jodit
+        ref={this.jodit}
         {...this.props}
+        onChange={this.onChange}
         config={{
           sourceEditorCDNUrlsJS: [
             '/node_modules/ace-builds/src-min/ace.js'
