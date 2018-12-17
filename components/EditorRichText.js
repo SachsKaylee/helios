@@ -34,7 +34,6 @@ export default class EditorRichText extends React.Component {
   }
 
   onChange(value) {
-    console.log("changed", value)
     this.setState({ value });
     if (this.props.onChange) {
       this.props.onChange(value);
