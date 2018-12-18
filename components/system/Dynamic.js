@@ -30,11 +30,31 @@ class Dynamic extends React.Component {
   renderLoaded() {
     const { dynamic, ...props } = this.props;
     const { loaded } = this.state;
-    const Loaded = loaded.default || loaded._default || loaded;
+    const Loaded = processLoadedModule(loaded);
     return dynamic.render
       ? dynamic.render(Loaded)
       : (<Loaded {...props} />);
   }
+}
+
+const processLoadedModule = loaded => loaded.default || loaded._default || loaded; 
+
+export const withDynamic = (loaders, Component) => props => {
+  const loader = (() => {
+    const arrayLoaders = Object
+      .keys(loaders)
+      .map(name => loaders[name]().then(loaded => ({ [name]: processLoadedModule(loaded) })));
+    return Promise
+      .all(arrayLoaders)
+      .then(tuples => tuples.reduce((acc, loadedTuple) => ({ ...acc, ...loadedTuple }), {}));
+  })
+  const render = loaded => (<Component {...props} {...loaded} />);
+  return (<Dynamic dynamic={{
+    loader: loader,
+    render: render,
+    renderLoading: Component.renderLoading,
+    renderError: Component.renderError
+  }} />);
 }
 
 export default Dynamic;
