@@ -18,7 +18,14 @@ const EditablePost = ({ author, date, title, content, onChange }) => (
     <div>
       <EditorRichText
         onChange={onChange("content")}
-        value={content} />
+        value={content} 
+        config={{
+          filebrowser: {
+           ajax: {
+             url: "/api/files/browser"
+           } 
+          }
+        }}/>
     </div>
   </Card>
 );
