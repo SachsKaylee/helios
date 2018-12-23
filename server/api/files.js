@@ -206,6 +206,7 @@ const handleAction = {
               files: files.map(file => ({
                 file: file._id,
                 thumb: "/api/files/thumb/" + file._id,
+                thumbIsAbsolute: true,
                 changed: file.date.toISOString(),
                 size: file.data.length,
                 isImage: isImage(file.data)
