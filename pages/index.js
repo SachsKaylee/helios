@@ -5,6 +5,7 @@ import config, { locale } from "../config/client";
 import Head from "next/head";
 import Pagination from "../components/layout/Pagination";
 import crossuser from "../utils/crossuser";
+import EditorRichText from "../components/EditorRichText";
 
 export default class IndexPage extends React.PureComponent {
   static async getInitialProps({ query, req }) {
@@ -39,6 +40,21 @@ export default class IndexPage extends React.PureComponent {
       <Head>
         <link key="canonical" rel="canonical" href={`https://${config.domains[0]}:${config.port.https}/`} />
       </Head>
+      <hr/>
+      <EditorRichText
+        onChange={console.log}
+        value={"Hello World"} 
+        config={{
+          filebrowser: {
+           ajax: {
+             url: "/api/files/browser"
+           } 
+          },
+          uploader: {
+            url: "/api/files/upload"
+          }
+        }}/>
+      <hr/>
       <Pagination perPage={config.postsPerPage} count={count} page={page}>
         <Posts posts={posts} />
       </Pagination>

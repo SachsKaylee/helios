@@ -23,6 +23,9 @@ const EditablePost = ({ author, date, title, content, onChange }) => (
           filebrowser: {
            ajax: {
              url: "/api/files/browser"
+           },
+           uploader: {
+             url: "/api/files/upload"
            } 
           }
         }}/>

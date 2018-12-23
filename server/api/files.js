@@ -1,9 +1,9 @@
 const config = require("../../config/server");
 const mongoose = require('mongoose');
-const lorem = require("lorem-ipsum");
+const fs = require("fs-extra");
+const path = require("path");
 const niceUri = require("../../utils/nice-uri");
-const random = require("../../utils/random");
-const theFile = require("./thefile.json");
+const blobExtract = require("../../utils/blob-extract");
 
 /*
 const Subscription = mongoose.model("subscription", new mongoose.Schema({
@@ -55,8 +55,43 @@ const install = ({ server }) => {
     next();
   });
 
+  server.post("/api/files/upload", async (req, res) => {
+    try {
+      const { path, source, files } = req.body;
+      const split = path.split("/").filter(p => p);
+      //console.log("/api/files/upload", { query: req.query, params: req.params, body: req.body, files: files });
+      const data = await Promise.all(files.map(async data => {
+        const content = await fs.readFile(data.path);
+        console.log("Now uploading file ...", data);
+        const file = new File({
+          _id: niceUri(data.originalFilename),
+          name: data.originalFilename,
+          path: split,
+          data: "data:" + data.type + ";base64," + content.toString("base64"),
+          date: new Date()
+        });
+        return await file.save();
+      }));
+      return res.sendData({
+        data: {
+          success: true,
+          time: new Date().toISOString(),
+          data: {
+            messages: [],
+            files: data.map(file => file._id),
+            isImages: data.map(file => isImage(file.data)),
+            baseurl: "/api/files/serve/",
+            //newfilename: "my-newfilename"
+          }
+        }
+      });
+    } catch (error) {
+      return res.error.server(error);
+    }
+  });
+
   /**
-   * Gets the VAPID public key of this server.
+   * Gets the file browser content.
    */
   server.post("/api/files/browser", (req, res) => {
     try {
@@ -76,17 +111,36 @@ const install = ({ server }) => {
   /**
    * Serves the given file.
    */
-  server.get("/api/files/serve/*", async (req, res) => {
+  server.get("/api/files/serve/:id", async (req, res) => {
     try {
-      const params = req.params[0].split("/");
-      const id = params[params.length - 1];
-      const file = await File.findById(id).select({ data: 1 }).exec();
+      const file = await File.findById(req.params.id).select({ data: 1 }).exec();
       return res.blob(file.data);
     } catch (error) {
       return res.error.server(error);
     }
   });
+
+  server.get("/api/files/thumb/:id", async (req, res) => {
+    try {
+      const file = await File.findById(req.params.id).select({ data: 1 }).exec();
+      if (isImage(file.data)) {
+        return res.blob(file.data);
+      } else {
+        const { mime } = blobExtract(file.data);
+        const fsMime = mime.replace("/", "-") + ".png";
+        console.log("looking for", fsMime);
+        if (await fs.exists(path.resolve("./static/thumbs", fsMime))) {
+          res.redirect("/static/thumbs/" + fsMime)
+        } else {
+          res.redirect("/static/thumbs/default.png")
+        }
+      }
+    } catch (error) {
+      return res.error.server(error);
+    }
+  });
 }
+
 
 const handleAction = {
   async permissions(req, res, { action, path, source }) {
@@ -124,17 +178,14 @@ const handleAction = {
             [source]: {
               path: path,
               baseurl: "/api/files/serve/",
-              folders: [
-                path !== "/" ? "/" : "root",
-                ...dirs
-              ]
+              folders: split.length ? ["..", ...dirs] : dirs
             }
           },
-          code: 666,
+          /*code: 666,
           path: "value-of-path",
           name: "value-of-name",
           source: "value-of-source",
-          permissions: null
+          permissions: null*/
         }
       }
     });
@@ -142,7 +193,6 @@ const handleAction = {
   async files(req, res, { action, path, source }) {
     const split = path.split("/").filter(p => p);
     const files = await File.find({ path: split }).exec();
-
     return res.sendData({
       data: {
         success: true,
@@ -155,45 +205,11 @@ const handleAction = {
               baseurl: "/api/files/serve/",
               files: files.map(file => ({
                 file: file._id,
-                thumb: file._id,
+                thumb: "/api/files/thumb/" + file._id,
                 changed: file.date.toISOString(),
                 size: file.data.length,
-                isImage: file.data.startsWith("data:image/")
+                isImage: isImage(file.data)
               }))
-              /*[
-                {
-                  file: "my-document-1.txt",
-                  thumb: "txt.png",
-                  changed: new Date().toISOString(),
-                  size: "789",
-                  isImage: false
-                },
-                {
-                  file: "my-document-2.txt",
-                  thumb: "txt.png",
-                  changed: new Date().toISOString(),
-                  size: "562",
-                  isImage: false
-                },
-                {
-                  file: "my-image-1.png",
-                  thumb: "my-image-1.png",
-                  changed: new Date().toISOString(),
-                  size: "2003",
-                  isImage: true
-                },
-                {
-                  file: "my-image-2.gif",
-                  thumb: "my-image-2.gif",
-                  changed: new Date().toISOString(),
-                  size: "142",
-                  isImage: true
-                }
-              ]*//*,
-              folders: [
-                "filesmy-dir-1",
-                "filesmy-dir-2"
-              ]*/
             }
           },
           /*code: 666,
@@ -207,5 +223,7 @@ const handleAction = {
   },
 
 }
+
+const isImage = base64 => base64.startsWith("data:image/");
 
 module.exports = { install }

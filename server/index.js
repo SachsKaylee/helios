@@ -1,5 +1,6 @@
 const axios = require("axios");
 const path = require("path");
+const fs = require("fs");
 const createNext = require("next");
 const express = require("express");
 const api = require("./api");
@@ -9,6 +10,8 @@ const config = require("../config/server");
 const areIntlLocalesSupported = require("intl-locales-supported");
 const reactIntl = require("react-intl");
 const { transformError } = require("./error-transformer");
+const formData = require("express-form-data");
+const blobExtract = require("../utils/blob-extract");
 const Redoubt = require("redoubt").default;
 
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -19,9 +22,11 @@ axios.defaults.baseURL = `https://${config.client.domains[0]}:${config.client.po
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = isDevelopment || config.certs.allowUnsigned ? "0" : "1";
 
+const rootPath = path.resolve("./");
+
 console.log("📡", "Helios is starting ...");
 console.log("📡", "Dev-Mode:", isDevelopment);
-console.log("📡", "Working Directory:", process.cwd());
+console.log("📡", "Working Directory:", rootPath);
 
 // Load the locale data for NodeJS if it has not been installed.
 if (global.Intl && !areIntlLocalesSupported([config.client.locale.meta.id])) {
@@ -49,6 +54,15 @@ const redoubt = new Redoubt({
 });
 const server = redoubt.app;
 
+const uploadDir = path.resolve("./.helios/tmp/upload");
+fs.mkdirSync(uploadDir, { recursive: true });
+
+server.use(formData.parse({
+  //autoClean: true,
+  uploadDir: uploadDir
+}));
+server.use(formData.union());
+//server.use(formData.format());
 server.use("/node_modules", express.static("./node_modules"));
 server.use("/workbox-v3.6.3", express.static("./.helios/next/workbox-v3.6.3"));
 server.use((req, res, next) => {
@@ -68,11 +82,10 @@ server.use((req, res, next) => {
   }
 
   res.blob = (blob) => {
-    const [details, data] = blob.split(",");
-    const [mime, format] = details.split(";");
+    const { data, format, mime } = blobExtract(blob);
     const buffer = Buffer.from(data, format);
     res.writeHead(200, {
-      "Content-Type": mime.substr("data:".length),
+      "Content-Type": mime,
       "Content-Length": buffer.length
     });
     res.end(buffer);
@@ -100,7 +113,7 @@ Promise.all([next.prepare(), db.connected]).then(() => {
   }
   console.log("📡", "All APIs have been installed.");
   // Fallback
-  server.get("/service-worker.js", (req, res) => res.sendFile("./.helios/next/service-worker.js", { root: process.cwd() }))
+  server.get("/service-worker.js", (req, res) => res.sendFile("./.helios/next/service-worker.js", { root: rootPath }))
   server.get("*", routes.getRequestHandler(next));
 }).catch(err => {
   console.error("🔥", "Error while preparing server!", err);
