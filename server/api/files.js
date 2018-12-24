@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const fs = require("fs-extra");
 const path = require("path");
 const niceUri = require("../../utils/nice-uri");
+const unqiue = require("../../utils/unqiue");
 const blobExtract = require("../../utils/blob-extract");
 
 const File = mongoose.model("file", new mongoose.Schema({
@@ -186,7 +187,7 @@ const handleAction = {
             [source]: {
               path: path,
               baseurl: "/api/files/serve/",
-              folders: split.length ? ["..", ...dirs, ...readTempFolders(split)] : [...dirs, ...readTempFolders(split)]
+              folders: unqiue(split.length ? ["..", ...dirs, ...readTempFolders(split)] : [...dirs, ...readTempFolders(split)])
             }
           }
         }
