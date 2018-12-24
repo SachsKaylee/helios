@@ -6,6 +6,11 @@ const niceUri = require("../../utils/nice-uri");
 const unqiue = require("../../utils/unqiue");
 const blobExtract = require("../../utils/blob-extract");
 
+/**
+ * This is the permission required to upload/delete/etc. files.
+ */
+const PERMISSION = "files";
+
 const File = mongoose.model("file", new mongoose.Schema({
   _id: String,
   name: String,
@@ -42,13 +47,16 @@ const install = ({ server }) => {
    * Uploads the given file.
    */
   server.post("/api/files/upload", async (req, res) => {
+    // Check permissions
+    if (!await checkPermission(req, res)) {
+      return;
+    }
+    // Handle upload
     try {
       const { path, source, files } = req.body;
       const split = path.split("/").filter(p => p);
-      //console.log("/api/files/upload", { query: req.query, params: req.params, body: req.body, files: files });
       const data = await Promise.all(files.map(async data => {
         const content = await fs.readFile(data.path);
-        console.log("Now uploading file ...", data);
         const file = new File({
           _id: niceUri(data.originalFilename),
           name: data.originalFilename,
@@ -82,7 +90,6 @@ const install = ({ server }) => {
   server.post("/api/files/browser", (req, res) => {
     try {
       const handler = handleAction[req.body.action];
-      console.log("/api/files/browser", req.body)
       if (handler === undefined) {
         return res.sendData({ error: req.body.action, errorCode: 501 });
       } else {
@@ -99,7 +106,11 @@ const install = ({ server }) => {
   server.get("/api/files/serve/:id", async (req, res) => {
     try {
       const file = await File.findById(req.params.id).select({ data: 1 }).exec();
-      return res.blob(file.data);
+      if (file) {
+        return res.blob(file.data);
+      } else {
+        return res.error.notFound();
+      }
     } catch (error) {
       return res.error.server(error);
     }
@@ -111,6 +122,9 @@ const install = ({ server }) => {
   server.get("/api/files/thumb/:id", async (req, res) => {
     try {
       const file = await File.findById(req.params.id).select({ data: 1 }).exec();
+      if (!file) {
+        return res.error.notFound();
+      }
       if (isImage(file.data)) {
         return res.blob(file.data);
       } else {
@@ -129,12 +143,36 @@ const install = ({ server }) => {
   });
 }
 
+/**
+ * Checks if the requesting user has the required permission. Also answers the request.
+ * @returns {boolean} true it the user has the permission, false otherwise(or on error).
+ */
+const checkPermission = async (req, res) => {
+  // Check permissions
+  try {
+    const user = await req.user.getUser();
+    if (!user.hasPermission(PERMISSION)) {
+      res && res.error.missingPermission(PERMISSION);
+      return false;
+    }
+  } catch (error) {
+    if (error === "not-logged-in") {
+      res && res.error.notLoggedIn();
+      return false;
+    }
+    res && res.error.server(error);
+    return false;
+  }
+  return true;
+}
 
 const handleAction = {
   /**
    * PERMISSIONS
    */
   async permissions(req, res, { path, source }) {
+    const user = await req.user.maybeGetUser();
+    const isFileManager = !!(user && user.hasPermission(PERMISSION));
     return res.sendData({
       data: {
         success: true,
@@ -145,16 +183,16 @@ const handleAction = {
           source: source,
           permissions: {
             allowFiles: true,
-            allowFileMove: true,
-            allowFileUpload: true,
-            allowFileUploadRemote: true,
-            allowFileRemove: true,
-            allowFileRename: true,
+            allowFileMove: isFileManager,
+            allowFileUpload: isFileManager,
+            allowFileUploadRemote: isFileManager,
+            allowFileRemove: isFileManager,
+            allowFileRename: isFileManager,
             allowFolders: true,
-            allowFolderMove: true,
-            allowFolderCreate: true,
-            allowFolderRemove: true,
-            allowFolderRename: true,
+            allowFolderMove: isFileManager,
+            allowFolderCreate: isFileManager,
+            allowFolderRemove: isFileManager,
+            allowFolderRename: isFileManager,
             allowImageResize: false,
             allowImageCrop: false,
           }
@@ -228,6 +266,9 @@ const handleAction = {
    * FILE REMOVE
    */
   async fileRemove(req, res, { path, source, name }) {
+    if (!await checkPermission(req, res)) {
+      return;
+    }
     const split = path.split("/").filter(p => p);
     await File.findByIdAndDelete(name).exec();
     deleteTempFolder(split);
@@ -245,6 +286,9 @@ const handleAction = {
    * FOLDER REMOVE
    */
   async folderRemove(req, res, { path, source }) {
+    if (!await checkPermission(req, res)) {
+      return;
+    }
     const split = path.split("/").filter(p => p);
     if (split.length === 0) {
       return res.sendData({
@@ -277,6 +321,9 @@ const handleAction = {
     });
   },
   async folderCreate(req, res, { path, source, name }) {
+    if (!await checkPermission(req, res)) {
+      return;
+    }
     const split = [...path.split("/").filter(p => p), name];
     createTempFolder(split);
     return res.sendData({

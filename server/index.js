@@ -58,7 +58,7 @@ const uploadDir = path.resolve("./.helios/tmp/upload");
 fs.mkdirSync(uploadDir, { recursive: true });
 
 server.use(formData.parse({
-  //autoClean: true,
+  autoClean: true,
   uploadDir: uploadDir
 }));
 server.use(formData.union());

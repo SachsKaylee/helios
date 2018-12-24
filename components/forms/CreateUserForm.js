@@ -73,7 +73,7 @@ export default injectIntl(class CreateUserForm extends Form {
         name: (<FormattedMessage id="permissions" />),
         type: TagList,
         allowCustomTags: false,
-        tags: ["author", "maintainer", "community-manager"]
+        tags: ["author", "maintainer", "community-manager", "files"]
       }
     ];
   }
