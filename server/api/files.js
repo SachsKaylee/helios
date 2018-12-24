@@ -95,13 +95,12 @@ const install = ({ server }) => {
    */
   server.post("/api/files/browser", (req, res) => {
     try {
-      const { action, path, source } = req.body;
-      const handler = handleAction[action];
-      console.log("/api/files/browser", { action, path, source, handler: handler !== undefined })
+      const handler = handleAction[req.body.action];
+      console.log("/api/files/browser", req.body)
       if (handler === undefined) {
-        return res.error.server({ action, path, source, handler: handler && handler.toString() });
+        return res.sendData({ error: req.body.action, errorCode: 501 });
       } else {
-        return handler(req, res, { action, path, source });
+        return handler(req, res, req.body);
       }
     } catch (error) {
       return res.error.server(error);
@@ -128,10 +127,10 @@ const install = ({ server }) => {
       } else {
         const { mime } = blobExtract(file.data);
         const fsMime = mime.replace("/", "-") + ".png";
-        console.log("looking for", fsMime);
         if (await fs.exists(path.resolve("./static/thumbs", fsMime))) {
           res.redirect("/static/thumbs/" + fsMime)
         } else {
+          console.log("Failed looking for mime thumbnail:", fsMime);
           res.redirect("/static/thumbs/default.png")
         }
       }
@@ -143,12 +142,16 @@ const install = ({ server }) => {
 
 
 const handleAction = {
+  /**
+   * PERMISSIONS
+   */
   async permissions(req, res, { action, path, source }) {
     return res.sendData({
       data: {
         success: true,
         time: new Date().toISOString(),
         data: {
+          messages: [],
           path: path,
           source: source,
           permissions: null
@@ -156,6 +159,9 @@ const handleAction = {
       }
     });
   },
+  /**
+   * FOLDERS
+   */
   async folders(req, res, { action, path, source }) {
     // Create a query that will find all files in subfolders.
     const split = path.split("/").filter(p => p);
@@ -180,16 +186,14 @@ const handleAction = {
               baseurl: "/api/files/serve/",
               folders: split.length ? ["..", ...dirs] : dirs
             }
-          },
-          /*code: 666,
-          path: "value-of-path",
-          name: "value-of-name",
-          source: "value-of-source",
-          permissions: null*/
+          }
         }
       }
     });
   },
+  /**
+   * FILES
+   */
   async files(req, res, { action, path, source }) {
     const split = path.split("/").filter(p => p);
     const files = await File.find({ path: split }).exec();
@@ -198,7 +202,7 @@ const handleAction = {
         success: true,
         time: new Date().toISOString(),
         data: {
-          //messages: [],
+          messages: [],
           sources: {
             [source]: {
               path: path,
@@ -212,17 +216,27 @@ const handleAction = {
                 isImage: isImage(file.data)
               }))
             }
-          },
-          /*code: 666,
-          path: path,
-          name: "filesvalue-of-name",
-          source: source,
-          permissions: null*/
+          }
         }
       }
     });
   },
-
+  /**
+   * FILE REMOVE
+   */
+  async fileRemove(req, res, { action, path, source, name }) {
+    const result = await File.findByIdAndDelete(name).exec();
+    console.log("fileRmeove", result);
+    return res.sendData({
+      data: {
+        success: true,
+        time: new Date().toISOString(),
+        data: {
+          messages: []
+        }
+      }
+    });
+  }
 }
 
 const isImage = base64 => base64.startsWith("data:image/");
