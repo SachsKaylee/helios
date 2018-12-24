@@ -145,7 +145,7 @@ const handleAction = {
   /**
    * PERMISSIONS
    */
-  async permissions(req, res, { action, path, source }) {
+  async permissions(req, res, { path, source }) {
     return res.sendData({
       data: {
         success: true,
@@ -154,7 +154,21 @@ const handleAction = {
           messages: [],
           path: path,
           source: source,
-          permissions: null
+          permissions: {
+            allowFiles: true,
+            allowFileMove: true,
+            allowFileUpload: true,
+            allowFileUploadRemote: true,
+            allowFileRemove: true,
+            allowFileRename: true,
+            allowFolders: true,
+            allowFolderMove: true,
+            allowFolderCreate: true,
+            allowFolderRemove: true,
+            allowFolderRename: true,
+            allowImageResize: false,
+            allowImageCrop: false,
+          }
         }
       }
     });
@@ -162,7 +176,7 @@ const handleAction = {
   /**
    * FOLDERS
    */
-  async folders(req, res, { action, path, source }) {
+  async folders(req, res, { path, source }) {
     // Create a query that will find all files in subfolders.
     const split = path.split("/").filter(p => p);
     const query = split.reduce((acc, ele, i) => ({ ...acc, ["path." + i]: ele }), {});
@@ -194,7 +208,7 @@ const handleAction = {
   /**
    * FILES
    */
-  async files(req, res, { action, path, source }) {
+  async files(req, res, { path, source }) {
     const split = path.split("/").filter(p => p);
     const files = await File.find({ path: split }).exec();
     return res.sendData({
@@ -224,9 +238,8 @@ const handleAction = {
   /**
    * FILE REMOVE
    */
-  async fileRemove(req, res, { action, path, source, name }) {
-    const result = await File.findByIdAndDelete(name).exec();
-    console.log("fileRmeove", result);
+  async fileRemove(req, res, { path, source, name }) {
+    await File.findByIdAndDelete(name).exec();
     return res.sendData({
       data: {
         success: true,
@@ -236,7 +249,41 @@ const handleAction = {
         }
       }
     });
-  }
+  },
+  /**
+   * FOLDER REMOVE
+   */
+  async folderRemove(req, res, { path, source }) {
+    const split = path.split("/").filter(p => p);
+    if (split.length === 0) {
+      return res.sendData({
+        error: "root",
+        errorCode: 403
+      });
+    }
+    // What was removed? & Get the folder old files will be moved to
+    const newPath = split.slice(0, -1);
+    const deleted = split[split.length - 1];
+    // Find affected files
+    const query = split.reduce((acc, ele, i) => ({ ...acc, ["path." + i]: ele }), {});
+    const files = await File.find(query).exec();
+    // Move the files
+    await Promise.all(files.map(async file => {
+      file.path = newPath;
+      file.name = deleted + " - " + file.name;
+      await file.save();
+    }));
+    // Done
+    return res.sendData({
+      data: {
+        success: true,
+        time: new Date().toISOString(),
+        data: {
+          messages: []
+        }
+      }
+    });
+  },
 }
 
 const isImage = base64 => base64.startsWith("data:image/");
