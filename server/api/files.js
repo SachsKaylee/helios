@@ -5,24 +5,6 @@ const path = require("path");
 const niceUri = require("../../utils/nice-uri");
 const blobExtract = require("../../utils/blob-extract");
 
-/*
-const Subscription = mongoose.model("subscription", new mongoose.Schema({
-  _id: String,
-  device: VersionDetails,
-  os: VersionDetails,
-  browser: VersionDetails,
-  since: Date,
-  // https://www.npmjs.com/package/web-push#usage
-  subscription: {
-    endpoint: String,
-    keys: {
-      auth: String,
-      p256dh: String
-    }
-  }
-}));
-*/
-
 const File = mongoose.model("file", new mongoose.Schema({
   _id: String,
   name: String,
@@ -30,8 +12,8 @@ const File = mongoose.model("file", new mongoose.Schema({
   date: Date,
   path: [String]
 }));
-/*
-for (let i = 0; i < 100; i++) {
+
+/*for (let i = 0; i < 100; i++) {
   const name = lorem({ units: "words", count: random.integer(2, 4) });
   const id = niceUri(name);
   const date = new Date(random.integer(2000, 2018), random.integer(1, 12), random.integer(1, 28), random.integer(1, 23), random.integer(1, 59), random.integer(0, 59), 0);
@@ -44,8 +26,8 @@ for (let i = 0; i < 100; i++) {
     data: theFile.data
   });
   file.save();
-}
-*/
+}*/
+
 const install = ({ server }) => {
   // API specific middlemare
   server.use((req, res, next) => {
@@ -55,6 +37,9 @@ const install = ({ server }) => {
     next();
   });
 
+  /**
+   * Uploads the given file.
+   */
   server.post("/api/files/upload", async (req, res) => {
     try {
       const { path, source, files } = req.body;
@@ -119,6 +104,9 @@ const install = ({ server }) => {
     }
   });
 
+  /**
+   * Serves the thumbnail of the given file.
+   */
   server.get("/api/files/thumb/:id", async (req, res) => {
     try {
       const file = await File.findById(req.params.id).select({ data: 1 }).exec();
@@ -198,7 +186,7 @@ const handleAction = {
             [source]: {
               path: path,
               baseurl: "/api/files/serve/",
-              folders: split.length ? ["..", ...dirs] : dirs
+              folders: split.length ? ["..", ...dirs, ...readTempFolders(split)] : [...dirs, ...readTempFolders(split)]
             }
           }
         }
@@ -239,7 +227,9 @@ const handleAction = {
    * FILE REMOVE
    */
   async fileRemove(req, res, { path, source, name }) {
+    const split = path.split("/").filter(p => p);
     await File.findByIdAndDelete(name).exec();
+    deleteTempFolder(split);
     return res.sendData({
       data: {
         success: true,
@@ -273,6 +263,7 @@ const handleAction = {
       file.name = deleted + " - " + file.name;
       await file.save();
     }));
+    deleteTempFolder(split);
     // Done
     return res.sendData({
       data: {
@@ -284,8 +275,82 @@ const handleAction = {
       }
     });
   },
+  async folderCreate(req, res, { path, source, name }) {
+    const split = [...path.split("/").filter(p => p), name];
+    createTempFolder(split);
+    return res.sendData({
+      data: {
+        success: true,
+        time: new Date().toISOString(),
+        data: {
+          messages: []
+        }
+      }
+    });
+  }
 }
 
-const isImage = base64 => base64.startsWith("data:image/");
+/**
+ * The current temporary folders. This value mutates!
+ */
+const tempFolders = {};
+
+/**
+ * Gets all temporary folders at the given path.
+ * @param {string[]} path The path to look for.
+ */
+const readTempFolders = path => {
+  let folder = tempFolders;
+  for (let i = 0; i < path.length; i++) {
+    const element = path[i];
+    folder = folder[element];
+    if (!folder) {
+      break;
+    }
+  }
+  return folder ? Object.keys(folder) : [];
+}
+
+/**
+ * Creates a temporary folder.
+ * @param {string[]} path The path to create
+ */
+const createTempFolder = path => {
+  let folder = tempFolders;
+  for (let i = 0; i < path.length; i++) {
+    const element = path[i];
+    let thisFolder = folder[element];
+    if (!thisFolder) {
+      folder[element] = thisFolder = {};
+    }
+    folder = thisFolder;
+  }
+  return tempFolders;
+}
+
+/**
+ * Deletes a temporary folder.
+ * @param {string[]} path The path to delete
+ */
+const deleteTempFolder = path => {
+  let folder = tempFolders;
+  for (let i = 0; i < path.length - 1; i++) {
+    const element = path[i];
+    folder = folder[element];
+    if (!folder) {
+      break;
+    }
+  }
+  if (folder) {
+    delete folder[path[path.length - 1]];
+  }
+  return tempFolders;
+}
+
+/**
+ * Checks if the given blob is an image blob.
+ * @param {string} blob The blob.
+ */
+const isImage = blob => blob.startsWith("data:image/");
 
 module.exports = { install }
