@@ -172,6 +172,7 @@ const handleAction = {
    */
   async permissions(req, res, { path, source }) {
     const user = await req.user.maybeGetUser();
+    const isUser = !!user;
     const isFileManager = !!(user && user.hasPermission(PERMISSION));
     return res.sendData({
       data: {
@@ -182,13 +183,13 @@ const handleAction = {
           path: path,
           source: source,
           permissions: {
-            allowFiles: true,
+            allowFiles: isUser,
             allowFileMove: isFileManager,
             allowFileUpload: isFileManager,
             allowFileUploadRemote: isFileManager,
             allowFileRemove: isFileManager,
             allowFileRename: isFileManager,
-            allowFolders: true,
+            allowFolders: isUser,
             allowFolderMove: isFileManager,
             allowFolderCreate: isFileManager,
             allowFolderRemove: isFileManager,
@@ -204,6 +205,9 @@ const handleAction = {
    * FOLDERS
    */
   async folders(req, res, { path, source }) {
+    if (!await req.user.maybeGetUser()) {
+      return res.error.notLoggedIn();
+    }
     // Create a query that will find all files in subfolders.
     const split = path.split("/").filter(p => p);
     const query = split.reduce((acc, ele, i) => ({ ...acc, ["path." + i]: ele }), {});
@@ -236,6 +240,9 @@ const handleAction = {
    * FILES
    */
   async files(req, res, { path, source }) {
+    if (!await req.user.maybeGetUser()) {
+      return res.error.notLoggedIn();
+    }
     const split = path.split("/").filter(p => p);
     const files = await File.find({ path: split }).exec();
     return res.sendData({
