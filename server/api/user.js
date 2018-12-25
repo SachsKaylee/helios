@@ -12,14 +12,16 @@ const { mongoError } = require("../error-transformer");
 // All permissions avilable.
 const allPermissions = {
   // The admin can do everything.
-  admin: "admin",
+  "admin": "admin",
   // The author can publish, delete and edit posts.
-  author: "author",
+  "author": "author",
   // The maintainer can manage pages. 
   // TODO: Figure out a better name
-  maintainer: "maintainer",
+  "maintainer": "maintainer",
   // This person can manage community members.
-  communityCanager: "community-manager"
+  "community-manager": "community-manager",
+  // Manage files
+  "files": "files"
 };
 
 // ===============================================
