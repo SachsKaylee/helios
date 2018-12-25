@@ -5,9 +5,7 @@ import { withDynamic } from "./system/Dynamic";
 export default withDynamic({ Jodit: () => import("jodit") }, class EditorRichText extends React.Component {
   constructor(p) {
     super(p);
-    this.state = {
-      value: p.value || ""
-    };
+    this.acceptNewValue = true;
     this.onChange = this.onChange.bind(this);
     this.dom = React.createRef();
     this.jodit = null;
@@ -37,6 +35,14 @@ export default withDynamic({ Jodit: () => import("jodit") }, class EditorRichTex
       sourceEditorNativeOptions: {
         theme: "ace/theme/chrome"
       },
+      filebrowser: {
+        ajax: {
+          url: "/api/files/browser"
+        }
+      },
+      uploader: {
+        url: "/api/files/upload"
+      },
       ...(this.props.config || {})
     });
     this.jodit.value = this.props.value;
@@ -51,19 +57,17 @@ export default withDynamic({ Jodit: () => import("jodit") }, class EditorRichTex
   }
 
   UNSAFE_componentWillReceiveProps({ value }) {
-    if (value !== this.state.value) {
-      this.setState({ value });
+    if (this.acceptNewValue && this.jodit && value !== this.jodit.value) {
+      console.log(this.jodit)
       this.jodit.value = value;
     }
   }
 
-  onChange(value) {
-    if (this.state.value !== value) {
-      this.setState({ value }, () => {
-        if (this.props.onChange) {
-          this.props.onChange(value);
-        }
-      });
+  async onChange(value) {
+    if (this.acceptNewValue) {
+      this.acceptNewValue = false;
+      await this.props.onChange(value);
+      this.acceptNewValue = true;
     }
   }
 

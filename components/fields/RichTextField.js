@@ -2,20 +2,10 @@ import * as React from "react";
 import ValidationResult from "@react-formilicious/core/validators/ValidationResult";
 import EditorRichText from "../EditorRichText";
 
-export default class RichTextField extends React.Component {
+export default class RichTextField extends React.PureComponent {
   static getDefaultValue() {
     return "";
   }
-
-  /*shouldComponentUpdate(props) {
-    if (this.props.system.waiting !== props.system.waiting) {
-      return true;
-    }
-    if (!deepEqual(this.props.config, props.config)) {
-      return true;
-    }
-    return false;
-  }*/
 
   render() {
     const { name, onChange, config, field, system: { waiting } } = this.props;

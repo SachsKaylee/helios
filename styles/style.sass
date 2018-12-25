@@ -4,6 +4,12 @@
 
 $card-shadow: 0 2px 3px rgba($black, 0.1), 0 0 2px 1px rgba($black, 0.1) !default
 
+// Prevent images with float: from overflowing posts.
+.card:after 
+  content: ""
+  clear: both
+  display: block
+
 // General format helpers
 .margin-2 
   margin: 2px
