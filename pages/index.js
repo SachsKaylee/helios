@@ -5,6 +5,7 @@ import config, { locale } from "../config/client";
 import Head from "next/head";
 import Pagination from "../components/layout/Pagination";
 import crossuser from "../utils/crossuser";
+import EditorRichText from "../components/EditorRichText";
 
 export default class IndexPage extends React.PureComponent {
   static async getInitialProps({ query, req }) {

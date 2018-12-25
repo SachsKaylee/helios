@@ -1,15 +1,14 @@
 import * as React from "react";
 import JoditStyle from 'jodit/build/jodit.min.css';
-import Dynamic from "./system/Dynamic";
+import { withDynamic } from "./system/Dynamic";
 
-export default class EditorRichText extends React.Component {
+export default withDynamic({ Jodit: () => import("jodit") }, class EditorRichText extends React.Component {
   constructor(p) {
     super(p);
-    this.state = {
-      value: p.value || ""
-    };
+    this.acceptNewValue = true;
     this.onChange = this.onChange.bind(this);
-    this.jodit = React.createRef();
+    this.dom = React.createRef();
+    this.jodit = null;
   }
 
   shouldComponentUpdate() {
@@ -24,42 +23,55 @@ export default class EditorRichText extends React.Component {
       style.innerHTML = JoditStyle;
       document.head.appendChild(style);
     }
+
+    this.jodit = new this.props.Jodit(this.dom.current, {
+      sourceEditorCDNUrlsJS: [
+        '/node_modules/ace-builds/src-min/ace.js'
+      ],
+      beautifyHTMLCDNUrlsJS: [
+        '/node_modules/js-beautify/js/lib/beautify.js',
+        '/node_modules/js-beautify/js/lib/beautify-html.js'
+      ],
+      sourceEditorNativeOptions: {
+        theme: "ace/theme/chrome"
+      },
+      filebrowser: {
+        ajax: {
+          url: "/api/files/browser"
+        }
+      },
+      uploader: {
+        url: "/api/files/upload"
+      },
+      ...(this.props.config || {})
+    });
+    this.jodit.value = this.props.value;
+    this.jodit.events.on("change", this.onChange);
   }
 
-  UNSAFE_componentWillReceiveProps({ value }) {
-    if (this.jodit.current && value !== this.state.value) {
-      this.setState({ value });
-      this.jodit.current.editor.value = value;
+  componentWillUnmount() {
+    if (this.jodit) {
+      this.jodit.destruct();
+      this.jodit = null;
     }
   }
 
-  onChange(value) {
-    this.setState({ value });
-    if (this.props.onChange) {
-      this.props.onChange(value);
+  UNSAFE_componentWillReceiveProps({ value }) {
+    if (this.acceptNewValue && this.jodit && value !== this.jodit.value) {
+      console.log(this.jodit)
+      this.jodit.value = value;
+    }
+  }
+
+  async onChange(value) {
+    if (this.acceptNewValue) {
+      this.acceptNewValue = false;
+      await this.props.onChange(value);
+      this.acceptNewValue = true;
     }
   }
 
   render() {
-    return (<Dynamic dynamic={{
-      loader: () => import("jodit").then(() => import("jodit-react")),
-      render: Jodit => (<Jodit
-        ref={this.jodit}
-        {...this.props}
-        onChange={this.onChange}
-        config={{
-          sourceEditorCDNUrlsJS: [
-            '/node_modules/ace-builds/src-min/ace.js'
-          ],
-          beautifyHTMLCDNUrlsJS: [
-            '/node_modules/js-beautify/js/lib/beautify.js',
-            '/node_modules/js-beautify/js/lib/beautify-html.js'
-          ],
-          sourceEditorNativeOptions: {
-            theme: "ace/theme/chrome"
-          },
-          ...(this.props.config || {})
-        }} />)
-    }} />);
+    return (<textarea ref={this.dom} ></textarea>);
   }
-}
+});
