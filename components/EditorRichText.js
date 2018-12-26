@@ -5,13 +5,15 @@ import { withDynamic } from "./system/Dynamic";
 export default withDynamic({ Jodit: () => import("jodit") }, class EditorRichText extends React.Component {
   constructor(p) {
     super(p);
-    this.acceptNewValue = true;
     this.onChange = this.onChange.bind(this);
     this.dom = React.createRef();
     this.jodit = null;
   }
 
-  shouldComponentUpdate() {
+  shouldComponentUpdate(p) {
+    if(p.value !== this.props.value) {
+      return true;
+    }
     return false;
   }
 
@@ -56,19 +58,21 @@ export default withDynamic({ Jodit: () => import("jodit") }, class EditorRichTex
     }
   }
 
-  UNSAFE_componentWillReceiveProps({ value }) {
+  /*UNSAFE_componentWillReceiveProps({ value }) {
     if (this.acceptNewValue && this.jodit && value !== this.jodit.value) {
       console.log(this.jodit)
       this.jodit.value = value;
     }
+  }*/
+
+  componentDidUpdate(prevProps) {
+    if (this.props.value !== this.jodit.value) {
+      this.jodit.value = this.props.value;
+    }
   }
 
-  async onChange(value) {
-    if (this.acceptNewValue) {
-      this.acceptNewValue = false;
-      await this.props.onChange(value);
-      this.acceptNewValue = true;
-    }
+  onChange(value) {
+    this.props.onChange(value);
   }
 
   render() {
