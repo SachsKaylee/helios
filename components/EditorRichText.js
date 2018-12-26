@@ -1,8 +1,10 @@
 import * as React from "react";
-import JoditStyle from 'jodit/build/jodit.min.css';
 import { withDynamic } from "./system/Dynamic";
 
-export default withDynamic({ Jodit: () => import("jodit") }, class EditorRichText extends React.Component {
+export default withDynamic({ 
+  Jodit: () => import("jodit"), 
+  style: () => import("jodit/build/jodit.min.css") 
+}, class EditorRichText extends React.Component {
   constructor(p) {
     super(p);
     this.onChange = this.onChange.bind(this);
@@ -22,7 +24,7 @@ export default withDynamic({ Jodit: () => import("jodit") }, class EditorRichTex
     if (!document.getElementById("jodit-style")) {
       const style = document.createElement("style");
       style.id = "jodit-style";
-      style.innerHTML = JoditStyle;
+      style.innerHTML = this.props.style;
       document.head.appendChild(style);
     }
 
