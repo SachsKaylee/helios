@@ -119,7 +119,7 @@ const install = ({ server }) => {
 
   server.get("/api/page-count", (req, res) =>
     Page
-      .count({})
+      .estimatedDocumentCount()
       .exec()
       .then(count => res.sendData({ data: { count } }))
       .catch(error => res.error.server(error)));

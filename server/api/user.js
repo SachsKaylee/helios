@@ -132,7 +132,7 @@ const install = ({ server }) => {
       }).catch(error => res.error.server(error)));
 
   server.get("/api/user-count", (req, res) =>
-    User.count({}).exec()
+    User.countDocuments().exec()
       .then(count => res.sendData({ data: { count } }))
       .catch(error => res.error.server(error)));
 

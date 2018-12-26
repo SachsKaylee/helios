@@ -123,7 +123,7 @@ const install = ({ server }) => {
 
   server.get("/api/post-count", (req, res) =>
     Post
-      .count({})
+      .estimatedDocumentCount()
       .exec()
       .then(count => res.sendData({ data: { count } }))
       .catch(error => res.error.server(error)));
@@ -157,7 +157,7 @@ const install = ({ server }) => {
 
   server.get("/api/tag/count/:tag", (req, res) =>
     Post
-      .count({ tags: req.params.tag })
+      .countDocuments({ tags: req.params.tag })
       .exec()
       .then(count => res.sendData({ data: { count } }))
       .catch(error => res.error.server(error)));
