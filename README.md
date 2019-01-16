@@ -4,7 +4,7 @@ A minimalistic CMS using Node.js and React.
 
 We use Bulma as CSS Framework, next.js for Server Side Rendering and Jodit as Content Editor.
 
-Live Demo: [https://helios.patrick-sachs.de/](https://helios.patrick-sachs.de/)
+Live Demo: [https://patrick-sachs.de/](https://patrick-sachs.de/)
 
 ## Why?
 
