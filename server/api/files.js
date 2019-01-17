@@ -69,7 +69,7 @@ const install = ({ server }) => {
       return res.sendData({
         data: {
           success: true,
-          time: new Date().toISOString(),
+          time: new Date().getTime(),
           data: {
             messages: [],
             files: data.map(file => file._id),
@@ -177,7 +177,7 @@ const handleAction = {
     return res.sendData({
       data: {
         success: true,
-        time: new Date().toISOString(),
+        time: new Date().getTime(),
         data: {
           messages: [],
           path: path,
@@ -222,7 +222,7 @@ const handleAction = {
     return res.sendData({
       data: {
         success: true,
-        time: new Date().toISOString(),
+        time: new Date().getTime(),
         data: {
           messages: [],
           sources: {
@@ -248,7 +248,7 @@ const handleAction = {
     return res.sendData({
       data: {
         success: true,
-        time: new Date().toISOString(),
+        time: new Date().getTime(),
         data: {
           messages: [],
           sources: {
@@ -260,7 +260,7 @@ const handleAction = {
                 fileIsAbsolute: true,
                 thumb: "/api/files/thumb/" + file._id,
                 thumbIsAbsolute: true,
-                changed: file.date.toISOString(),
+                changed: file.date.getTime(),
                 size: file.data.length,
                 isImage: isImage(file.data)
               }))
@@ -283,7 +283,7 @@ const handleAction = {
     return res.sendData({
       data: {
         success: true,
-        time: new Date().toISOString(),
+        time: new Date().getTime(),
         data: {
           messages: []
         }
@@ -321,7 +321,7 @@ const handleAction = {
     return res.sendData({
       data: {
         success: true,
-        time: new Date().toISOString(),
+        time: new Date().getTime(),
         data: {
           messages: []
         }
@@ -337,7 +337,7 @@ const handleAction = {
     return res.sendData({
       data: {
         success: true,
-        time: new Date().toISOString(),
+        time: new Date().getTime(),
         data: {
           messages: []
         }
