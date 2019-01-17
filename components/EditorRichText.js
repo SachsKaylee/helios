@@ -2,7 +2,7 @@ import * as React from "react";
 import { withDynamic } from "./system/Dynamic";
 
 export default withDynamic({ 
-  Jodit: () => import("jodit"), 
+  jodit: () => import("jodit"), 
   style: () => import("jodit/build/jodit.min.css") 
 }, class EditorRichText extends React.Component {
   constructor(p) {
@@ -28,7 +28,7 @@ export default withDynamic({
       document.head.appendChild(style);
     }
 
-    this.jodit = new this.props.Jodit(this.dom.current, {
+    this.jodit = new this.props.jodit.Jodit(this.dom.current, {
       sourceEditorCDNUrlsJS: [
         '/node_modules/ace-builds/src-min/ace.js'
       ],
