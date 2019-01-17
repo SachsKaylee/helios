@@ -60,5 +60,9 @@
 
   // After how many milliseconds a user has spent on your site will they be prompted to add the
   // site to their homescreen?
-  promptForAddToHomeScreenAfter: 10000
+  promptForAddToHomeScreenAfter: 10000,
+
+  // Add the "powered by Helios" branding. I'd really appreaciate if you'd leave it in. It 
+  // does not make you website look less professional.
+  branding: true
 }

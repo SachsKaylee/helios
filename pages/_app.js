@@ -137,6 +137,12 @@ export default class _App extends App {
             <div className="section">
               <Component {...pageProps} setPageTitle={this.setPageTitle} />
             </div>
+            <footer className="footer">
+              <div className="content has-text-centered">
+                <p><a href={config.domains[0]}><strong>{config.title}</strong></a> - {config.description}</p>
+                {config.branding ? (<p className="is-size-7"><a href="https://github.com/PatrickSachs/helios"><FormattedMessage id="branding" /></a></p>) : null}
+              </div>
+            </footer>
             <div id="overlay">
               <NotificationStore>
                 {({ notifications, close }) => (<NotificationRenderer notifications={notifications} onClose={close} />)}

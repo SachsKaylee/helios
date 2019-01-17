@@ -4,6 +4,7 @@ module.exports = {
     name: "English",
     intl: require("react-intl/locale-data/en")
   },
+  branding: "Proudly powered by Helios.",
   loading: "Loading…",
   error: "Error",
   errorMessages: {
