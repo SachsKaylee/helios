@@ -256,7 +256,8 @@ const handleAction = {
               path: path,
               baseurl: "/api/files/serve/",
               files: files.map(file => ({
-                file: file._id,
+                file: "/api/files/serve/" + file._id,
+                fileIsAbsolute: true,
                 thumb: "/api/files/thumb/" + file._id,
                 thumbIsAbsolute: true,
                 changed: file.date.toISOString(),
