@@ -7,10 +7,10 @@ class CardEditor extends React.PureComponent {
     return (<Columns
       size={this.props.size}
       sidebar={(<Card style={{ height: "100%" }}>
-        <div class="user-content" dangerouslySetInnerHTML={{ __html: this.props.content && this.props.content[1] }} />
+        <div className="user-content" dangerouslySetInnerHTML={{ __html: this.props.content && this.props.content[1] }} />
       </Card>)}>
       <Card style={{ height: "100%" }}>
-        <div class="user-content" dangerouslySetInnerHTML={{ __html: this.props.content && this.props.content[0] }} />
+        <div className="user-content" dangerouslySetInnerHTML={{ __html: this.props.content && this.props.content[0] }} />
       </Card>
     </Columns>);
   }
