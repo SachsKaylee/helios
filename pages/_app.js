@@ -139,7 +139,7 @@ export default class _App extends App {
             </div>
             <footer className="footer">
               <div className="content has-text-centered">
-                <p><a href={config.domains[0]}><strong>{config.title}</strong></a> - {config.description}</p>
+                <p><a href={`https://${config.domains[0]}:${config.port.https}`}><strong>{config.title}</strong></a> - {config.description}</p>
                 {config.branding ? (<p className="is-size-7"><a href="https://github.com/PatrickSachs/helios"><FormattedMessage id="branding" /></a></p>) : null}
               </div>
             </footer>

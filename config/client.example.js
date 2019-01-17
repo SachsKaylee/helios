@@ -62,7 +62,7 @@
   // site to their homescreen?
   promptForAddToHomeScreenAfter: 10000,
 
-  // Add the "powered by Helios" branding. I'd really appreaciate if you'd leave it in. It 
-  // does not make you website look less professional.
+  // Adds the "powered by Helios" branding. I'd really appreaciate if you'd leave it in. It 
+  // does not make your website look less professional.
   branding: true
 }
