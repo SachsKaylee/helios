@@ -21,7 +21,7 @@ const Post = ({ _id, author, date, title, content, tags, notes, admin }) => (
             <p className="is-size-7 has-text-grey">{notes}</p>
           </div>
         </Media>)}
-        <div dangerouslySetInnerHTML={{ __html: content }} />
+        <div class="user-content" dangerouslySetInnerHTML={{ __html: content }} />
         {tags && tags.length ? (<div className="tags">{tags.map(tag => (<span className="tag" key={tag}>
           <A href={`/tag/${encodeURIComponent(tag)}`}>{tag}</A>
         </span>))}</div>) : null}
