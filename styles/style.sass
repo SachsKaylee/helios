@@ -86,11 +86,6 @@ $card-shadow: 0 2px 3px rgba($black, 0.1), 0 0 2px 1px rgba($black, 0.1) !defaul
   bottom: 0 !important
   border-radius: 4px !important
 
-// Adds a border to images added by the user.
-.user-content img
-  margin: 5px
-  box-shadow: $card-shadow
-
 @keyframes pop-in
   0%
     opacity: 0
@@ -100,6 +95,23 @@ $card-shadow: 0 2px 3px rgba($black, 0.1), 0 0 2px 1px rgba($black, 0.1) !defaul
     transform: scale(1)
 .pop-in
   animation: pop-in 0.2s
+
+// Adds a border to images added by the user.
+.user-content img
+  margin: 5px
+  box-shadow: $card-shadow
+// Prevent long text from overflowing
+// https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/
+.user-content p
+  overflow-wrap: break-word
+  word-wrap: break-word
+  -ms-word-break: break-all
+  word-break: break-all
+  word-break: break-word
+  -ms-hyphens: auto
+  -moz-hyphens: auto
+  -webkit-hyphens: auto
+  hyphens: auto
 
 // 3. Import the rest of Bulma;
 @import 'bulma/bulma'
