@@ -11,6 +11,7 @@ import config from "../../config/client";
 import required from "@react-formilicious/core/validators/required";
 import combined from "@react-formilicious/core/validators/combined";
 import pwned from "@react-formilicious/validator-pwned";
+import { permissions } from "../../common/permissions";
 
 export default injectIntl(class CreateUserForm extends Form {
   render() {
@@ -73,7 +74,7 @@ export default injectIntl(class CreateUserForm extends Form {
         name: (<FormattedMessage id="permissions" />),
         type: TagList,
         allowCustomTags: false,
-        tags: ["author", "maintainer", "community-manager", "files"]
+        tags: Object.keys(permissions)
       }
     ];
   }

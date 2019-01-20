@@ -11,7 +11,7 @@ import CakeIcon from "mdi-react/CakeIcon";
 import LogInForm from "../../components/forms/LogInForm";
 import A from "../../components/system/A";
 import EditProfileForm from "../../components/forms/EditProfileForm";
-import { Router } from "../../routes";
+import { Router } from "../../common/routes";
 
 export default withStores(NotificationStore, injectIntl(class Account extends React.Component {
   componentDidMount() {

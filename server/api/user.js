@@ -8,21 +8,7 @@ const escapeRegExp = require("../../utils/escapeRegExp");
 const mongoose = require('mongoose');
 const { error: DbError } = require("../db");
 const { mongoError } = require("../error-transformer");
-
-// All permissions avilable.
-const allPermissions = {
-  // The admin can do everything.
-  "admin": "admin",
-  // The author can publish, delete and edit posts.
-  "author": "author",
-  // The maintainer can manage pages. 
-  // TODO: Figure out a better name
-  "maintainer": "maintainer",
-  // This person can manage community members.
-  "community-manager": "community-manager",
-  // Manage files
-  "files": "files"
-};
+const { permissions, areValidPermissions } = require("../../common/permissions");
 
 // ===============================================
 // === API FUNCTIONS
@@ -38,14 +24,14 @@ const UserSchema = new mongoose.Schema({
 
 /**
  * Checks if the user has the given permission.
- * @param permission The permission to check for.
- * @param impliedByAdmin Is the permission automatically granted by being admin? (true by default)
+ * @param {string} permission The permission to check for.
+ * @param {boolean} impliedByAdmin Is the permission automatically granted by being admin? (true by default)
  */
 UserSchema.methods.hasPermission = function (permission, impliedByAdmin = true) {
   if (this.permissions.includes(permission)) {
     return true;
   }
-  if (impliedByAdmin && this.permissions.includes(allPermissions.admin)) {
+  if (impliedByAdmin && this.permissions.includes(permissions.admin)) {
     return true;
   }
   return false;
@@ -90,46 +76,55 @@ const install = ({ server }) => {
   server.post("/api/user", (req, res) =>
     req.user.getUser()
       .then(session => {
-        if (!session.hasPermission("admin")) {
-          return res.error.missingPermission("admin");
+        // Only the admin can create new users.
+        if (!session.hasPermission(permissions.admin)) {
+          return res.error.missingPermission(permissions.admin);
         }
-        const { password, id, bio, avatar } = req.body;
+        // Check if the given permissions are valid & that the created user is not an admin.
+        const newUser = req.body;
+        if (!areValidPermissions(newUser.permissions, false)) {
+          return res.error.invalidRequest();
+        }
+        // Check if we have a password.
+        if (!newUser.password) {
+          return res.error.invalidRequest();
+        }
+        // Create the user.
         const user = new User({
-          _id: id, // TODO: Permissions
-          password: encrypt(password),
-          bio, avatar
+          _id: newUser.id,
+          password: encrypt(newUser.password),
+          permissions: newUser.permissions,
+          bio: newUser.bio,
+          avatar: newUser.avatar
         });
-        user.isNew = true;
-        // TODO: Validate
-        user.save()
-          .then(user => res.sendUser(user))
-          .catch(error => res.error.server(error));
+        /*user.isNew = true;*/
+        return user.save().then(user => res.sendUser(user));
       })
       .catch(error => res.sendData({ error })));
 
   server.put("/api/user/:id", (req, res) =>
     Promise
       .all([req.user.getUser(), User.findOne({ _id: new RegExp("^" + escapeRegExp(req.params.id) + "$", "i") })])
-      .then(([session, oldUser]) => {
-        if (!session.hasPermission("admin")) {
-          return res.error.missingPermission("admin");
+      .then(([session, user]) => {
+        // Only the admin may update users.
+        // Users update themselves through their session handler.
+        if (!session.hasPermission(permissions.admin)) {
+          return res.error.missingPermission(permissions.admin);
         }
-        const { password, bio, avatar, permissions } = req.body;
-        const user = new User({
-          _id: req.params.id,
-          password: password ? encrypt(password) : oldUser.password,
-          permissions: permissions.reduce(
-            (a, p) => allPermissions[p] && !a.includes(p) && p !== "admin" ? [...a, p] : a,
-            oldUser.permissions.includes("admin") ? ["admin"] : []
-          ),
-          bio, avatar
-        });
-        user.isNew = false;
-        // TODO: Validate
-        user.save()
-          .then(user => res.sendUser(user))
-          .catch(error => res.error.server(error));
-      }).catch(error => res.error.server(error)));
+        // Check if the given permissions are valid. e.g. there than only be one admin.
+        const newUser = req.body;
+        const wasAdmin = user.hasPermission(permissions.admin);
+        if (!areValidPermissions(newUser.permissions, wasAdmin)) {
+          return res.error.invalidRequest();
+        }
+        // Update the user.
+        user.password = newUser.password ? encrypt(newUser.password) : user.password;
+        user.permissions = newUser.permissions;
+        user.bio = newUser.bio;
+        user.avatar = newUser.avatar;
+        return user.save().then(user => res.sendUser(user));
+      })
+      .catch(error => res.error.server(error)));
 
   server.get("/api/user-count", (req, res) =>
     User.countDocuments().exec()
@@ -180,15 +175,18 @@ const install = ({ server }) => {
   server.put("/api/session", (req, res) =>
     req.user.getUser()
       .then(user => {
-        const { password } = req.body;
-        if (user.password !== encrypt(password)) {
+        // Check if the user confirmed the password
+        const newUser = req.body;
+        if (newUser.password !== encrypt(password)) {
           return res.error.authorizationFailure();
         }
-        const { passwordNew, avatar, bio } = req.body;
-        const newModel = createUpdatedModel(user, { password: passwordNew, avatar, bio });
-        newModel.save()
-          .then(user => res.sendUser(user))
-          .catch(error => res.error.server(error));
+        // Update the user.
+        if (newUser.passwordNew) {
+          user.password = encrypt(newUser.passwordNew)
+        }
+        user.avatar = newUser.avatar;
+        user.bio = newUser.bio;
+        return user.save().then(user => res.sendUser(user))
       })
       .catch(error => {
         if (error === "not-logged-in") {
@@ -228,7 +226,7 @@ const createFactoryContent = () => {
       bio: "",
       avatar: "",
       password: encrypt(password),
-      permissions: ["admin"]
+      permissions: [permissions.admin]
     });
     user.isNew = true;
     user.save((error, data) => {
@@ -239,24 +237,6 @@ const createFactoryContent = () => {
       }
     });
   }
-}
-
-const createUpdatedModel = (user, { password, avatar, permissions, bio }) => {
-  const validPassword = password => password && ("string" === typeof password);
-  // TODO: make sure the avatar is of the right image format. We don't want users to upload malware!
-  const validAvatar = avatar => avatar && ("string" === typeof avatar) && avatar.length <= 200 * 1024;
-  const validPermissions = permissions => permissions && Array.isArray(permissions) && all(permissions, p => allPermissions[p]);
-  const validBio = () => true;
-
-  const newUser = new User({
-    _id: user._id,
-    permissions: validPermissions(permissions) ? permissions : user.permissions,
-    password: validPassword(password) ? encrypt(password) : user.password,
-    bio: validBio(bio) ? bio : user.bio,
-    avatar: validAvatar(avatar) ? avatar : user.avatar
-  });
-  newUser.isNew = false;
-  return newUser;
 }
 
 // Misc operations

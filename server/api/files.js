@@ -5,11 +5,12 @@ const path = require("path");
 const niceUri = require("../../utils/nice-uri");
 const unqiue = require("../../utils/unqiue");
 const blobExtract = require("../../utils/blob-extract");
+const { permissions } = require("../../common/permissions");
 
 /**
  * This is the permission required to upload/delete/etc. files.
  */
-const PERMISSION = "files";
+const PERMISSION = permissions.file;
 
 const File = mongoose.model("file", new mongoose.Schema({
   _id: String,

@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const encrypt = require('../../utils/encrypt');
 const niceUri = require('../../utils/nice-uri');
 const useragent = require('useragent');
+const { permissions } = require("../../common/permissions");
 
 const VersionDetails = {
   family: String,
@@ -57,7 +58,6 @@ const sendPush = async (payload) => {
     throw error;
   })));
   const oldIds = res.filter(res => res.statusCode === 410).map(res => res.subscription._id);
-  console.log("Old ids are", oldIds);
   if (oldIds.length) {
     await Subscription.deleteMany({ _id: { $in: oldIds } });
   }
@@ -100,8 +100,8 @@ const install = ({ server }) => {
   server.get("/api/subscription", async (req, res) => {
     try {
       const user = await req.user.getUser();
-      if (!user.hasPermission("community-manager")) {
-        return res.error.missingPermission("community-manager");
+      if (!user.hasPermission(permissions.subscriber)) {
+        return res.error.missingPermission(permissions.subscriber);
       }
       const subs = await Subscription.find({}).exec();
       res.sendSubscription(subs);
@@ -163,8 +163,8 @@ const install = ({ server }) => {
   server.post("/api/subscription/send", async (req, res) => {
     try {
       const user = await req.user.getUser();
-      if (!user.hasPermission("community-manager")) {
-        return res.error.missingPermission("community-manager");
+      if (!user.hasPermission(permissions.subscriber)) {
+        return res.error.missingPermission(permissions.subscriber);
       }
       const push = req.body;
       push._id = "user-" + niceUri(push.title);

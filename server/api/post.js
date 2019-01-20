@@ -3,6 +3,7 @@ const niceUri = require("../../utils/nice-uri");
 const mongoose = require('mongoose');
 const striptags = require('striptags');
 const { sendPush } = require("./subscription");
+const { permissions } = require("../../common/permissions");
 
 const intOr = (int, or) => Number.isInteger(int) ? int : or;
 const stringOr = (string, or) => ("string" === typeof string) ? string : or;
@@ -20,7 +21,7 @@ const Post = mongoose.model("post", new mongoose.Schema({
 // Misc operations
 const filterPostData = ({ _id, author, title, content, date, tags, notes }, user) => ({
   _id, author, title, content, date, tags,
-  notes: user && user.hasPermission("author") ? notes : ""
+  notes: user && user.hasPermission(permissions.post) ? notes : ""
 });
 
 const install = ({ server }) => {
@@ -52,8 +53,8 @@ const install = ({ server }) => {
   server.post("/api/post", (req, res) =>
     req.user.getUser()
       .then(user => {
-        if (!user.hasPermission("author")) {
-          return res.error.missingPermission("author");
+        if (!user.hasPermission(permissions.post)) {
+          return res.error.missingPermission(permissions.post);
         }
         const { title } = req.body;
         const post = new Post({ ...req.body, date: new Date(), _id: niceUri(title) });
@@ -88,8 +89,8 @@ const install = ({ server }) => {
   server.put("/api/post/:id", (req, res) =>
     req.user.getUser()
       .then(user => {
-        if (!user.hasPermission("author")) {
-          return res.error.missingPermission("author");
+        if (!user.hasPermission(permissions.post)) {
+          return res.error.missingPermission(permissions.post);
         }
         const post = new Post({ ...req.body, _id: req.params.id });
         post.isNew = false;
@@ -107,8 +108,8 @@ const install = ({ server }) => {
   server.delete("/api/post/:id", async (req, res) => {
     try {
       const user = await req.user.getUser();
-      if (!user.hasPermission("author")) {
-        return res.error.missingPermission("author");
+      if (!user.hasPermission(permissions.post)) {
+        return res.error.missingPermission(permissions.post);
       }
       const post = await Post.deleteOne({ _id: req.params.id });
       return res.sendData({ data: post });

@@ -1,5 +1,6 @@
 const niceUri = require("../../utils/nice-uri");
 const mongoose = require('mongoose');
+const { permissions } = require("../../common/permissions");
 
 const intOr = (int, or) => Number.isInteger(int) ? int : or;
 const stringOr = (string, or) => ("string" === typeof string) ? string : or;
@@ -15,7 +16,7 @@ const Page = mongoose.model("page", new mongoose.Schema({
 // Misc operations
 const filterPageData = ({ _id, title, elements, path, notes }, user) => ({
   _id, title, elements, path,
-  notes: user && user.hasPermission("maintainer") ? notes : ""
+  notes: user && user.hasPermission(permissions.page) ? notes : ""
 });
 
 const install = ({ server }) => {
@@ -48,8 +49,8 @@ const install = ({ server }) => {
   server.post("/api/page", (req, res) =>
     req.user.getUser()
       .then(user => {
-        if (!user.hasPermission("maintainer")) {
-          return res.error.missingPermission("maintainer");
+        if (!user.hasPermission(permissions.page)) {
+          return res.error.missingPermission(permissions.page);
         }
         const { title } = req.body;
         const page = new Page({ ...req.body, _id: niceUri(title) });
@@ -77,8 +78,8 @@ const install = ({ server }) => {
   server.put("/api/page/:id", (req, res) =>
     req.user.getUser()
       .then(user => {
-        if (!user.hasPermission("maintainer")) {
-          return res.error.missingPermission("maintainer");
+        if (!user.hasPermission(permissions.page)) {
+          return res.error.missingPermission(permissions.page);
         }
         const page = new Page({ ...req.body, _id: req.params.id });
         page.isNew = false;
@@ -96,8 +97,8 @@ const install = ({ server }) => {
   server.delete("/api/page/:id", async (req, res) => {
     try {
       const user = await req.user.getUser();
-      if (!user.hasPermission("maintainer")) {
-        return res.error.missingPermission("maintainer");
+      if (!user.hasPermission(permissions.page)) {
+        return res.error.missingPermission(permissions.page);
       }
       const page = await Page.deleteOne({ _id: req.params.id });
       return res.sendData({ data: page });

@@ -5,7 +5,7 @@ const createNext = require("next");
 const express = require("express");
 const api = require("./api");
 const db = require("./db");
-const routes = require("../routes");
+const routes = require("../common/routes");
 const config = require("../config/server");
 const areIntlLocalesSupported = require("intl-locales-supported");
 const reactIntl = require("react-intl");
@@ -100,6 +100,7 @@ server.use((req, res, next) => {
   res.error.notLoggedIn = () => res.sendData({ error: "not-logged-in", errorCode: 401 });
   res.error.authorizationFailure = () => res.sendData({ error: "authorization-failure", errorCode: 401 });
   res.error.missingPermission = (permission) => res.sendData({ error: `missing-permission-${permission}`, errorCode: 403 });
+  res.error.invalidRequest = () => res.sendData({ error: `invalid-request`, errorCode: 400 });
 
   next();
 });
