@@ -9,8 +9,11 @@ import config from "../../config/client";
 import A from "../../components/system/A";
 import { get } from "axios";
 import crossuser from "../../utils/crossuser";
+import withStores from "../../store/withStores";
+import SessionStore from "../../store/Session";
+import { permissions } from "../../common/permissions";
 
-export default injectIntl(class Admin extends React.Component {
+export default withStores(SessionStore, injectIntl(class Admin extends React.Component {
   static getInitialProps({ req }) {
     const opts = crossuser(req);
     return Promise
@@ -34,37 +37,37 @@ export default injectIntl(class Admin extends React.Component {
   }
 
   render() {
-    const { postCount, userCount, pageCount, subscriptionCount } = this.props;
+    const { postCount, userCount, pageCount, subscriptionCount, sessionStore } = this.props;
     return (
       <div className="container">
         <Card title={config.title} subtitle={config.description}>
           <nav className="level">
-            <div className="level-item has-text-centered">
+            {sessionStore.hasPermission(permissions.post) && (<div className="level-item has-text-centered">
               <div>
                 <p className="heading"><A href="/"><EmailIcon /> <FormattedMessage id="admin.posts" /></A></p>
                 <p className="title"><FormattedNumber value={postCount} /></p>
               </div>
-            </div>
-            <div className="level-item has-text-centered">
+            </div>)}
+            {sessionStore.hasPermission(permissions.page) && (<div className="level-item has-text-centered">
               <div>
                 <p className="heading"><A href="/admin/pages"><BookOpenPageVariantIcon /> <FormattedMessage id="admin.pages" /></A></p>
                 <p className="title"><FormattedNumber value={pageCount} /></p>
               </div>
-            </div>
-            <div className="level-item has-text-centered">
+            </div>)}
+            {sessionStore.hasPermission(permissions.admin) && (<div className="level-item has-text-centered">
               <div>
                 <p className="heading"><A href="/admin/users"><AccountsIcon /> <FormattedMessage id="admin.users" /></A></p>
                 <p className="title"><FormattedNumber value={userCount} /></p>
               </div>
-            </div>
-            <div className="level-item has-text-centered">
+            </div>)}
+            {sessionStore.hasPermission(permissions.subscriber) && (<div className="level-item has-text-centered">
               <div>
                 <p className="heading"><A href="/admin/subscribers"><RssFeedIcon /> <FormattedMessage id="admin.subscribers" /></A></p>
                 <p className="title"><FormattedNumber value={subscriptionCount} /></p>
               </div>
-            </div>
+            </div>)}
           </nav>
         </Card>
       </div>);
   }
-});
+}));
