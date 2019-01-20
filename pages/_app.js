@@ -90,7 +90,7 @@ export default class _App extends App {
                     },
                     ...customPages,
                     session.user && {
-                      title: (<FormattedMessage id="navigation.admin.menu" />),
+                      title: (<span><FormattedMessage id="navigation.admin.menu" />{session.user ? (": " + session.user.id) : null}</span>),
                       link: "/admin",
                       _id: "admin",
                       children: [
@@ -106,7 +106,7 @@ export default class _App extends App {
                           link: "/admin/page",
                           _id: "page"
                         },
-                        session.hasPermission("admin") && {
+                        {
                           icon: ViewDashboardIcon,
                           title: (<FormattedMessage id="navigation.admin.overview" />),
                           link: "/admin",
