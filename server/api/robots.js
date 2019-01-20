@@ -10,7 +10,6 @@ const install = ({ server }) => {
         "lang": config.client.locale.meta.id,
         "icons": [
           makeManifestIcon(192),
-          makeManifestIcon(256),
           makeManifestIcon(512)
         ],
         "start_url": "/",

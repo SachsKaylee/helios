@@ -1,6 +1,8 @@
-# Helios
+# Helios 
 
 A minimalistic CMS using Node.js and React.
+
+<img src="https://patrick-sachs.de/api/files/serve/logo-512x512-png-png-b6cd" style="float:left;width:40%;" />
 
 We use Bulma as CSS Framework, next.js for Server Side Rendering and Jodit as Content Editor.
 
