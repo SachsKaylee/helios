@@ -177,12 +177,12 @@ const install = ({ server }) => {
       .then(user => {
         // Check if the user confirmed the password
         const newUser = req.body;
-        if (newUser.password !== encrypt(password)) {
+        if (user.password !== encrypt(newUser.password)) {
           return res.error.authorizationFailure();
         }
         // Update the user.
         if (newUser.passwordNew) {
-          user.password = encrypt(newUser.passwordNew)
+          user.password = encrypt(newUser.passwordNew);
         }
         user.avatar = newUser.avatar;
         user.bio = newUser.bio;
