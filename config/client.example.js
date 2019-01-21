@@ -56,11 +56,13 @@
 
   // After how many milliseconds a user has spent on your site will they be prompted to enable
   // notifications?
+  // Set to "false" to never ask.
   promptForNotificationsAfter: 30000,
 
   // After how many milliseconds a user has spent on your site will they be prompted to add the
   // site to their homescreen?
-  promptForAddToHomeScreenAfter: 10000,
+  // Set to "false" to never ask.
+  promptForAddToHomeScreenAfter: false,
 
   // Adds the "powered by Helios" branding. I'd really appreaciate if you'd leave it in. It 
   // does not make your website look less professional.

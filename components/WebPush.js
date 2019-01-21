@@ -16,7 +16,7 @@ export default withStores(NotificationStore, class WebPush extends React.PureCom
   }
 
   componentDidMount() {
-    if ("serviceWorker" in navigator) {
+    if (config.promptForNotificationsAfter && "serviceWorker" in navigator) {
       navigator.serviceWorker.ready.then(() => {
         const didSelect = localStorage.getItem(STORAGE_DID_SELECT);
         if (!didSelect) {
@@ -28,12 +28,10 @@ export default withStores(NotificationStore, class WebPush extends React.PureCom
 
   async subscribeToNotifications(key) {
     const sw = await navigator.serviceWorker.getRegistration();
-    console.log("got sw", sw);
     const subscription = await sw.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(key)
     });
-    console.log("got subscription", subscription);
     post("/api/subscription/subscribe", {
       subscription,
       device: navigator.userAgent
