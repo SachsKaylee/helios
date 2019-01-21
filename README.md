@@ -1,54 +1,56 @@
+<div style="text-align:center">
+  <img src="https://patrick-sachs.de/api/files/serve/logo-512x512-png-png-b6cd" style="width:40%;" />
+</div>
+
 # Helios 
 
-A minimalistic CMS using Node.js and React.
+A minimalistic CMS for the modern web.
 
-<img src="https://patrick-sachs.de/api/files/serve/logo-512x512-png-png-b6cd" style="float:left;width:40%;" />
-
-We use Bulma as CSS Framework, next.js for Server Side Rendering and Jodit as Content Editor.
+- **Mobile first** - Responsive by design
+- **Modern technologies** - Progressive web app, web push, automatic HTTPs
+- **Small size** for emerging markets - Webpage size is ~250kb
+- Optimized for **privacy** - No user data is stored unless opted in
 
 Live Demo: [https://patrick-sachs.de/](https://patrick-sachs.de/)
 
-## Why?
+Wiki/Guide: [https://github.com/PatrickSachs/helios/wiki](https://github.com/PatrickSachs/helios/wiki)
 
-There are tons of CMS out there. Wordpress dwarfs the market with tons of extensions and great support. So why another one?
+## What is Helios?
 
-There are two very simple reasons why I wrote Helios:
+Helios is a CMS("Content Management System") optimized for **small to medium websites** which just need "to get the job done".
 
-- I want something simple. No monolythic codebase behind the scenes, no uncertainty what happens with my data.
-- I'm not a fan of PHP, which most popular CMS are written in. It's a battle proven language, but I believe that the technology has exceeded its lifespan.
+This is done by only including the features that are **actually required**, all while utilizing the latest technologies available.
 
-Why should you **use** Helios?
+## Feature List
 
-- Helios was developed with a **mobile first** approach.
+- Helios was developed with a **mobile first** approach. (Responsive, Add to home screen, push notifications, ...)
 - Helios is lightweight - Low resource usage on the server, **fast load speeds** for your visitors due to Server Side Rendering & Compression.
-- Helios is **easily forkable** - Getting into the codebase and changing things to your liking isn't difficult.
 - Helios is **MIT licensed** - You can do WHATEVER you want with it.
-- Helios is secure, traffic is served over HTTPS(preferably HTTP/2) only(It doesn't even require you to know anything about SSL. It's **automatically encrypted** with a valid certificate!).
+- Helios is **secure**, traffic is served over HTTPS only(Free SSL certificate included).
+- Helios allows you to create **users with different permissions**. Some people write blog posts, while others fill static pages with content.
 
-Why should you **not use** Helios?
+## The technical section
 
-- Helios does not offer a plugin system.
-- Helios is mainly aimed at developers. If you want to customize something, you are required to touch a code file.
-- Helios doesn't like to run outside of server environments. It does run, but requires you to have some knowledge about SSL.
+If you're just looking to use Helios and do not intend to join in and help develop Helios(which would be awesome, Helios is open source!), you can stop ready here.
 
-## Develop
+### Develop
 
-**Warning**: Server side code(`/src/server`) does not support hot reloading, you need to *restart* the dev server if you change any code within!
-
-**Package Manager**: NPM. I know, Yarn & Co are faster and so and and so forth, but I'd rather not add another tool to the ecosystem.
-
-**Code Editor**: Visual Studio Code - It just works™️
+- **Warning** - Server side code(`/src/server`) does not support hot reloading, you need to *restart* the dev server if you change any code within!
+- **Package Manager** - NPM. I know, Yarn & Co are faster and so and and so forth, but I'd rather not add another tool to the ecosystem.
+- **Code Editor** - Visual Studio Code - It just works™️
+- **Database** - MongoDB. It's a great database.
+- **Code Style** - ES6 with JSX. Server side is CommonJS, client side is ES modules.
 
 ```
 $ npm install
 $ npm run dev
 ```
 
-## Compile/Deploy
+### Compile/Deploy
 
-**Important**: Make sure to adjust the config files(`/src/config`). These contain your private keys for passwords. If you leave them at their default values, it will be rather trivial to decrypt your senstive user data you are bound by law to protect.
+**Important**: Make sure to adjust the config files(`/src/config`). These contain your private keys for passwords. If you leave them at their default values, it will be rather trivial to decrypt your senstive user data.
 
-They are named `client.example.js` and `server.example.js`. Make sure to give to omit the `.example` from the file names of the configured files.
+They are named `client.example.js` and `server.example.js`. Make sure to give to omit the `.example` from the file names of the configured files. There is also a `style.example.sass`. You'll want to rename that one too.
 
 ```
 $ npm install
@@ -58,8 +60,8 @@ $ npm run start
 
 Take a look at the [Wiki](https://github.com/PatrickSachs/helios/wiki) for a more detailed explanation and a walk through of all steps required.
 
-## Contributing
+### Contributing
 
-Always welcome!
+As always contributions are more than welcome!
 
-Make sure to read `CONTRIBUTING.md` and `STYLE.md` beforehand though.
+Feel free to skim through the codebase and tackle some TODOs, take a look at the issues page or just randomly shoot PRs at me.
