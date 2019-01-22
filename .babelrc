@@ -1,0 +1,20 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "modules": "commonjs",
+        "debug": true,
+        "useBuiltIns": "entry",
+        "targets": {
+          "browsers": ["last 2 versions", "ie >= 10"]
+        },
+        "include": [
+          "es6.array.find",
+          "es6.object.assign"
+        ]
+      }
+    ],
+    "next/babel"
+  ]
+}

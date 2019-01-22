@@ -19,6 +19,8 @@ import WebPush from "../components/WebPush";
 import crossuser from "../utils/crossuser";
 import * as sw from "next-offline/runtime";
 import PWA from "../components/PWA";
+import 'babel-polyfill';
+import 'whatwg-fetch';
 
 const g = global || window;
 // Load the locale data for NodeJS if it has not been installed.
@@ -76,7 +78,6 @@ export default class _App extends App {
             <PWA />
             <Head>
               <title key="title">{title && title + " | "}{config.title}</title>
-              <script src="https://cdn.polyfill.io/v2/polyfill.min.js" />
             </Head>
             <Session>
               {session => (

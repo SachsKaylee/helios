@@ -20,6 +20,7 @@
     "cross-env": "^5.2.0"
   },
   "dependencies": {
+    "@babel/preset-env": "^7.3.1",
     "@react-formilicious/bulma": "^2.0.0",
     "@react-formilicious/core": "^2.0.0",
     "@react-formilicious/validator-pwned": "^1.0.0",
@@ -28,6 +29,7 @@
     "axios": "^0.18.0",
     "babel-plugin-module-resolver": "^3.1.2",
     "babel-plugin-wrap-in-js": "^1.1.1",
+    "babel-polyfill": "^6.26.0",
     "bulma": "^0.7.2",
     "classnames": "^2.2.6",
     "deep-equal": "^1.0.1",
@@ -55,6 +57,7 @@
     "redoubt": "^1.1.0",
     "striptags": "^3.1.1",
     "useragent": "^2.3.0",
-    "web-push": "^3.3.3"
+    "web-push": "^3.3.3",
+    "whatwg-fetch": "^2.0.4"
   }
 }
