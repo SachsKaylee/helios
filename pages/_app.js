@@ -76,6 +76,7 @@ export default class _App extends App {
             <PWA />
             <Head>
               <title key="title">{title && title + " | "}{config.title}</title>
+              <script src="https://cdn.polyfill.io/v2/polyfill.min.js" />
             </Head>
             <Session>
               {session => (
