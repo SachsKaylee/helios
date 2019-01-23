@@ -4,7 +4,7 @@
       "@babel/preset-env",
       {
         "modules": "commonjs",
-        "debug": true,
+        "debug": false,
         "useBuiltIns": "entry",
         "targets": {
           "browsers": ["last 2 versions", "ie >= 10"]
