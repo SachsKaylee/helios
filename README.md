@@ -31,7 +31,7 @@ This is done by only including the features that are **actually required**, all 
 
 ## The technical section
 
-If you're just looking to use Helios and do not intend to join in and help develop Helios(which would be awesome, Helios is open source!), you can stop ready here.
+If you're just looking to use Helios and do not intend to join in and help develop Helios(which would be awesome, Helios is open source!), you can stop reading here.
 
 ### Develop
 
