@@ -23,7 +23,6 @@
     "@babel/preset-env": "^7.3.1",
     "@react-formilicious/bulma": "^2.0.0",
     "@react-formilicious/core": "^2.0.0",
-    "@react-formilicious/validator-pwned": "^1.0.0",
     "@zeit/next-sass": "^1.0.1",
     "ace-builds": "^1.4.2",
     "axios": "^0.18.0",
@@ -42,6 +41,7 @@
     "intl-locales-supported": "^1.0.0",
     "jodit": "github:PatrickSachs/jodit#feature/relative-paths-2",
     "js-beautify": "^1.8.9",
+    "js-sha1": "^0.6.0",
     "mdi-react": "^5.2.0",
     "mongoose": "^5.4.4",
     "next": "^7.0.2",
@@ -57,7 +57,6 @@
     "redoubt": "^1.1.0",
     "striptags": "^3.1.1",
     "useragent": "^2.3.0",
-    "web-push": "^3.3.3",
-    "whatwg-fetch": "^2.0.4"
+    "web-push": "^3.3.3"
   }
 }

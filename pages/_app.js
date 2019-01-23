@@ -20,7 +20,6 @@ import crossuser from "../utils/crossuser";
 import * as sw from "next-offline/runtime";
 import PWA from "../components/PWA";
 import 'babel-polyfill';
-import 'whatwg-fetch';
 
 const g = global || window;
 // Load the locale data for NodeJS if it has not been installed.

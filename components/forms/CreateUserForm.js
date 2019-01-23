@@ -10,7 +10,7 @@ import CancelIcon from "mdi-react/CancelIcon";
 import config from "../../config/client";
 import required from "@react-formilicious/core/validators/required";
 import combined from "@react-formilicious/core/validators/combined";
-import pwned from "@react-formilicious/validator-pwned";
+import pwned from "../../utils/validator/pwned";
 import { permissions } from "../../common/permissions";
 
 export default injectIntl(class CreateUserForm extends Form {
