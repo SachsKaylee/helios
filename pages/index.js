@@ -9,25 +9,31 @@ import EditorRichText from "../components/EditorRichText";
 
 export default class IndexPage extends React.PureComponent {
   static async getInitialProps({ query, req }) {
-    const [{ data: posts }, { data: { count } }] = await Promise.all([
-      axios.get("/api/post", crossuser(req, {
-        params: {
-          skip: query.page && ((parseInt(query.page, 10) - 1) * config.postsPerPage), limit: config.postsPerPage
-        }
-      })),
-      axios.get("/api/post-count", crossuser(req))
-    ]);
-    return {
-      count: count,
-      page: query.page ? parseInt(query.page, 10) : 1,
-      posts: posts.sort((a, b) => {
-        const keyA = new Date(a.date);
-        const keyB = new Date(b.date);
-        if (keyA < keyB) return 1;
-        if (keyA > keyB) return -1;
-        return 0;
-      })
-    };
+    try {
+      const [{ data: posts }, { data: { count } }] = await Promise.all([
+        axios.get("/api/post", crossuser(req, {
+          params: {
+            skip: query.page && ((parseInt(query.page, 10) - 1) * config.postsPerPage), limit: config.postsPerPage
+          }
+        })),
+        axios.get("/api/post-count", crossuser(req))
+      ]);
+      return {
+        count: count,
+        page: query.page ? parseInt(query.page, 10) : 1,
+        posts: posts.sort((a, b) => {
+          const keyA = new Date(a.date);
+          const keyB = new Date(b.date);
+          if (keyA < keyB) return 1;
+          if (keyA > keyB) return -1;
+          return 0;
+        })
+      };
+    }
+    catch (error) {
+      console.error("failed to init index", error.message);
+      return {count:0,page:1,posts:[]};
+    }
   }
 
   componentDidMount() {

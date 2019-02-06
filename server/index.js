@@ -1,3 +1,4 @@
+const log = require("./log");
 const axios = require("axios");
 const path = require("path");
 const fs = require("fs");
@@ -6,9 +7,6 @@ const express = require("express");
 const api = require("./api");
 const db = require("./db");
 const routes = require("../common/routes");
-const config = require("../config/server");
-const areIntlLocalesSupported = require("intl-locales-supported");
-const reactIntl = require("react-intl");
 const { transformError } = require("./error-transformer");
 const formData = require("express-form-data");
 const blobExtract = require("../utils/blob-extract");
@@ -16,107 +14,211 @@ const Redoubt = require("redoubt").default;
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-// We use the domain in the request and not localhost since our certificate is not signed against localhost, 
-// and we don't accept unsigned certs in production.
-axios.defaults.baseURL = `https://${config.client.domains[0]}:${config.client.port.https}`;
-
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = isDevelopment || config.certs.allowUnsigned ? "0" : "1";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = isDevelopment ? "0" : "1";
 
 const rootPath = path.resolve("./");
 
-console.log("📡", "Helios is starting ...");
-console.log("📡", "Dev-Mode:", isDevelopment);
-console.log("📡", "Working Directory:", rootPath);
+log.info("Helios is starting", { isDevelopment, rootPath });
 
-// Load the locale data for NodeJS if it has not been installed.
-if (global.Intl && !areIntlLocalesSupported([config.client.locale.meta.id])) {
-  console.log("📡", "Polyfilling locale for NodeJS", config.client.locale.meta.id);
-  const IntlPolyfill = require('intl');
-  Intl.NumberFormat = IntlPolyfill.NumberFormat;
-  Intl.DateTimeFormat = IntlPolyfill.DateTimeFormat;
-} else if (!global.Intl) {
-  console.log("📡", "Polyfilling Intl for NodeJS");
-  global.Intl = require('intl');
+
+const start = async () => {
+  try {
+    await waitForConfig();
+    await adjustGlobals();
+    await startCms();
+  } catch (error) {
+    log.error("Error while starting main", error);
+    process.exit(1);
+  }
 }
-reactIntl.addLocaleData(config.client.locale.meta.intl);
 
-const redoubt = new Redoubt({
-  agreeGreenlockTos: config.agreeGreenlockTos,
-  certs: config.certs,
-  cookieSecret: config.cookieSecret,
-  domains: config.client.domains,
-  isDevelopment: config.$certsForceProductionServer !== undefined ? !config.$certsForceProductionServer : isDevelopment,
-  letsEncryptCertDirectory: "./.helios/certs",
-  maxPayloadSize: config.maxPayloadSize,
-  name: config.client.title,
-  staticFiles: null,
-  webmasterMail: config.webmasterMail
-});
-const server = redoubt.app;
+const waitForConfig = async () => {
+  console.debug("Waiting for configuration...");
+  await api.system.systemConfigReady;
+  await api.system.internalConfigReady;
+}
 
-const uploadDir = path.resolve("./.helios/tmp/upload");
-fs.mkdirSync(uploadDir, { recursive: true });
+const adjustGlobals = async () => {
+  // Get our configuration
+  const cfg = await api.system.getConfig();
+  const internalCfg = await api.system.getInternalConfig();
 
-server.use(formData.parse({
-  autoClean: true,
-  uploadDir: uploadDir
-}));
-server.use(formData.union());
-//server.use(formData.format());
-server.use("/node_modules", express.static("./node_modules"));
-server.use("/workbox-v3.6.3", express.static("./.helios/next/workbox-v3.6.3"));
-server.use((req, res, next) => {
+  api.system.loadLocale(cfg.locale);
+}
 
-  res.sendData = ({ error, data, errorCode, successCode }) => {
-    //if (isDevelopment) console.info("sending", { error, data, errorCode, successCode });
-    if (error) {
-      res.status(errorCode || 500);
-      res.send(transformError(error));
-    } else if (!data) {
-      res.status(errorCode || 404);
-      res.send("no-data");
-    } else {
-      res.status(successCode || 200);
-      res.send(data);
+const installMiddleware = async ({ server }) => {
+  const uploadDir = path.resolve("./.helios/tmp/upload");
+  fs.mkdirSync(uploadDir, { recursive: true });
+
+  server.use(formData.parse({
+    autoClean: true,
+    uploadDir: uploadDir
+  }));
+  server.use(formData.union());
+  server.use("/node_modules", express.static("./node_modules"));
+  server.use("/workbox-v3.6.3", express.static("./.helios/next/workbox-v3.6.3"));
+  server.use((req, res, next) => {
+
+    res.sendData = ({ error, data, errorCode, successCode }) => {
+      //if (isDevelopment) console.info("sending", { error, data, errorCode, successCode });
+      if (error) {
+        res.status(errorCode || 500);
+        res.send(transformError(error));
+      } else if (!data) {
+        res.status(errorCode || 404);
+        res.send("no-data");
+      } else {
+        res.status(successCode || 200);
+        res.send(data);
+      }
     }
-  }
 
-  res.blob = (blob) => {
-    const { data, format, mime } = blobExtract(blob);
-    const buffer = Buffer.from(data, format);
-    res.writeHead(200, {
-      "Content-Type": mime,
-      "Content-Length": buffer.length
+    res.result = async (result) => {
+      result = result instanceof Promise ? await result : result;
+      if (result instanceof Error) {
+        const status = result.status || 500;
+        if (status >= 500) {
+          log.error(req.method + " " + req.path + " : " + status, result);
+        } else {
+          log.debug(req.method + " " + req.path + " : " + status, result);
+        }
+        res
+          .status(status)
+          .send({
+            status: status,
+            name: result.name,
+            message: result.message,
+            detail: result.detail ? result.detail : {}
+          });
+      } else {
+        const status = result.status || 200;
+        if (status >= 500) {
+          log.error(req.method + " " + req.path + " : " + status, result);
+        } else {
+          log.debug(req.method + " " + req.path + " : " + status, result);
+        }
+        res
+          .status(status)
+          .send(result.data ? result.data : result);
+      }
+    }
+
+    res.blob = (blob) => {
+      const { data, format, mime } = blobExtract(blob);
+      const buffer = Buffer.from(data, format);
+      res.writeHead(200, {
+        "Content-Type": mime,
+        "Content-Length": buffer.length
+      });
+      res.end(buffer);
+    };
+
+    res.error = {};
+    res.error.server = (error) => {
+      log.error("Internal Server Error\n", error, "\nStack Trace:\n", new Error("Internal Server Error"));
+      res.sendData({ error: `internal-server-error`, errorCode: 500 });
+    };
+    res.error.notFound = () => res.sendData({ error: "not-found", errorCode: 404 });
+    res.error.notLoggedIn = () => res.sendData({ error: "not-logged-in", errorCode: 401 });
+    res.error.authorizationFailure = () => res.sendData({ error: "authorization-failure", errorCode: 401 });
+    res.error.missingPermission = (permission) => res.sendData({ error: `missing-permission-${permission}`, errorCode: 403 });
+    res.error.invalidRequest = () => res.sendData({ error: `invalid-request`, errorCode: 400 });
+
+    next();
+  });
+
+}
+
+const startCms = async () => {
+  // Get our configuration
+  const cfg = await api.system.getConfig();
+  const internalCfg = await api.system.getInternalConfig();
+
+  // We use the domain in the request and not localhost since our certificate is not signed against localhost, 
+  // and we don't accept unsigned certs in production.
+  axios.defaults.baseURL = cfg.ssl === "none"
+    ? `http://${cfg.domains[0]}:${cfg.ports.http}`
+    : `https://${cfg.domains[0]}:${cfg.ports.https}`;
+
+  try {
+    log.info("Starting helios in CMS mode");
+
+    // Get our configuration
+    const cfg = await api.system.getConfig();
+    const internalCfg = await api.system.getInternalConfig();
+
+    const redoubt = new Redoubt({
+      agreeGreenlockTos: true, // TODO: MUST ACCEPT DURING INSTALLATION
+      ssl: cfg.ssl, // TODO: MANUAL CERTS
+      cookieSecret: internalCfg.cookieSecret,
+      domains: cfg.domains,
+      isDevelopment: isDevelopment,
+      letsEncryptCertDirectory: "./.helios/certs",
+      maxPayloadSize: cfg.maxPayloadSize,
+      name: "helios",
+      staticFiles: null,
+      webmasterMail: cfg.webmasterMail
     });
-    res.end(buffer);
-  };
+    const server = redoubt.app;
 
-  res.error = {};
-  res.error.server = (error) => {
-    console.error("Internal Server Error\n", error, "\nStack Trace:\n", new Error("Internal Server Error"));
-    res.sendData({ error: `internal-server-error`, errorCode: 500 });
-  };
-  res.error.notFound = () => res.sendData({ error: "not-found", errorCode: 404 });
-  res.error.notLoggedIn = () => res.sendData({ error: "not-logged-in", errorCode: 401 });
-  res.error.authorizationFailure = () => res.sendData({ error: "authorization-failure", errorCode: 401 });
-  res.error.missingPermission = (permission) => res.sendData({ error: `missing-permission-${permission}`, errorCode: 403 });
-  res.error.invalidRequest = () => res.sendData({ error: `invalid-request`, errorCode: 400 });
+    const next = createNext({ dev: isDevelopment });
 
-  next();
-});
+    await installMiddleware({ server, redoubt, start, next });
 
-const next = createNext({ dev: isDevelopment });
-Promise.all([next.prepare(), db.connected]).then(() => {
-  redoubt.listen(config.client.port.https, config.client.port.http);
-  for (let key in api) {
-    console.log("📡", "Installing API:", key);
-    api[key].install({ server });
+    await Promise.all([next.prepare(), db.connected]);
+
+    for (let key in api) {
+      if (api[key].preinstall) {
+        log.debug("Preinstalling API", { key });
+        api[key].preinstall({ server, redoubt, start, next });
+      }
+    }
+    for (let key in api) {
+      log.debug("Installing API", { key });
+      api[key].install({ server, redoubt, start, next });
+    }
+    log.info("All APIs have been installed.");
+    // Fallback
+    server.get("/service-worker.js", (req, res) => res.sendFile("./.helios/next/service-worker.js", { root: rootPath }))
+    server.get("*", routes.getRequestHandler(next));
+
+    await redoubt.listen(cfg.ports.https, cfg.ports.http);
+    log.info("Helios is listening", { port: cfg.ports });
+  } catch (error) {
+    log.error("Error while starting helios!", error);
+    process.exit(1);
   }
-  console.log("📡", "All APIs have been installed.");
-  // Fallback
-  server.get("/service-worker.js", (req, res) => res.sendFile("./.helios/next/service-worker.js", { root: rootPath }))
-  server.get("*", routes.getRequestHandler(next));
-}).catch(err => {
-  console.error("🔥", "Error while preparing server!", err);
-  process.exit(1);
-});
+}
+/*
+const startSetup = async () => {
+  // todo: pass port & ip as command line option
+  const port = 80, ip = "0.0.0.0";
+  axios.defaults.baseURL = `http://localhost:${port}`;
+
+  try {
+    log.info("Starting helios in setup mode");
+
+    const next = createNext({ dev: isDevelopment });
+    await next.prepare();
+
+    const server = express();
+    await installMiddleware({ server });
+
+    server.use("/node_modules", express.static("./node_modules"));
+    server.get("/api/page-navigation", (req, res) => res.status(200).send([]));
+
+    api.system.install({ server });
+
+    server.get("/", (req, res) => res.redirect("/setup"));
+
+    server.get("*", routes.getRequestHandler(next));
+    server.listen(port, ip);
+    log.info("Setup is listening", { port, ip });
+  } catch (error) {
+    log.error("Error while starting setup!", { error });
+    process.exit(1);
+  }
+}
+*/
+
+start();

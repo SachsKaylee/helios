@@ -41,10 +41,12 @@ module.exports = {
   hidden: "Hidden",
   root: "Root",
   apply: "Apply",
+  back: "Back",
   formValueRequired: "\"{field}\" is required!",
   form: {
     submit: "Submit",
     chooseFile: "Choose a file…",
+    select: "Select…",
     noFilesSelected: "No files selected…",
     filesSelected: "{n} files selected."
   },
@@ -85,7 +87,7 @@ module.exports = {
       placeholder: "User password",
       confirm: "Confirm user password"
     }
-  },  
+  },
   page: {
     editor: {
       stash: {
@@ -162,7 +164,7 @@ module.exports = {
     tags: "Tags for categorization…",
     adminArea: "Post admin area",
     notes: {
-      field: "Notes", 
+      field: "Notes",
       placeholder: "Take some quick notes about your post. They are only visible to other authors."
     },
     editor: {
@@ -285,6 +287,29 @@ module.exports = {
   pages: {
     blog: {
       title: "Blog"
+    }
+  },
+  system: {
+    setup: {
+      welcome: { 
+        title: "Welcome to Helios!", 
+        slug: "We're glad to have you aboard",
+        text: "Let's get started with with most important choice, setting a language you are comfortable with. This is the language that will be used during setup, aswell as the one seen by the visitors of your website."
+      },
+      basic: {
+        title: "Let's get your website up and running",
+        slug: "We need to tweak some essential settings",
+        text: "Helios needs some information about the environment it is running in in order to be fully operational."
+      },
+      alreadyInstalled: {
+        warning: "Warning: You are about to reinstall Helios. It has already been installed with the following settings:",
+        effect: "Reinstalling Helios will cause some system settings to change. However data such as your pages, posts, etc. will be unaffected."
+      },
+      fields: {
+        locale: {
+          name: "Locale"
+        }
+      }
     }
   }
 }

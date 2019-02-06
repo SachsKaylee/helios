@@ -1,4 +1,5 @@
 module.exports = {
+  system: require("./system"),
   user: require("./user"),
   post: require("./post"),
   page: require("./page"),

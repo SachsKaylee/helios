@@ -2,9 +2,9 @@ import App, { Container } from "next/app";
 import Head from "next/head";
 import { get } from "axios";
 import Navbar from "./../components/Navbar";
-import config from "../config/client";
 import { IntlProvider, addLocaleData, FormattedMessage } from "react-intl";
 import flattenObject from "../utils/flattenObject"
+import loadScript from "../utils/load-script"
 import areIntlLocalesSupported from "intl-locales-supported";
 import intl from "intl"; // todo: try to make this import lazy!
 import Session, { SessionProvider } from "../store/Session";
@@ -21,41 +21,46 @@ import * as sw from "next-offline/runtime";
 import PWA from "../components/PWA";
 import 'babel-polyfill';
 
-const g = global || window;
-// Load the locale data for NodeJS if it has not been installed.
-if (g.Intl && !areIntlLocalesSupported([config.locale.meta.id])) {
-  console.log("📡", "Polyfilling locale for client", config.locale.meta.id);
-  Intl.NumberFormat = intl.NumberFormat;
-  Intl.DateTimeFormat = intl.DateTimeFormat;
-} else if (!g.Intl) {
-  console.log("📡", "Polyfilling Intl for client");
-  g.Intl = intl;
-}
-addLocaleData(config.locale.meta.intl);
-
-const {
-  meta: localeMeta,
-  ...localeMessages
-} = config.locale;
-
 export default class _App extends App {
   static async getInitialProps({ Component, ctx, req }) {
     const pageProps = Component.getInitialProps
       ? await Component.getInitialProps(ctx)
       : {};
-    const customPages = await get("/api/page-navigation", crossuser(req));
-    return { pageProps, customPages: customPages.data };
+    let customPages;
+    try {
+      const navRequest = await get("/api/page-navigation", crossuser(req));
+      customPages = navRequest.data;
+    } catch(error) {
+      console.error("Failed to load navigation", error.message);
+      customPages = [];
+    }
+    const config = ctx.req ? await ctx.req.system.config() : window.__HELIOS_CONFIG__;
+    const locale = ctx.req ? await ctx.req.system.locale() : window.__HELIOS_LOCALE__;
+    return { pageProps, customPages: customPages, config, locale };
   }
 
   constructor(p) {
     super(p);
     this.setPageTitle = this.setPageTitle.bind(this);
     this.state = {
-      title: ""
+      title: "",
+      config: this.props.config,
+      locale: this.props.locale
     };
   }
 
   componentDidMount() {
+    // Load the locale data for NodeJS if it has not been installed.
+    if (window.Intl && !areIntlLocalesSupported([this.state.locale.meta.id])) {
+      console.log("📡", "Polyfilling locale for client", this.state.locale.meta.id);
+      Intl.NumberFormat = intl.NumberFormat;
+      Intl.DateTimeFormat = intl.DateTimeFormat;
+    } else if (!window.Intl) {
+      console.log("📡", "Polyfilling Intl for client");
+      window.Intl = intl;
+    }
+    addLocaleData(this.state.locale.meta.intl);
+
     sw.register();
   }
 
@@ -65,23 +70,24 @@ export default class _App extends App {
 
   render() {
     const { Component, pageProps, customPages } = this.props;
+    const { config, locale } = this.state;
     //const title = this.component && this.component.getTitle && this.component.getTitle() || "…";
     const title = this.state.title;
     return (<Container>
       <IntlProvider
-        locale={localeMeta.id}
-        messages={flattenObject(localeMessages)}>
+        locale={locale.meta.id}
+        messages={flattenObject(locale)}>
         <SessionProvider>
           <NotificationProvider>
             <WebPush />
             <PWA />
             <Head>
-              <title key="title">{title && title + " | "}{config.title}</title>
+              <title key="title">{title && title + " | "}{config ? config.title : "Helios"}</title>
             </Head>
             <Session>
               {session => (
                 <Navbar
-                  title={(<span>{config.title}{title && " - " + title}</span>)}
+                  title={(<span>{config && config.title}{title && " - " + title}</span>)}
                   logo="/static/content/system/logo.png">
                   {[
                     {
@@ -128,7 +134,7 @@ export default class _App extends App {
                         }
                       ]
                     },
-                    (!session.user && !config.hideLogInButton) && {
+                    (!session.user && config && !config.hideLogInButton) && {
                       title: (<FormattedMessage id="navigation.admin.signIn" />),
                       link: "/admin/account",
                       _id: "signIn"
@@ -136,12 +142,12 @@ export default class _App extends App {
                 </Navbar>)}
             </Session>
             <div className="section">
-              <Component {...pageProps} setPageTitle={this.setPageTitle} />
+              <Component {...pageProps} setPageTitle={this.setPageTitle} config={this.state.config} />
             </div>
             <footer className="footer">
               <div className="content has-text-centered">
-                <p><a href={`https://${config.domains[0]}:${config.port.https}`}><strong>{config.title}</strong></a> - {config.description}</p>
-                {config.branding ? (<p className="is-size-7"><a href="https://github.com/PatrickSachs/helios"><FormattedMessage id="branding" /></a></p>) : null}
+                <p><a href={`//`}><strong>{config ? config.title : "Helios"}</strong></a> - {config && config.description}</p>
+                {!config || config.branding ? (<p className="is-size-7"><a href="https://github.com/PatrickSachs/helios"><FormattedMessage id="branding" /></a></p>) : null}
               </div>
             </footer>
             <div id="overlay">

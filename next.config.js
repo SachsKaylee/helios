@@ -4,7 +4,7 @@ const glob = require('glob');
 const nextOffline = require('next-offline');
 
 const isDevelopment = process.env.NODE_ENV !== "production";
-console.log("NODE_ENV", process.env.NODE_ENV, isDevelopment);
+console.log("Creating next.js config", { env: process.env.NODE_ENV, isDevelopment });
 
 module.exports = nextOffline({
 

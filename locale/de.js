@@ -45,6 +45,7 @@ module.exports = {
   form: {
     submit: "Senden",
     chooseFile: "Datei auswählen…",
+    select: "Auswählen…",
     noFilesSelected: "Keine Dateien ausgewählt…",
     filesSelected: "{n} Dateien ausgewählt."
   },
