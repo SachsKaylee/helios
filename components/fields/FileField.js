@@ -38,16 +38,16 @@ export default class FileField extends React.Component {
     });
   }
 
-  onChange(e) {
+  async onChange(e) {
     if (e.currentTarget.files.length === 0) {
       return;
     }
     const { multiple, onChange } = this.props;
     const nativeArray = [...e.currentTarget.files]
     if (multiple) {
-      onChange(Promise.all(nativeArray.map(this.uploadFile)))
+      onChange(await Promise.all(nativeArray.map(this.uploadFile)))
     } else if (nativeArray.length) {
-      onChange(this.uploadFile(nativeArray[0]));
+      onChange(await this.uploadFile(nativeArray[0]));
     } else {
       onChange({ name: "", size: 0, type: "", data: "" });
     }

@@ -5,6 +5,7 @@ import Head from "next/head";
 import config from "../config/client";
 import Session from "../store/Session";
 import crossuser from "../utils/crossuser";
+import { permissions } from "../common/permissions";
 
 export default class PostPage extends React.PureComponent {
   static async getInitialProps({ query, req}) {
@@ -28,7 +29,7 @@ export default class PostPage extends React.PureComponent {
         <Session>
           {session => (<Post
             {...post}
-            admin={session && session.hasPermission("author")}
+            admin={session && session.hasPermission(permissions.post)}
             id={post._id}
             date={new Date(post.date)} />)}
         </Session>
