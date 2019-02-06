@@ -7,6 +7,7 @@ import Page from "../components/page/Page";
 import A from "../components/system/A";
 import { FormattedMessage, injectIntl } from "react-intl";
 import crossuser from "../utils/crossuser";
+import { permissions } from "../common/permissions";
 
 export default injectIntl(class PagePage extends React.PureComponent {
   static async getInitialProps({ query, req }) {
@@ -41,7 +42,7 @@ export default injectIntl(class PagePage extends React.PureComponent {
             <Page {...page} />
             <div className="push-12">
               {page.notes ? (<p className="is-size-7 has-text-grey margin-2">{page.notes}</p>) : null}
-              {session.hasPermission("maintainer") &&
+              {session.hasPermission(permissions.page) &&
                 <A className="button is-link" href={`/admin/page/${page._id}`}><FormattedMessage id="edit" /></A>
               }
             </div>

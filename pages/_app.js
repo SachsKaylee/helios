@@ -20,6 +20,7 @@ import crossuser from "../utils/crossuser";
 import * as sw from "next-offline/runtime";
 import PWA from "../components/PWA";
 import 'babel-polyfill';
+import { permissions } from "../common/permissions";
 
 const g = global || window;
 // Load the locale data for NodeJS if it has not been installed.
@@ -95,13 +96,13 @@ export default class _App extends App {
                       link: "/admin",
                       _id: "admin",
                       children: [
-                        session.hasPermission("author") && {
+                        session.hasPermission(permissions.post) && {
                           icon: EmailIcon,
                           title: (<FormattedMessage id="navigation.admin.newPost" />),
                           link: "/admin/post",
                           _id: "post"
                         },
-                        session.hasPermission("maintainer") && {
+                        session.hasPermission(permissions.page) && {
                           icon: BookOpenPageVariantIcon,
                           title: (<FormattedMessage id="navigation.admin.newPage" />),
                           link: "/admin/page",
