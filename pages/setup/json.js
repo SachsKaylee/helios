@@ -1,5 +1,4 @@
 import React from "react";
-import SetupBasicForm from "../../components/forms/setup/SetupBasicForm";
 import { put, post, get } from "axios";
 import { FormattedMessage, injectIntl } from "react-intl";
 import withStores from "../../store/withStores";
@@ -7,15 +6,19 @@ import NotificationStore from "../../store/Notification";
 import { uuid } from "../../utils/uuid";
 import * as timeout from "../../utils/timeout";
 import CakeIcon from "mdi-react/CakeIcon";
+import PublishIcon from "mdi-react/PublishIcon";
+import FileDiscardIcon from "mdi-react/FileDiscardIcon";
+import EditorCode from "../../components/EditorCode";
 
-export default withStores(NotificationStore, injectIntl(class SetupSettingsPage extends React.PureComponent {
+export default withStores(NotificationStore, injectIntl(class JsonSettingsPage extends React.PureComponent {
   static async getInitialProps(ctx) {
   }
 
   constructor(p) {
     super(p);
-    this.onBack = this.onBack.bind(this);
     this.onSave = this.onSave.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.onDiscard = this.onDiscard.bind(this);
     this.state = {
       config: p.config
     }
@@ -32,15 +35,28 @@ export default withStores(NotificationStore, injectIntl(class SetupSettingsPage 
   render() {
     return ([
       this.renderWelcome(),
-      this.renderSettings(),
-      this.renderAlreadySetupWarning(),
+      this.renderSettings()
     ]);
+  }
+
+  onDiscard() {
+    this.setState({ config: this.props.config });
+  }
+
+  onChange(value) {
+    let json;
+    try {
+      json = JSON.parse(value);
+    } catch (e) {
+      json = this.state.config;
+    }
+    this.setState({ config: json });
   }
 
   async onSave(values) {
     const id = "restart/" + uuid();
     try {
-      const { data } = await put("/api/system/config/system", values);
+      const newConfig = await put("/api/system/config/system", values);
       this.props.notificationStore.push({
         _id: id + "/wait",
         icon: CakeIcon,
@@ -48,7 +64,7 @@ export default withStores(NotificationStore, injectIntl(class SetupSettingsPage 
         title: (<FormattedMessage id="system.setup.basic.restart.wait.title" />),
         children: (<FormattedMessage id="system.setup.basic.restart.wait.description" />)
       });
-      await this.setStateAsync({ config: data });
+      await this.setStateAsync({ config: newConfig.data });
       await this.restartServer();
       this.props.notificationStore.close(id + "/wait");
       this.props.notificationStore.push({
@@ -60,9 +76,8 @@ export default withStores(NotificationStore, injectIntl(class SetupSettingsPage 
       });
       const { config } = this.state;
       const url = config.ssl === "none"
-        ? `http://${config.domains[0]}:${config.ports.http}/`
-        : `https://${config.domains[0]}:${config.ports.https}/`;
-        console.log("url", {url})
+        ? `http://${config.domains[0]}:${config.ports.http}/setup/json`
+        : `https://${config.domains[0]}:${config.ports.https}/setup/json`;
       // Navigate normally to force SSR refresh.
       window.location.href = url;
     } catch (error) {
@@ -111,37 +126,36 @@ export default withStores(NotificationStore, injectIntl(class SetupSettingsPage 
     window.location.href = "/setup";
   }
 
-  renderAlreadySetupWarning() {
-    return (<div className="notification is-warning" key="already-set-up" style={{ marginTop: 16 }}>
-      <p><FormattedMessage id="system.setup.alreadyInstalled.warning" /></p>
-      <pre>
-        {JSON.stringify(this.props.config, null, 2)}
-      </pre>
-      <p><FormattedMessage id="system.setup.alreadyInstalled.effect" /></p>
-    </div>);
-  }
-
   renderWelcome() {
-    return (<section className="hero is-primary" key="welcome">
+    return (<section className="hero is-warning" key="welcome">
       <div className="hero-body">
         <div className="container">
-          <h1 className="title"><FormattedMessage id="system.setup.basic.title" /></h1>
-          <h2 className="subtitle"><FormattedMessage id="system.setup.basic.slug" /></h2>
+          <h1 className="title"><FormattedMessage id="system.setup.json.title" /></h1>
+          <h2 className="subtitle"><FormattedMessage id="system.setup.json.slug" /></h2>
         </div>
       </div>
     </section>);
   }
 
   renderSettings() {
-    return (<div className="card" key="language">
+    const { _id, __v, ...config } = this.state.config;
+    return ([(<div key="json" style={{ height: 350 }}>
+      <EditorCode mode="json" value={JSON.stringify(config, null, 2)} onChange={this.onChange} />
+    </div>),
+    (<div className="card" key="buttons">
       <div className="card-content">
         <div className="content">
-          <p><FormattedMessage id="system.setup.basic.text" /></p>
-          <div>
-            <SetupBasicForm data={this.props.config} onBack={this.onBack} onSubmit={this.onSave} />
-          </div>
+          <p><FormattedMessage id="system.setup.json.warning" /></p>
+          <p className="buttons">
+            <a className="button is-primary" onClick={this.onSave}>
+              <PublishIcon className="mdi-icon-spacer" /> <FormattedMessage id="system.setup.json.saveAndRestart" />
+            </a>
+            <a className="button is-danger" onClick={this.onDiscard}>
+              <FileDiscardIcon className="mdi-icon-spacer" /> <FormattedMessage id="discard" />
+            </a>
+          </p>
         </div>
       </div>
-    </div>)
+    </div>)])
   }
 }));

@@ -89,6 +89,7 @@ const internalConfigReady = getInternalConfig().then(async cfg => {
 
 const preinstall = ({ server }) => {
   const id = uuid();
+  console.log("Created Server ID", { id });
   // API specific middlemare
   server.use((req, res, next) => {
     // Get config
@@ -115,6 +116,7 @@ const install = ({ server, redoubt, start, next }) => {
   });
 
   server.get("/api/system/ping", async (req, res) => {
+    console.log("Asking for system ID", { id: req.system.id });
     res
       .header("Access-Control-Allow-Origin", "*")
       .header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
@@ -131,7 +133,7 @@ const install = ({ server, redoubt, start, next }) => {
     console.log("Stopping next ...");
     await next.close();
     console.log("Stopping redoubt ...");
-    await redoubt.close();
+    await redoubt.close(true);
     console.log("Starting CMS ...");
     await start();
     console.log("Restart complete!");
