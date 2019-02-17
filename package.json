@@ -55,7 +55,7 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-intl": "^2.8.0",
-    "redoubt": "file:../../redoubt/git/dist",
+    "redoubt": "^2.0.1",
     "striptags": "^3.1.1",
     "useragent": "^2.3.0",
     "web-push": "^3.3.3",

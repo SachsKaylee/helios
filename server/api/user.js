@@ -5,6 +5,8 @@ const encryptWithSalt = require("../../utils/encrypt");
 const escapeRegExp = require("../../utils/escapeRegExp");
 const mongoose = require('mongoose');
 const NotLoggedInError = require("../errors/NotLoggedInError");
+const PermissionError = require("../errors/PermissionError");
+const InvalidRequestError = require("../errors/InvalidRequestError");
 const { error: DbError } = require("../db");
 const { mongoError } = require("../error-transformer");
 const { permissions, areValidPermissions } = require("../../common/permissions");
@@ -75,35 +77,62 @@ const install = ({ server }) => {
       .then(users => res.sendUser(users))
       .catch(error => res.error.server(error)))
 
-  server.post("/api/user", (req, res) =>
-    req.user.getUser()
-      .then(async session => {
+  server.post("/api/user", async (req, res) => {
+    try {
+      const newUser = req.body;
+      let logIn = false;
+      // Check if we are creating the initial user.
+      if (newUser.initialUser) {
+        // The initial user can only be created if there are no other users.
+        const count = await User.countDocuments().exec();
+        if (count !== 0) {
+          throw new PermissionError();
+        }
+        // Check if the given permissions are valid. The user may be an admin. And probably should be.
+        if (!areValidPermissions(newUser.permissions, true)) {
+          throw new InvalidRequestError({ permissions: newUser.permissions });
+        }
+        const session = await req.user.maybeGetUser();
+        if (!session) {
+          logIn = true;
+        }
+      } else {
+        const session = await req.user.getUser();
         // Only the admin can create new users.
         if (!session.hasPermission(permissions.admin)) {
-          return res.error.missingPermission(permissions.admin);
+          throw new PermissionError(permissions.admin);
         }
         // Check if the given permissions are valid & that the created user is not an admin.
-        const newUser = req.body;
         if (!areValidPermissions(newUser.permissions, false)) {
-          return res.error.invalidRequest();
+          throw new InvalidRequestError({ permissions: newUser.permissions });
         }
-        // Check if we have a password.
-        if (!newUser.password) {
-          return res.error.invalidRequest();
-        }
-        const internal = await cfg.system.internal();
-        // Create the user.
-        const user = new User({
-          _id: newUser.id,
-          password: encryptWithSalt(newUser.password, internal.passwordSecret),
-          permissions: newUser.permissions,
-          bio: newUser.bio,
-          avatar: newUser.avatar
-        });
-        /*user.isNew = true;*/
-        return user.save().then(user => res.sendUser(user));
-      })
-      .catch(error => res.sendData({ error })));
+      }
+      // Check if we have an id.
+      if (typeof newUser.id !== "string" || newUser.id.length === 0) {
+        throw new InvalidRequestError({ id: newUser.id });
+      }
+      // Check if we have a password.
+      if (typeof newUser.password !== "string" || newUser.password.length === 0) {
+        throw new InvalidRequestError({ password: newUser.password });
+      }
+      const internal = await req.system.internal();
+      // Create the user.
+      let user = new User({
+        _id: newUser.id,
+        password: encryptWithSalt(newUser.password, internal.passwordSecret),
+        permissions: newUser.permissions,
+        bio: newUser.bio,
+        avatar: newUser.avatar
+      });
+      user = await user.save();
+      if (logIn) {
+        req.user.putSession({ userId: user._id });
+      }
+      res.sendUser(user);
+    } catch (error) {
+      res.result(error);
+    }
+  });
 
   server.put("/api/user/:id", (req, res) =>
     Promise
@@ -120,7 +149,7 @@ const install = ({ server }) => {
         if (!areValidPermissions(newUser.permissions, wasAdmin)) {
           return res.error.invalidRequest();
         }
-        const internal = await cfg.system.internal();
+        const internal = await req.system.internal();
         // Update the user.
         user.password = newUser.password ? encryptWithSalt(newUser.password, internal.passwordSecret) : user.password;
         user.permissions = newUser.permissions;
@@ -144,7 +173,7 @@ const install = ({ server }) => {
     const { id, password } = req.body;
     User.findOne({ _id: new RegExp("^" + escapeRegExp(id) + "$", "i") })
       .then(async user => {
-        const internal = await cfg.system.internal();
+        const internal = await req.system.internal();
         if (!user || user.password !== encryptWithSalt(password, internal.passwordSecret)) {
           return res.error.authorizationFailure();
         }
@@ -178,7 +207,7 @@ const install = ({ server }) => {
       .then(async user => {
         // Check if the user confirmed the password
         const newUser = req.body;
-        const internal = await cfg.system.internal();
+        const internal = await req.system.internal();
         if (user.password !== encryptWithSalt(newUser.password, internal.passwordSecret)) {
           return res.error.authorizationFailure();
         }

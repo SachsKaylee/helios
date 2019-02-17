@@ -6,6 +6,7 @@ import NotificationStore from "../../store/Notification";
 import { uuid } from "../../utils/uuid";
 import * as timeout from "../../utils/timeout";
 import CakeIcon from "mdi-react/CakeIcon";
+import HourglassFullIcon from "mdi-react/HourglassFullIcon";
 import PublishIcon from "mdi-react/PublishIcon";
 import FileDiscardIcon from "mdi-react/FileDiscardIcon";
 import EditorCode from "../../components/EditorCode";
@@ -56,14 +57,16 @@ export default withStores(NotificationStore, injectIntl(class JsonSettingsPage e
   async onSave(values) {
     const id = "restart/" + uuid();
     try {
-      const newConfig = await put("/api/system/config/system", values);
       this.props.notificationStore.push({
         _id: id + "/wait",
-        icon: CakeIcon,
+        timeout: 0,
+        canClose: false,
+        icon: HourglassFullIcon,
         type: "info",
         title: (<FormattedMessage id="system.setup.basic.restart.wait.title" />),
         children: (<FormattedMessage id="system.setup.basic.restart.wait.description" />)
       });
+      const newConfig = await put("/api/system/config/system", values);
       await this.setStateAsync({ config: newConfig.data });
       await this.restartServer();
       this.props.notificationStore.close(id + "/wait");
@@ -83,19 +86,13 @@ export default withStores(NotificationStore, injectIntl(class JsonSettingsPage e
     } catch (error) {
       console.error("Failed to apply config", error);
       this.props.notificationStore.close(id + "/wait");
-      this.props.notificationStore.push({
-        _id: id + "/error",
-        icon: CakeIcon,
-        type: "danger",
-        title: (<FormattedMessage id="system.setup.basic.restart.error.title" />),
-        children: (<FormattedMessage id="system.setup.basic.restart.error.description" />)
-      });
+      this.props.notificationStore.pushError(error);
     }
   }
 
   async restartServer() {
     const { data: oldServerId } = await get("/api/system/ping");
-    await post("/api/system/restart");
+    await post("/api/system/restart", { now: true });
     return await this.waitOnline(30, oldServerId);
   }
 

@@ -7,6 +7,7 @@ import NotificationStore from "../../store/Notification";
 import { uuid } from "../../utils/uuid";
 import * as timeout from "../../utils/timeout";
 import CakeIcon from "mdi-react/CakeIcon";
+import HourglassFullIcon from "mdi-react/HourglassFullIcon";
 
 export default withStores(NotificationStore, injectIntl(class SetupSettingsPage extends React.PureComponent {
   static async getInitialProps(ctx) {
@@ -40,14 +41,16 @@ export default withStores(NotificationStore, injectIntl(class SetupSettingsPage 
   async onSave(values) {
     const id = "restart/" + uuid();
     try {
-      const { data } = await put("/api/system/config/system", values);
       this.props.notificationStore.push({
         _id: id + "/wait",
-        icon: CakeIcon,
+        timeout: 0,
+        canClose: false,
+        icon: HourglassFullIcon,
         type: "info",
         title: (<FormattedMessage id="system.setup.basic.restart.wait.title" />),
         children: (<FormattedMessage id="system.setup.basic.restart.wait.description" />)
       });
+      const { data } = await put("/api/system/config/system", values);
       await this.setStateAsync({ config: data });
       await this.restartServer();
       this.props.notificationStore.close(id + "/wait");
@@ -62,25 +65,19 @@ export default withStores(NotificationStore, injectIntl(class SetupSettingsPage 
       const url = config.ssl === "none"
         ? `http://${config.domains[0]}:${config.ports.http}/`
         : `https://${config.domains[0]}:${config.ports.https}/`;
-        console.log("url", {url})
+      console.log("url", { url })
       // Navigate normally to force SSR refresh.
       window.location.href = url;
     } catch (error) {
       console.error("Failed to apply config", error);
       this.props.notificationStore.close(id + "/wait");
-      this.props.notificationStore.push({
-        _id: id + "/error",
-        icon: CakeIcon,
-        type: "danger",
-        title: (<FormattedMessage id="system.setup.basic.restart.error.title" />),
-        children: (<FormattedMessage id="system.setup.basic.restart.error.description" />)
-      });
+      this.props.notificationStore.pushError(error);
     }
   }
 
   async restartServer() {
     const { data: oldServerId } = await get("/api/system/ping");
-    await post("/api/system/restart");
+    await post("/api/system/restart", { now: true });
     return await this.waitOnline(30, oldServerId);
   }
 

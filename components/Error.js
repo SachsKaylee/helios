@@ -9,9 +9,17 @@ export const FullError = ({ error }) => {
 
 export const SlimError = ({ error }) => {
   error = error && error.response ? error.response.data : error;
-  const str = byString(error);
-  if (str) return str;
-  return (<div>todo: handle this error!<code>{JSON.stringify(error)}</code></div>);
+  let str = null;
+  if (error.name !== undefined) { str = byName(error); }
+  if (!str) { str = byString(error); }
+  if (str) { return str; }
+  return (<div><code>{JSON.stringify(error)}</code></div>);
+}
+
+const byName = ({ name }) => {
+  if (name === "NotLoggedInError") {
+    return (<FormattedMessage id="errorMessages.notLoggedIn" />);
+  }
 }
 
 const byString = string => {

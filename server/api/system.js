@@ -1,5 +1,6 @@
 const cryptoString = require("../../utils/crypto-string");
 const random = require("../../utils/random");
+const timeout = require("../../utils/timeout");
 const { uuid } = require("../../utils/uuid");
 const mongoose = require("mongoose");
 const reactIntl = require("react-intl");
@@ -127,41 +128,47 @@ const install = ({ server, redoubt, start, next }) => {
   })
 
   server.post("/api/system/restart", async (req, res) => {
-    // TODO: Check permission!!!!
+    const { now } = req.body;
+    // Only the admin can restart the server.
+    const user = await req.user.getUser();
+    if (!user.hasPermission(permissions.admin)) {
+      return res.error.missingPermission(permissions.admin);
+    }
+    // Reply right away, since we won't be able to reply once the HTTP server has shut down 🙄
     console.log("Restart begun!");
     res.status(202).end();
+    // Wait for a tick to send the response, otherwise restarting redoubt will kill it.
+    await timeout.pass(1);
+    // Stop next.js(the view layer)
     console.log("Stopping next ...");
     await next.close();
+    // Stop the actual HTTP & HTTPS server.
     console.log("Stopping redoubt ...");
-    await redoubt.close(true);
+    await redoubt.close(!!now);
     console.log("Starting CMS ...");
+    // And restart it.
     await start();
     console.log("Restart complete!");
+    // How does the client how that we are done since we have already replied earlier?
+    // - By polling /api/system/ping - the result of this API call is unique per execution.
   });
 
   server.put("/api/system/config/system", async (req, res) => {
     try {
-      const user = await req.user.maybeGetUser();
-      if (user) {
-        // If we are logged in we need to be an admin to
-        // continue
-        if (!user.hasPermission(permissions.admin)) {
-          return res.error.missingPermission(permissions.admin);
-        }
-      } else {
-        // If we are not logged in the cfg must not be locked to continue.
-        // TODO: Maybe handle via temp admin login in setup?
-        let cfg0 = await req.system.config();
-        if (cfg0 && cfg0.locked) {
-          return res.error.missingPermission(permissions.admin);
-        }
+      // Only the admin can change system settings.
+      const user = await req.user.getUser();
+      if (!user.hasPermission(permissions.admin)) {
+        return res.error.missingPermission(permissions.admin);
       }
+      // Update the setting with the given data
       let cfg = await req.system.config();
       await cfg.update(req.body).exec();
       const newCfg = await req.system.config();
+      // Reload locale if required.
       if (cfg.locale !== newCfg.locale) {
         loadLocale(newCfg.locale);
       }
+      // Done
       return res.result({ data: newCfg });
     } catch (error) {
       res.result(error);

@@ -1,9 +1,12 @@
 import * as React from "react";
-import Form from "@react-formilicious/bulma";
-import required from "@react-formilicious/core/validators/required";
 import { FormattedMessage, injectIntl } from "react-intl";
 import PublishIcon from "mdi-react/PublishIcon";
+import Form from "@react-formilicious/bulma";
 import DropdownField from "../../fields/DropdownField";
+import TextField from "@react-formilicious/bulma/TextField";
+import required from "@react-formilicious/core/validators/required";
+import combined from "@react-formilicious/core/validators/combined";
+import pwned from "../../../utils/validator/pwned";
 
 export default injectIntl(class SetupLanguageForm extends React.PureComponent {
   render() {
@@ -26,6 +29,21 @@ export default injectIntl(class SetupLanguageForm extends React.PureComponent {
             }
           ],
           validator: required()
+        },
+        {
+          type: TextField,
+          key: "name",
+          name: (<FormattedMessage id="system.setup.fields.name.name" />),
+          placeholder: this.props.intl.formatMessage({ id: "account.usernamePlaceholder" }),
+          validator: required(),
+        },
+        {
+          type: TextField,
+          key: "password",
+          mode: "password",
+          name: (<FormattedMessage id="system.setup.fields.password.name" />),
+          placeholder: this.props.intl.formatMessage({ id: "account.passwordPlaceholder" }),
+          validator: combined(required(), pwned()),
         }
       ]}
       buttons={[

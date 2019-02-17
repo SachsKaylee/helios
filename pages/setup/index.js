@@ -1,15 +1,24 @@
 import React from "react";
 import SetupLanguageForm from "../../components/forms/setup/SetupLanguageForm";
-import { put } from "axios";
+import { put, get, post } from "axios";
 import { FormattedMessage, injectIntl } from "react-intl";
+import withStores from "../../store/withStores";
+import NotificationStore from "../../store/Notification";
 
-export default injectIntl(class SetupPage extends React.PureComponent {
+export default withStores(NotificationStore, injectIntl(class SetupPage extends React.PureComponent {
   static async getInitialProps(ctx) {
+    try {
+      const userCount = await get("/api/user-count");
+      return { allowUserCreation: userCount.data.count === 0 };
+    } catch (error) {
+      console.error("Failed to load user count", error);
+      return { allowUserCreation: false };
+    }
   }
 
   constructor(p) {
     super(p);
-    this.onChangeLocale = this.onSave.bind(this);
+    this.onSave = this.onSave.bind(this);
     this.state = {
       origConfig: p.config
     }
@@ -22,16 +31,22 @@ export default injectIntl(class SetupPage extends React.PureComponent {
   render() {
     return ([
       this.renderWelcome(),
-      this.renderChooseLanguage(),
+      this.renderChooseLanguageAndAdmin(),
       this.renderAlreadySetupWarning(),
     ]);
   }
 
-  onSave(values) {
-    put("/api/system/config/system", values).then(() => {
+  async onSave({ name, password, ...values }) {
+    try {
+      if (name && password) {
+        await post("/api/user", { initialUser: true, id: name, password: password, permissions: ["admin"], bio: "", avatar: "" });
+      }
+      await put("/api/system/config/system", values);
       // Navigate normally to force SSR refresh.
       window.location.href = "/setup/basic";
-    })
+    } catch (error) {
+      this.props.notificationStore.pushError(error);
+    }
   }
 
   renderAlreadySetupWarning() {
@@ -55,8 +70,8 @@ export default injectIntl(class SetupPage extends React.PureComponent {
     </section>);
   }
 
-  renderChooseLanguage() {
-    return (<div className="card" key="language">
+  renderChooseLanguageAndAdmin() {
+    return (<div className="card" key="form">
       <div className="card-content">
         <div className="content">
           <p><FormattedMessage id="system.setup.welcome.text" /></p>
@@ -67,4 +82,4 @@ export default injectIntl(class SetupPage extends React.PureComponent {
       </div>
     </div>)
   }
-});
+}));
