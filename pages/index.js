@@ -1,14 +1,13 @@
 import Posts from "../components/post/PostList";
 import React from "react";
 import axios from "axios";
-import config, { locale } from "../config/client";
 import Head from "next/head";
 import Pagination from "../components/layout/Pagination";
 import crossuser from "../utils/crossuser";
-import EditorRichText from "../components/EditorRichText";
+import { injectIntl } from "react-intl";
 
-export default class IndexPage extends React.PureComponent {
-  static async getInitialProps({ query, req }) {
+export default injectIntl(class IndexPage extends React.PureComponent {
+  static async getInitialProps({ query, req, config }) {
     try {
       const [{ data: posts }, { data: { count } }] = await Promise.all([
         axios.get("/api/post", crossuser(req, {
@@ -32,23 +31,23 @@ export default class IndexPage extends React.PureComponent {
     }
     catch (error) {
       console.error("failed to init index", error.message);
-      return {count:0,page:1,posts:[]};
+      return { count: 0, page: 1, posts: [] };
     }
   }
 
   componentDidMount() {
-    this.props.setPageTitle(locale.pages.blog.title);
+    this.props.setPageTitle(this.props.intl.formatMessage({ id: "pages.blog.title" }));
   }
 
   render() {
-    const { posts, count, page } = this.props;
+    const { posts, count, page, config } = this.props;
     return (<>
       <Head>
-        <link key="canonical" rel="canonical" href={`https://${config.domains[0]}:${config.port.https}/`} />
+        <link key="canonical" rel="canonical" href={`/`} />
       </Head>
       <Pagination perPage={config.postsPerPage} count={count} page={page}>
         <Posts posts={posts} />
       </Pagination>
     </>);
   }
-};
+});

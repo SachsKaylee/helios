@@ -1,3 +1,4 @@
+const dotenv = require("dotenv").config();
 const log = require("./log");
 const axios = require("axios");
 const path = require("path");
@@ -20,7 +21,6 @@ const rootPath = path.resolve("./");
 
 log.info("Helios is starting", { isDevelopment, rootPath });
 
-
 const start = async () => {
   try {
     await waitForConfig();
@@ -36,12 +36,14 @@ const waitForConfig = async () => {
   console.debug("Waiting for configuration...");
   await api.system.systemConfigReady;
   await api.system.internalConfigReady;
+  await api.system.hostConfigReady;
 }
 
 const adjustGlobals = async () => {
   // Get our configuration
   const cfg = await api.system.getConfig();
   const internalCfg = await api.system.getInternalConfig();
+  const hostCfg = await api.system.getHostConfig();
 
   api.system.loadLocale(cfg.locale);
 }
@@ -133,12 +135,13 @@ const startCms = async () => {
   // Get our configuration
   const cfg = await api.system.getConfig();
   const internalCfg = await api.system.getInternalConfig();
+  const hostCfg = await api.system.getHostConfig();
 
   // We use the domain in the request and not localhost since our certificate is not signed against localhost, 
   // and we don't accept unsigned certs in production.
-  axios.defaults.baseURL = cfg.ssl === "none"
-    ? `http://${cfg.domains[0]}:${cfg.ports.http}`
-    : `https://${cfg.domains[0]}:${cfg.ports.https}`;
+  axios.defaults.baseURL = hostCfg.ssl === "none"
+    ? `http://${hostCfg.bindDomains[0]}:${hostCfg.ports.http}`
+    : `https://${hostCfg.bindDomains[0]}:${hostCfg.ports.https}`;
 
   try {
     log.info("Starting helios in CMS mode");
@@ -148,10 +151,10 @@ const startCms = async () => {
     const internalCfg = await api.system.getInternalConfig();
 
     const redoubt = new Redoubt({
-      agreeGreenlockTos: true, // TODO: MUST ACCEPT DURING INSTALLATION
-      ssl: cfg.ssl, // TODO: MANUAL CERTS
+      agreeGreenlockTos: process.env.AGREE_GREENLOCK_TOS == "true",
+      ssl: hostCfg.ssl, // TODO: MANUAL CERTS
       cookieSecret: internalCfg.cookieSecret,
-      domains: cfg.domains,
+      domains: hostCfg.bindDomains,
       isDevelopment: isDevelopment,
       letsEncryptCertDirectory: "./.helios/certs",
       maxPayloadSize: cfg.maxPayloadSize,
@@ -182,8 +185,8 @@ const startCms = async () => {
     server.get("/service-worker.js", (req, res) => res.sendFile("./.helios/next/service-worker.js", { root: rootPath }))
     server.get("*", routes.getRequestHandler(next));
 
-    await redoubt.listen(cfg.ports.https, cfg.ports.http);
-    log.info("Helios is listening", { port: cfg.ports });
+    await redoubt.listen(hostCfg.ports.https, hostCfg.ports.http === -1 ? null : hostCfg.ports.http);
+    log.info("Helios is listening", { ports: hostCfg.ports, domains: hostCfg.bindDomains });
   } catch (error) {
     log.error("Error while starting helios!", error);
     process.exit(1);

@@ -1,14 +1,10 @@
 import React from "react";
-import { FormattedMessage, FormattedDate, FormattedTime, injectIntl } from "react-intl";
+import { FormattedMessage, injectIntl } from "react-intl";
 import Card from "../../components/layout/Card";
 import withStores from "../../store/withStores";
 import NotificationStore from "../../store/Notification";
-import config from "../../config/client";
-import { get, post } from "axios";
-import Media from "../../components/layout/Media";
-import Version from "../../components/Version";
+import { get } from "axios";
 import crossuser from "../../utils/crossuser";
-import RssFeedIcon from "mdi-react/RssFeedIcon";
 import SystemForm from "../../components/forms/SystemForm";
 
 export default withStores(NotificationStore, injectIntl(class SystemPage extends React.Component {

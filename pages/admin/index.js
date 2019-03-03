@@ -5,7 +5,6 @@ import EmailIcon from "mdi-react/EmailIcon";
 import RssFeedIcon from "mdi-react/RssFeedIcon";
 import { FormattedMessage, FormattedNumber, injectIntl } from "react-intl";
 import Card from "../../components/layout/Card";
-import config from "../../config/client";
 import A from "../../components/system/A";
 import { get } from "axios";
 import crossuser from "../../utils/crossuser";
@@ -37,7 +36,7 @@ export default withStores(SessionStore, injectIntl(class Admin extends React.Com
   }
 
   render() {
-    const { postCount, userCount, pageCount, subscriptionCount, sessionStore } = this.props;
+    const { postCount, userCount, pageCount, subscriptionCount, sessionStore, config } = this.props;
     return (
       <div className="container">
         <Card title={config.title} subtitle={config.description}>

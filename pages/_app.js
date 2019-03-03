@@ -24,6 +24,10 @@ import { permissions } from "../common/permissions";
 
 export default class _App extends App {
   static async getInitialProps({ Component, ctx, req }) {
+    const config = ctx.req ? await ctx.req.system.config() : window.__HELIOS_CONFIG__;
+    const locale = ctx.req ? await ctx.req.system.locale() : window.__HELIOS_LOCALE__;
+    ctx.config = config;
+    ctx.locale = locale;
     const pageProps = Component.getInitialProps
       ? await Component.getInitialProps(ctx)
       : {};
@@ -31,12 +35,10 @@ export default class _App extends App {
     try {
       const navRequest = await get("/api/page-navigation", crossuser(req));
       customPages = navRequest.data;
-    } catch(error) {
+    } catch (error) {
       console.error("Failed to load navigation", error.message);
       customPages = [];
     }
-    const config = ctx.req ? await ctx.req.system.config() : window.__HELIOS_CONFIG__;
-    const locale = ctx.req ? await ctx.req.system.locale() : window.__HELIOS_LOCALE__;
     return { pageProps, customPages: customPages, config, locale };
   }
 
@@ -80,8 +82,8 @@ export default class _App extends App {
         messages={flattenObject(locale)}>
         <SessionProvider>
           <NotificationProvider>
-            <WebPush />
-            <PWA />
+            <WebPush promptForNotificationsAfter={this.state.config.promptForNotificationsAfter} />
+            <PWA promptForAddToHomeScreenAfter={this.state.config.promptForAddToHomeScreenAfter} />
             <Head>
               <title key="title">{title && title + " | "}{config ? config.title : "Helios"}</title>
             </Head>

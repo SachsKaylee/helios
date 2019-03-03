@@ -7,7 +7,6 @@ import axios from "axios";
 import NotificationStore from "../../store/Notification";
 import withStores from "../../store/withStores";
 import { FormattedMessage, injectIntl, FormattedRelative } from "react-intl";
-import config from "../../config/client";
 import DeleteIcon from "mdi-react/DeleteIcon";
 import TrashIcon from "mdi-react/TrashIcon";
 import CakeIcon from "mdi-react/CakeIcon";
@@ -20,7 +19,7 @@ export default withStores(NotificationStore, injectIntl(class PostPage extends R
   constructor(p) {
     super(p);
     this.state = {
-      ...defaultPostData(),
+      ...this.defaultPostData(),
       ...p.data
     };
     this.onChangeForm = this.onChangeForm.bind(this);
@@ -64,6 +63,15 @@ export default withStores(NotificationStore, injectIntl(class PostPage extends R
   onChangeForm(form) {
     this.setState({ ...form }, this.saveStash);
   }
+
+  defaultPostData() {
+    const { config } = this.props;
+    return {
+      tags: config.defaultTags,
+      title: this.props.intl.formatMessage({id: "post.defaults.title"}),
+      content: this.props.intl.formatMessage({id: "post.defaults.description"})
+    }
+  };
 
   /**
    * Prompts the user to apply a given stash.
@@ -229,9 +237,3 @@ export default withStores(NotificationStore, injectIntl(class PostPage extends R
     );
   }
 }));
-
-const defaultPostData = () => ({
-  tags: config.defaultTags,
-  title: config.locale.post.defaults.title,
-  content: config.locale.post.defaults.description
-});

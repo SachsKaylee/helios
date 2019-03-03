@@ -1,6 +1,6 @@
 const cryptoString = require("../../utils/crypto-string");
 const random = require("../../utils/random");
-const timeout = require("../../utils/timeout");
+//const timeout = require("../../utils/timeout");
 const { uuid } = require("../../utils/uuid");
 const mongoose = require("mongoose");
 const reactIntl = require("react-intl");
@@ -9,17 +9,15 @@ const { permissions } = require("../../common/permissions");
 
 const SYSTEM_ID = "system";
 const INTERNAL_ID = "internal";
+const HOST_ID = "host";
 
+/**
+ * Public configuration data. Accessible without authentication.
+ */
 const System = mongoose.model(SYSTEM_ID, new mongoose.Schema({
   _id: { type: String, default: SYSTEM_ID },
   locale: { type: String, enum: ["en", "de"], default: "en" },
-  domains: { type: [String], default: ["localhost"] },
-  ports: {
-    http: { type: Number, default: 80 },
-    https: { type: Number, default: 443 }
-  },
   webmasterMail: { type: String, default: "" },
-  ssl: { type: String, enum: ["letsEncrypt", "certificate", "none"], default: "none" },
   title: { type: String, default: "Helios" },
   description: { type: String, default: "Welcome to Helios - A minimalistic CMS for the modern web." },
   topics: { type: [String], default: ["helios", "cms"] },
@@ -27,17 +25,34 @@ const System = mongoose.model(SYSTEM_ID, new mongoose.Schema({
   postsPerAboutPage: { type: Number, default: 3 },
   hideLogInButton: { type: Boolean, default: false },
   defaultTags: { type: [String], default: [] },
-  promptForNotificationsAfter: { type: Number, default: 10000 },
-  promptForAddToHomeScreenAfter: { type: Number, default: 120000 },
+  promptForNotificationsAfter: { type: Number, default: 10 * 1000 },
+  promptForAddToHomeScreenAfter: { type: Number, default: 120 * 1000 },
   branding: { type: Boolean, default: true },
-  maxPayloadSize: { type: Number, default: 200 * 1024 + 100 * 1024 }
+  maxPayloadSize: { type: Number, default: 300 * 1024 }
 }, { collection: "settings" }));
 
+/**
+ * Internal data only that must not be exposed to the outside world. No API access.
+ */
 const Internal = mongoose.model(INTERNAL_ID, new mongoose.Schema({
   _id: { type: String, default: INTERNAL_ID },
   passwordSecret: { type: String },
   cookieSecret: { type: String },
   subscriptionSecret: { type: String }
+}, { collection: "settings" }));
+
+/**
+ * Host configuration. A change to this document requires a server restart.
+ */
+const Host = mongoose.model(HOST_ID, new mongoose.Schema({
+  _id: { type: String, default: HOST_ID },
+  bindIp: { type: String, default: "0.0.0.0" },
+  bindDomains: { type: [String], default: ["localhost"] },
+  ssl: { type: String, enum: ["letsEncrypt", "certificate", "none"], default: "none" },
+  ports: {
+    http: { type: Number, default: 80 },
+    https: { type: Number, default: 443 }
+  }
 }, { collection: "settings" }));
 
 /**
@@ -49,6 +64,11 @@ const getConfig = () => System.findById(SYSTEM_ID).exec();
  * Gets the internal configuration document. Contains sensitive internal data.
  */
 const getInternalConfig = () => Internal.findById(INTERNAL_ID).exec();
+
+/**
+ * Gets the host configuration document.
+ */
+const getHostConfig = () => Host.findById(HOST_ID).exec();
 
 /**
  * Gets the locale of the CMS.
@@ -88,6 +108,24 @@ const internalConfigReady = getInternalConfig().then(async cfg => {
   return error;
 });
 
+const hostConfigReady = getHostConfig().then(async cfg => {
+  console.log("Host config is", cfg);
+  if (!cfg) {
+    cfg = new Host();
+  }
+  cfg.bindIp = process.env.BIND_IP;
+  cfg.bindDomains = process.env.BIND_DOMAINS.split(",");
+  cfg.ssl = process.env.SSL;
+  cfg.ports = {
+    http: parseInt(process.env.PORT_HTTP),
+    https: parseInt(process.env.PORT_HTTPS)
+  }
+  return cfg.save().then(cfg => console.log("Updated host config from .env file", cfg));
+}).catch(error => {
+  console.error("Failed to get host config", error);
+  return error;
+});;
+
 const preinstall = ({ server }) => {
   const id = uuid();
   console.log("Created Server ID", { id });
@@ -98,7 +136,8 @@ const preinstall = ({ server }) => {
       id: id,
       config: getConfig,
       locale: getLocale,
-      internal: getInternalConfig
+      internal: getInternalConfig,
+      host: getHostConfig
     };
 
     next();
@@ -111,23 +150,15 @@ const install = ({ server, redoubt, start, next }) => {
     return res.result({ data });
   });
 
-  server.get("/api/system/config/internal", async (req, res) => {
-    const data = await req.system.config();
-    return res.result({ data });
-  });
+  server.get("/api/system/ping", (req, res) => res
+    .header("Access-Control-Allow-Origin", "*")
+    .header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+    .status(200)
+    .type("text/plain")
+    .send(req.system.id)
+    .end());
 
-  server.get("/api/system/ping", async (req, res) => {
-    console.log("Asking for system ID", { id: req.system.id });
-    res
-      .header("Access-Control-Allow-Origin", "*")
-      .header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-      .status(200)
-      .type("text/plain")
-      .send(req.system.id)
-      .end();
-  })
-
-  server.post("/api/system/restart", async (req, res) => {
+  /*server.post("/api/system/restart", async (req, res) => {
     const { now } = req.body;
     // Only the admin can restart the server.
     const user = await req.user.getUser();
@@ -151,7 +182,7 @@ const install = ({ server, redoubt, start, next }) => {
     console.log("Restart complete!");
     // How does the client how that we are done since we have already replied earlier?
     // - By polling /api/system/ping - the result of this API call is unique per execution.
-  });
+  });*/
 
   server.put("/api/system/config/system", async (req, res) => {
     try {
@@ -191,4 +222,4 @@ const loadLocale = locale => {
   reactIntl.addLocaleData(locale);
 }
 
-module.exports = { preinstall, install, loadLocale, getConfig, getInternalConfig, systemConfigReady, internalConfigReady }
+module.exports = { preinstall, install, loadLocale, getConfig, getInternalConfig, getHostConfig, systemConfigReady, internalConfigReady, hostConfigReady }

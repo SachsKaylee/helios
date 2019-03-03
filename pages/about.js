@@ -1,5 +1,4 @@
 import React from "react";
-import config from "../config/client";
 import axios from "axios";
 import Head from "next/head";
 import Card from "../components/layout/Card";
@@ -11,7 +10,7 @@ import A from "../components/system/A";
 import crossuser from "../utils/crossuser";
 
 export default injectIntl(class AboutPage extends React.Component {
-  static getInitialProps({ query: { id }, req }) {
+  static getInitialProps({ query: { id }, req, config }) {
     return Promise.all([
       axios.get(id ? `/api/user/${id}` : "/api/user", crossuser(req)),
       axios.get(id ? `/api/posts-of/${id}` : "/api/posts-of", crossuser(req, { params: { limit: config.postsPerAboutPage } }))
@@ -30,7 +29,7 @@ export default injectIntl(class AboutPage extends React.Component {
     // the /about page, which resolved to the default user.
     return (<>
       <Head>
-        <link key="canonical" rel="canonical" href={`https://${config.domains[0]}:${config.port.https}/about/${id}`} />
+        <link key="canonical" rel="canonical" href={`/about/${id}`} />
         <meta key="author" name="author" content={id} />
       </Head>
       <Card>
