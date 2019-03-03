@@ -17,7 +17,6 @@ const HOST_ID = "host";
 const System = mongoose.model(SYSTEM_ID, new mongoose.Schema({
   _id: { type: String, default: SYSTEM_ID },
   locale: { type: String, enum: ["en", "de"], default: "en" },
-  webmasterMail: { type: String, default: "" },
   title: { type: String, default: "Helios" },
   description: { type: String, default: "Welcome to Helios - A minimalistic CMS for the modern web." },
   topics: { type: [String], default: ["helios", "cms"] },
@@ -52,7 +51,8 @@ const Host = mongoose.model(HOST_ID, new mongoose.Schema({
   ports: {
     http: { type: Number, default: 80 },
     https: { type: Number, default: 443 }
-  }
+  },
+  mail: { type: String, default: "" },
 }, { collection: "settings" }));
 
 /**
@@ -119,7 +119,8 @@ const hostConfigReady = getHostConfig().then(async cfg => {
   cfg.ports = {
     http: parseInt(process.env.PORT_HTTP),
     https: parseInt(process.env.PORT_HTTPS)
-  }
+  };
+  cfg.mail = process.env.MAIL;
   return cfg.save().then(cfg => console.log("Updated host config from .env file", cfg));
 }).catch(error => {
   console.error("Failed to get host config", error);

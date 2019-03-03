@@ -1,17 +1,15 @@
 import React from "react";
-import { put, post, get } from "axios";
+import SettingsForm from "../../components/forms/setup/SettingsForm";
+import { put } from "axios";
 import { FormattedMessage, injectIntl } from "react-intl";
 import withStores from "../../store/withStores";
 import NotificationStore from "../../store/Notification";
-import { uuid } from "../../utils/uuid";
-import * as timeout from "../../utils/timeout";
 import CakeIcon from "mdi-react/CakeIcon";
-import HourglassFullIcon from "mdi-react/HourglassFullIcon";
-import PublishIcon from "mdi-react/PublishIcon";
-import FileDiscardIcon from "mdi-react/FileDiscardIcon";
+import Card from "../../components/layout/Card";
 import EditorCode from "../../components/EditorCode";
+import deepEqual from "deep-equal";
 
-export default withStores(NotificationStore, injectIntl(class JsonSettingsPage extends React.PureComponent {
+export default withStores(NotificationStore, injectIntl(class SetupSettingsPage extends React.PureComponent {
   static async getInitialProps(ctx) {
   }
 
@@ -19,7 +17,7 @@ export default withStores(NotificationStore, injectIntl(class JsonSettingsPage e
     super(p);
     this.onSave = this.onSave.bind(this);
     this.onChange = this.onChange.bind(this);
-    this.onDiscard = this.onDiscard.bind(this);
+    this.onChangeJson = this.onChangeJson.bind(this);
     this.state = {
       config: p.config
     }
@@ -33,28 +31,38 @@ export default withStores(NotificationStore, injectIntl(class JsonSettingsPage e
     this.props.setPageTitle(this.props.intl.formatMessage({ id: "system.setup.basic.title" }));
   }
 
-  render() {
-    return ([
-      this.renderWelcome(),
-      this.renderSettings()
-    ]);
-  }
-
-  onDiscard() {
-    this.setState({ config: this.props.config });
-  }
-
-  onChange(value) {
-    let json;
-    try {
-      json = JSON.parse(value);
-    } catch (e) {
-      json = this.state.config;
+  onChange({ _id, __v, ...values }) {
+    const { _id: _oldId, __v: __oldV, ...old } = this.state.config;
+    if (!deepEqual(values, old)) {
+      this.setState({ config: values });
     }
-    this.setState({ config: json });
+  }
+
+  onChangeJson(json) {
+    let parsed = undefined;
+    try {
+      parsed = JSON.parse(json);
+    } catch (error) {
+
+    }
+    if (parsed !== undefined) {
+      this.onChange(parsed);
+    }
   }
 
   async onSave(values) {
+    const { data } = await put("/api/system/config/system", values);
+    await this.setStateAsync({ config: data });
+    this.props.notificationStore.push({
+      _id: id + "/done",
+      icon: CakeIcon,
+      type: "success",
+      title: (<FormattedMessage id="system.setup.basic.restart.done.title" />),
+      children: (<FormattedMessage id="system.setup.basic.restart.done.description" />)
+    });
+  }
+
+  /*async onSave(values) {
     const id = "restart/" + uuid();
     try {
       this.props.notificationStore.push({
@@ -66,8 +74,8 @@ export default withStores(NotificationStore, injectIntl(class JsonSettingsPage e
         title: (<FormattedMessage id="system.setup.basic.restart.wait.title" />),
         children: (<FormattedMessage id="system.setup.basic.restart.wait.description" />)
       });
-      const newConfig = await put("/api/system/config/system", values);
-      await this.setStateAsync({ config: newConfig.data });
+      const { data } = await put("/api/system/config/system", values);
+      await this.setStateAsync({ config: data });
       await this.restartServer();
       this.props.notificationStore.close(id + "/wait");
       this.props.notificationStore.push({
@@ -79,8 +87,9 @@ export default withStores(NotificationStore, injectIntl(class JsonSettingsPage e
       });
       const { config } = this.state;
       const url = config.ssl === "none"
-        ? `http://${config.domains[0]}:${config.ports.http}/setup/json`
-        : `https://${config.domains[0]}:${config.ports.https}/setup/json`;
+        ? `http://${config.domains[0]}:${config.ports.http}/`
+        : `https://${config.domains[0]}:${config.ports.https}/`;
+      console.log("url", { url })
       // Navigate normally to force SSR refresh.
       window.location.href = url;
     } catch (error) {
@@ -121,38 +130,42 @@ export default withStores(NotificationStore, injectIntl(class JsonSettingsPage e
 
   onBack() {
     window.location.href = "/setup";
+  }*/
+
+  render() {
+    return ([
+      this.renderWelcome(),
+      this.renderSettings(),
+      this.renderJson(),
+    ]);
   }
 
   renderWelcome() {
-    return (<section className="hero is-warning" key="welcome">
+    return (<section className="hero is-primary" key="welcome">
       <div className="hero-body">
         <div className="container">
-          <h1 className="title"><FormattedMessage id="system.setup.json.title" /></h1>
-          <h2 className="subtitle"><FormattedMessage id="system.setup.json.slug" /></h2>
+          <h1 className="title"><FormattedMessage id="system.setup.basic.title" /></h1>
+          <h2 className="subtitle"><FormattedMessage id="system.setup.basic.slug" /></h2>
         </div>
       </div>
     </section>);
   }
 
   renderSettings() {
-    const { _id, __v, ...config } = this.state.config;
-    return ([(<div key="json" style={{ height: 350 }}>
-      <EditorCode mode="json" value={JSON.stringify(config, null, 2)} onChange={this.onChange} />
-    </div>),
-    (<div className="card" key="buttons">
-      <div className="card-content">
-        <div className="content">
-          <p><FormattedMessage id="system.setup.json.warning" /></p>
-          <p className="buttons">
-            <a className="button is-primary" onClick={this.onSave}>
-              <PublishIcon className="mdi-icon-spacer" /> <FormattedMessage id="system.setup.json.saveAndRestart" />
-            </a>
-            <a className="button is-danger" onClick={this.onDiscard}>
-              <FileDiscardIcon className="mdi-icon-spacer" /> <FormattedMessage id="discard" />
-            </a>
-          </p>
-        </div>
+    return (<Card key="language">
+      <p><FormattedMessage id="system.setup.basic.text" /></p>
+      <div>
+        <SettingsForm data={this.state.config} onSubmit={this.onSave} onChange={this.onChange} />
       </div>
-    </div>)])
+    </Card>);
+  }
+
+  renderJson() {
+    const { _id, __v, ...config } = this.state.config;
+    return (<Card style={{ content: { padding: 0 } }}>
+      <div key="json" style={{ height: 350 }}>
+        <EditorCode mode="json" value={JSON.stringify(config, null, 2)} onChange={this.onChangeJson} />
+      </div>
+    </Card>)
   }
 }));

@@ -1,7 +1,7 @@
 const Card = ({ image, title, subtitle, children, style }) => (
   <div className="card" style={style && style.outer ? style.outer : style}>
-    <div className="card-content">
-      <div className="media">
+    <div className="card-content" style={style && style.content ? style.content : style}>
+      {(image || title || subtitle) && (<div className="media">
         {image && (<div className="media-center">
           <img src={image.src || image} className="card-shadow top-image" alt={image.alt || image} />
         </div>)}
@@ -9,7 +9,7 @@ const Card = ({ image, title, subtitle, children, style }) => (
           {title && (<h2 className="title card-title">{title}</h2>)}
           {subtitle && (<p className="subtitle is-6 card-subtitle">{subtitle}</p>)}
         </div>)}
-      </div>
+      </div>)}
       <div className="content" style={style && style.inner ? style.inner : undefined}>
         {children}
       </div>

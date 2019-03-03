@@ -2,6 +2,7 @@ import React from "react";
 import BookOpenPageVariantIcon from "mdi-react/BookOpenPageVariantIcon";
 import AccountsIcon from "mdi-react/AccountsIcon";
 import EmailIcon from "mdi-react/EmailIcon";
+import SettingsIcon from "mdi-react/SettingsIcon";
 import RssFeedIcon from "mdi-react/RssFeedIcon";
 import { FormattedMessage, FormattedNumber, injectIntl } from "react-intl";
 import Card from "../../components/layout/Card";
@@ -63,6 +64,12 @@ export default withStores(SessionStore, injectIntl(class Admin extends React.Com
               <div>
                 <p className="heading"><A href="/admin/subscribers"><RssFeedIcon /> <FormattedMessage id="admin.subscribers" /></A></p>
                 <p className="title"><FormattedNumber value={subscriptionCount} /></p>
+              </div>
+            </div>)}
+            {sessionStore.hasPermission(permissions.admin) && (<div className="level-item has-text-centered">
+              <div>
+                <p className="heading"><A href="/setup/settings"><SettingsIcon /> <FormattedMessage id="admin.config" /></A></p>
+                <p className="title"><FormattedNumber value={Object.keys(config).length} /></p>
               </div>
             </div>)}
           </nav>

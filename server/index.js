@@ -146,10 +146,6 @@ const startCms = async () => {
   try {
     log.info("Starting helios in CMS mode");
 
-    // Get our configuration
-    const cfg = await api.system.getConfig();
-    const internalCfg = await api.system.getInternalConfig();
-
     const redoubt = new Redoubt({
       agreeGreenlockTos: process.env.AGREE_GREENLOCK_TOS == "true",
       ssl: hostCfg.ssl, // TODO: MANUAL CERTS
@@ -160,7 +156,7 @@ const startCms = async () => {
       maxPayloadSize: cfg.maxPayloadSize,
       name: "helios",
       staticFiles: null,
-      webmasterMail: cfg.webmasterMail
+      webmasterMail: hostCfg.mail
     });
     const server = redoubt.app;
 

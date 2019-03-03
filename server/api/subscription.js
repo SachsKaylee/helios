@@ -44,8 +44,7 @@ try {
   fs.writeFileSync(vapidFile, JSON.stringify(vapid));
 }
 
-// TODO: Generate VAPID keys later once we have config. (Config might also change!)
-webPush.setVapidDetails("mailto:not-implemented-helios-mail@patrick-sachs.de", vapid.publicKey, vapid.privateKey);
+webPush.setVapidDetails("mailto:" + process.env.MAIL, vapid.publicKey, vapid.privateKey);
 
 const sendPush = async (payload) => {
   payload = JSON.stringify(payload);
