@@ -2,7 +2,7 @@ module.exports = {
   meta: {
     id: "de",
     name: "Deutsch",
-    intl: require("react-intl/locale-data/de")
+    //intl: require("react-intl/locale-data/de")
   },
   branding: "Diese Website verwendet Helios.",
   loading: "Lädt…",

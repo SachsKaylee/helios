@@ -27,6 +27,7 @@ export default class _Document extends Document {
           <link rel="icon" type="image/x-icon" href="/static/content/system/favicon.ico" sizes="any" />
           <style key="style" dangerouslySetInnerHTML={{ __html: style }} />
           <style key="userStyle" dangerouslySetInnerHTML={{ __html: userStyle }} />
+          <script id="intl" key="intl" src="/api/system/locale/intl" />
           <script id="config" key="config" dangerouslySetInnerHTML={{ __html: `window.__HELIOS_CONFIG__ = ${JSON.stringify(config)};` }} />
           <script id="locale" key="locale" dangerouslySetInnerHTML={{ __html: `window.__HELIOS_LOCALE__ = ${JSON.stringify(locale)};` }} />
         </Head>

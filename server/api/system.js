@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const reactIntl = require("react-intl");
 const areIntlLocalesSupported = require("intl-locales-supported");
 const { permissions } = require("../../common/permissions");
+const path = require("path");
 
 const SYSTEM_ID = "system";
 const INTERNAL_ID = "internal";
@@ -202,6 +203,15 @@ const install = ({ server, redoubt, start, next }) => {
       }
       // Done
       return res.result({ data: newCfg });
+    } catch (error) {
+      res.result(error);
+    }
+  });
+
+  server.get("/api/system/locale/intl", async (req, res) => {
+    try {
+      const config = await req.system.config();
+      res.sendFile(path.resolve("./node_modules/react-intl/locale-data/", config.locale + ".js"))
     } catch (error) {
       res.result(error);
     }

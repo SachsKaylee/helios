@@ -2,9 +2,9 @@ import App, { Container } from "next/app";
 import Head from "next/head";
 import { get } from "axios";
 import Navbar from "./../components/Navbar";
-import { IntlProvider, addLocaleData, FormattedMessage } from "react-intl";
-import flattenObject from "../utils/flattenObject"
-import loadScript from "../utils/load-script"
+import { IntlProvider, FormattedMessage } from "react-intl";
+import flattenObject from "../utils/flattenObject";
+import isClient from "../utils/is-client";
 import areIntlLocalesSupported from "intl-locales-supported";
 import intl from "intl"; // todo: try to make this import lazy!
 import Session, { SessionProvider } from "../store/Session";
@@ -48,22 +48,24 @@ export default class _App extends App {
     this.state = {
       title: "",
       config: this.props.config,
-      locale: this.props.locale
+      locale: this.props.locale,
+      messages: flattenObject(this.props.locale)
     };
+    if (isClient()) {
+      // TODO: Lazy load, investigate if actually nedded, etc...
+      // Load the locale data for NodeJS if it has not been installed.
+      if (window.Intl && !areIntlLocalesSupported([this.state.locale.meta.id])) {
+        console.log("📡", "Polyfilling locale for client", this.state.locale.meta.id);
+        Intl.NumberFormat = intl.NumberFormat;
+        Intl.DateTimeFormat = intl.DateTimeFormat;
+      } else if (!window.Intl) {
+        console.log("📡", "Polyfilling Intl for client");
+        window.Intl = intl;
+      }
+    }
   }
 
   componentDidMount() {
-    // Load the locale data for NodeJS if it has not been installed.
-    if (window.Intl && !areIntlLocalesSupported([this.state.locale.meta.id])) {
-      console.log("📡", "Polyfilling locale for client", this.state.locale.meta.id);
-      Intl.NumberFormat = intl.NumberFormat;
-      Intl.DateTimeFormat = intl.DateTimeFormat;
-    } else if (!window.Intl) {
-      console.log("📡", "Polyfilling Intl for client");
-      window.Intl = intl;
-    }
-    addLocaleData(this.state.locale.meta.intl);
-
     sw.register();
   }
 
@@ -72,14 +74,14 @@ export default class _App extends App {
   }
 
   render() {
-    const { Component, pageProps, customPages } = this.props;
-    const { config, locale } = this.state;
+    const { Component, pageProps, customPages, locale } = this.props;
+    const { config, messages } = this.state;
     //const title = this.component && this.component.getTitle && this.component.getTitle() || "…";
     const title = this.state.title;
     return (<Container>
       <IntlProvider
         locale={locale.meta.id}
-        messages={flattenObject(locale)}>
+        messages={messages}>
         <SessionProvider>
           <NotificationProvider>
             <WebPush promptForNotificationsAfter={this.state.config.promptForNotificationsAfter} />
