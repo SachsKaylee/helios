@@ -1,8 +1,8 @@
 {
   "name": "helios",
-  "version": "1.0.0",
+  "version": "0.3.0",
   "description": "Helios CMS",
-  "main": "index.js",
+  "main": "server/index.js",
   "author": "Patrick Sachs",
   "license": "MIT",
   "repository": {
