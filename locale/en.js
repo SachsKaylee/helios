@@ -75,7 +75,8 @@ module.exports = {
     posts: "Posts",
     users: "Users",
     pages: "Pages",
-    subscribers: "Subscribers"
+    subscribers: "Subscribers",
+    config: "Configuration"
   },
   // Admin accounts overview page
   users: {
@@ -291,15 +292,20 @@ module.exports = {
   },
   system: {
     setup: {
-      welcome: { 
-        title: "Welcome to Helios!", 
-        slug: "We're glad to have you aboard",
+      welcome: {
+        title: "Welcome to Helios!",
+        slug: "We're glad to have you aboard.",
         text: "Let's get started with with most important choice, setting a language you are comfortable with. This is the language that will be used during setup, aswell as the one seen by the visitors of your website."
       },
-      basic: {
+      settings: {
         title: "Let's get your website up and running",
         slug: "We need to tweak some essential settings",
-        text: "Helios needs some information about the environment it is running in in order to be fully operational."
+        text: "Helios needs some information about the environment it is running in in order to be fully operational.",
+        saved: {
+          title: "Settings saved",
+          description: "Your settings have been saved - your website is now live and operational.",
+          done: "Done"
+        }
       },
       alreadyInstalled: {
         warning: "Warning: You are about to reinstall Helios. It has already been installed with the following settings:",
@@ -308,6 +314,45 @@ module.exports = {
       fields: {
         locale: {
           name: "Locale"
+        },
+        name: {
+          name: "Enter your desired admin username"
+        },
+        password: {
+          name: "Enter your desired admin password"
+        },
+        title: {
+          name: "Website name"
+        },
+        description: {
+          name: "Website description"
+        },
+        topics: {
+          name: "Keywords describing your website"
+        },
+        postsPerPage: {
+          name: "How many posts should be displayed on the front page?"
+        },
+        postsPerAboutPage: {
+          name: "How many posts should be displayed on each profile page?"
+        },
+        hideLogInButton: {
+          name: "Hide the log in button?"
+        },
+        defaultTags: {
+          name: "Default tags for each post"
+        },
+        promptForNotificationsAfter: {
+          name: "Prompt the user about push notifications after how many seconds?"
+        },
+        promptForAddToHomeScreenAfter: {
+          name: "Prompt the user about adding your app to their homescreen after how many seconds?"
+        },
+        branding: {
+          name: "Show a \"Proudly powered by Helios.\" branding in your footer?"
+        },
+        maxPayloadSize: {
+          name: "The maximum user request size in bytes. (Used for e.g. profile pictures, ...)"
         }
       }
     }

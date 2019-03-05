@@ -25,7 +25,7 @@ export default withStores(NotificationStore, injectIntl(class SetupSettingsPage 
   }
 
   componentDidMount() {
-    this.props.setPageTitle(this.props.intl.formatMessage({ id: "system.setup.basic.title" }));
+    this.props.setPageTitle(this.props.intl.formatMessage({ id: "system.setup.settings.title" }));
   }
 
   onChange({ _id, __v, ...values }) {
@@ -52,11 +52,20 @@ export default withStores(NotificationStore, injectIntl(class SetupSettingsPage 
     await this.setStateAsync({ config: data });
     window.__HELIOS_CONFIG__ = data;
     this.props.notificationStore.push({
-      _id: "config-saved",
       icon: CakeIcon,
       type: "success",
+      timeout: 0,
       title: (<FormattedMessage id="system.setup.settings.saved.title" />),
-      children: (<FormattedMessage id="system.setup.settings.saved.description" />)
+      children: (<FormattedMessage id="system.setup.settings.saved.description" />),
+      buttons: [{
+        _id: "done",
+        type: "link",
+        text: (<FormattedMessage id="system.setup.settings.saved.done" />),
+        action: () => {
+          // Use SSR rendering
+          window.location.href = "/admin";
+        }
+      }]
       // todo: Relaod page button
     });
   }
@@ -73,8 +82,8 @@ export default withStores(NotificationStore, injectIntl(class SetupSettingsPage 
     return (<section className="hero is-primary" key="welcome">
       <div className="hero-body">
         <div className="container">
-          <h1 className="title"><FormattedMessage id="system.setup.basic.title" /></h1>
-          <h2 className="subtitle"><FormattedMessage id="system.setup.basic.slug" /></h2>
+          <h1 className="title"><FormattedMessage id="system.setup.settings.title" /></h1>
+          <h2 className="subtitle"><FormattedMessage id="system.setup.settings.slug" /></h2>
         </div>
       </div>
     </section>);
@@ -82,7 +91,7 @@ export default withStores(NotificationStore, injectIntl(class SetupSettingsPage 
 
   renderSettings() {
     return (<Card key="language">
-      <p><FormattedMessage id="system.setup.basic.text" /></p>
+      <p><FormattedMessage id="system.setup.settings.text" /></p>
       <div>
         <SettingsForm data={this.state.config} onSubmit={this.onSave} onChange={this.onChange} />
       </div>
@@ -91,8 +100,8 @@ export default withStores(NotificationStore, injectIntl(class SetupSettingsPage 
 
   renderJson() {
     const { _id, __v, ...config } = this.state.config;
-    return (<Card style={{ content: { padding: 0 } }}>
-      <div key="json" style={{ height: 350 }}>
+    return (<Card key="json" style={{ content: { padding: 0 } }}>
+      <div style={{ height: 350 }}>
         <EditorCode mode="json" value={JSON.stringify(config, null, 2)} onChange={this.onChangeJson} />
       </div>
     </Card>)

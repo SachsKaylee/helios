@@ -4,15 +4,26 @@ import { put, get, post } from "axios";
 import { FormattedMessage, injectIntl } from "react-intl";
 import withStores from "../../store/withStores";
 import NotificationStore from "../../store/Notification";
+import { Router } from "../../common/routes";
 
 export default withStores(NotificationStore, injectIntl(class SetupPage extends React.PureComponent {
   static async getInitialProps(ctx) {
     try {
       const userCount = await get("/api/user-count");
-      return { allowUserCreation: userCount.data.count === 0 };
+      if (userCount !== 0) {
+        if (ctx.res) {
+          ctx.res.writeHead(302, {
+            Location: '/setup/settings'
+          })
+          ctx.res.end()
+        } else {
+          Router.push('/setup/settings')
+        }
+      }
+      return {};
     } catch (error) {
       console.error("Failed to load user count", error);
-      return { allowUserCreation: false };
+      return {};
     }
   }
 
@@ -43,7 +54,7 @@ export default withStores(NotificationStore, injectIntl(class SetupPage extends 
       }
       await put("/api/system/config/system", values);
       // Navigate normally to force SSR refresh.
-      window.location.href = "/setup/basic";
+      window.location.href = "/setup/settings";
     } catch (error) {
       this.props.notificationStore.pushError(error);
     }

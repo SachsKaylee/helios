@@ -2,7 +2,7 @@ import App, { Container } from "next/app";
 import Head from "next/head";
 import { get } from "axios";
 import Navbar from "./../components/Navbar";
-import { IntlProvider, FormattedMessage } from "react-intl";
+import { IntlProvider, FormattedMessage, addLocaleData } from "react-intl";
 import flattenObject from "../utils/flattenObject";
 import isClient from "../utils/is-client";
 import areIntlLocalesSupported from "intl-locales-supported";
@@ -21,7 +21,10 @@ import * as sw from "next-offline/runtime";
 import PWA from "../components/PWA";
 import 'babel-polyfill';
 import { permissions } from "../common/permissions";
-
+/*
+import DETEST from "react-intl/locale-data/de"
+addLocaleData(DETEST)
+*/
 export default class _App extends App {
   static async getInitialProps({ Component, ctx, req }) {
     const config = ctx.req ? await ctx.req.system.config() : window.__HELIOS_CONFIG__;

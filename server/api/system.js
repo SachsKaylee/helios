@@ -81,7 +81,6 @@ const getLocale = async () => {
 }
 
 const systemConfigReady = getConfig().then(cfg => {
-  console.log("Config is", cfg);
   if (!cfg) {
     cfg = new System();
     return cfg.save().then(cfg => console.log("Created initial config", cfg));
@@ -93,7 +92,6 @@ const systemConfigReady = getConfig().then(cfg => {
 });
 
 const internalConfigReady = getInternalConfig().then(async cfg => {
-  console.log("Internal config is", cfg);
   if (!cfg) {
     cfg = new Internal({
       _id: INTERNAL_ID,
@@ -110,7 +108,6 @@ const internalConfigReady = getInternalConfig().then(async cfg => {
 });
 
 const hostConfigReady = getHostConfig().then(async cfg => {
-  console.log("Host config is", cfg);
   if (!cfg) {
     cfg = new Host();
   }
