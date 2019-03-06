@@ -1,8 +1,4 @@
-// Invert env varibles first
-const dotenv = require("dotenv");
-dotenv.config({ path: ".env.local" });
-dotenv.config({ path: ".env" });
-// Load libraries
+const config = require("../config");
 const log = require("./log");
 const axios = require("axios");
 const path = require("path");
@@ -23,7 +19,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = isDevelopment ? "0" : "1";
 
 const rootPath = path.resolve("./");
 
-log.info("Helios is starting", { isDevelopment, rootPath });
+log.info("Helios is starting", { isDevelopment, rootPath, NODE_ENV: process.env.NODE_ENV });
 
 const start = async () => {
   try {

@@ -12,12 +12,11 @@
   "scripts": {
     "docker": "npm run build && docker build . --tag patrick.sachs/helios && docker save patrick.sachs/helios > helios.tar",
     "dev": "node --inspect ./server",
-    "start": "cross-env NODE_ENV=production node ./server",
-    "build": "cross-env NODE_ENV=production next build"
+    "start": "node ./server",
+    "build": "next build"
   },
   "devDependencies": {
-    "@types/react-intl": "^2.3.15",
-    "cross-env": "^5.2.0"
+    "@types/react-intl": "^2.3.15"
   },
   "dependencies": {
     "@babel/preset-env": "^7.3.4",
@@ -55,7 +54,7 @@
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "react-intl": "^2.8.0",
-    "redoubt": "file:../../redoubt/git/dist",
+    "redoubt": "^2.0.1",
     "striptags": "^3.1.1",
     "useragent": "^2.3.0",
     "web-push": "^3.3.3",

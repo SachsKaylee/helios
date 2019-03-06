@@ -1,4 +1,4 @@
-require('dotenv').config();
+const config = require("./config");
 const path = require('path');
 const glob = require('glob');
 const nextOffline = require('next-offline');
