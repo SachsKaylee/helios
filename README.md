@@ -1,6 +1,4 @@
-<div style="text-align:center">
-  <img src="https://patrick-sachs.de/api/files/serve/logo-512x512-png-png-b6cd" style="width:40%;" />
-</div>
+<img align="right" src="https://patrick-sachs.de/api/files/serve/logo-512x512-png-png-b6cd"> 
 
 # Helios 
 
