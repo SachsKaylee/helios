@@ -5,4 +5,4 @@ node_modules
 # Ignore config files, certs, ...
 config/**/
 config/style.sass
-.env
+.env.local

@@ -1,4 +1,8 @@
-const dotenv = require("dotenv").config();
+// Invert env varibles first
+const dotenv = require("dotenv");
+dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
+// Load libraries
 const log = require("./log");
 const axios = require("axios");
 const path = require("path");
