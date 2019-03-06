@@ -10,7 +10,7 @@ export default withStores(NotificationStore, injectIntl(class SetupPage extends 
   static async getInitialProps(ctx) {
     try {
       const userCount = await get("/api/user-count");
-      if (userCount !== 0) {
+      if (userCount.data.count !== 0) {
         if (ctx.res) {
           ctx.res.writeHead(302, {
             Location: '/setup/settings'

@@ -5,9 +5,29 @@ import Head from "next/head";
 import Pagination from "../components/layout/Pagination";
 import crossuser from "../utils/crossuser";
 import { injectIntl } from "react-intl";
+import { Router } from "../common/routes";
 
 export default injectIntl(class IndexPage extends React.PureComponent {
-  static async getInitialProps({ query, req, config }) {
+  static async getInitialProps({ query, req, res, config }) {
+    try {
+      const userCount  = await axios.get("/api/user-count");
+      if (userCount.data.count === 0) {
+        if (res) {
+          res.writeHead(302, {
+            Location: '/setup'
+          })
+          res.end();
+          return {};
+        } else {
+          Router.push('/setup');
+          return {};
+        }
+      }
+    }
+    catch (error) {
+      console.warn("Failed to check if we need to run the setup ... continuing as normal ...", error);
+    }
+
     try {
       const [{ data: posts }, { data: { count } }] = await Promise.all([
         axios.get("/api/post", crossuser(req, {
@@ -30,7 +50,7 @@ export default injectIntl(class IndexPage extends React.PureComponent {
       };
     }
     catch (error) {
-      console.error("failed to init index", error.message);
+      console.error("Failed to load index", error.message);
       return { count: 0, page: 1, posts: [] };
     }
   }
