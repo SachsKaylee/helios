@@ -25,6 +25,7 @@ import { permissions } from "../common/permissions";
 import DETEST from "react-intl/locale-data/de"
 addLocaleData(DETEST)
 */
+
 export default class _App extends App {
   static async getInitialProps({ Component, ctx, req }) {
     const config = ctx.req ? await ctx.req.system.config() : window.__HELIOS_CONFIG__;
@@ -65,6 +66,7 @@ export default class _App extends App {
         console.log("📡", "Polyfilling Intl for client");
         window.Intl = intl;
       }
+      addLocaleData(ReactIntlLocaleData[this.state.locale.meta.id]);
     }
   }
 

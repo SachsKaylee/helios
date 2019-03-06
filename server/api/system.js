@@ -99,7 +99,7 @@ const internalConfigReady = getInternalConfig().then(async cfg => {
       cookieSecret: await cryptoString(random.integer(36, 48)),
       subscriptionSecret: await cryptoString(random.integer(36, 48))
     });
-    return cfg.save().then(cfg => console.log("Created initial internal config", cfg));
+    return cfg.save().then(() => console.log("Created initial internal config"));
   }
   return cfg;
 }).catch(error => {
@@ -123,7 +123,7 @@ const hostConfigReady = getHostConfig().then(async cfg => {
 }).catch(error => {
   console.error("Failed to get host config", error);
   return error;
-});;
+});
 
 const preinstall = ({ server }) => {
   const id = uuid();
