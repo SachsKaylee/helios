@@ -37,6 +37,7 @@ const waitForConfig = async () => {
   await api.system.systemConfigReady;
   await api.system.internalConfigReady;
   await api.system.hostConfigReady;
+  await api.system.themeConfigReady;
 }
 
 const adjustGlobals = async () => {

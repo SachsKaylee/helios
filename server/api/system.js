@@ -11,6 +11,7 @@ const path = require("path");
 const SYSTEM_ID = "system";
 const INTERNAL_ID = "internal";
 const HOST_ID = "host";
+const THEME_ID = "theme";
 
 /**
  * Public configuration data. Accessible without authentication.
@@ -57,6 +58,25 @@ const Host = mongoose.model(HOST_ID, new mongoose.Schema({
 }, { collection: "settings" }));
 
 /**
+ * The theme of helios.
+ */
+const Theme = mongoose.model(THEME_ID, new mongoose.Schema({
+  _id: { type: String, default: THEME_ID },
+  /**
+   * The name of the theme. An empty name represents custom CSS.
+   */
+  name: { type: String, default: "" },
+  /**
+   * The version of the theme. Empty for custom CSS.
+   */
+  version: { type: String, default: "" },
+  /**
+   * The link to the CSS theme file. If custom CSS is used, this contins the actual CSS code.
+   */
+  css: { type: String, default: "" }
+}, { collection: "settings" }));
+
+/**
  * Gets the user facing configuration document.
  */
 const getConfig = () => System.findById(SYSTEM_ID).exec();
@@ -70,6 +90,11 @@ const getInternalConfig = () => Internal.findById(INTERNAL_ID).exec();
  * Gets the host configuration document.
  */
 const getHostConfig = () => Host.findById(HOST_ID).exec();
+
+/**
+ * Gets the theme configuration document.
+ */
+const getThemeConfig = () => Theme.findById(THEME_ID).exec();
 
 /**
  * Gets the locale of the CMS.
@@ -125,6 +150,17 @@ const hostConfigReady = getHostConfig().then(async cfg => {
   return error;
 });
 
+const themeConfigReady = getThemeConfig().then(async cfg => {
+  if (!cfg) {
+    cfg = new Theme();
+    return cfg.save().then(() => console.log("Created initial theme config"));
+  }
+  return cfg;
+}).catch(error => {
+  console.error("Failed to get theme config", error);
+  return error;
+});
+
 const preinstall = ({ server }) => {
   const id = uuid();
   console.log("Created Server ID", { id });
@@ -136,7 +172,8 @@ const preinstall = ({ server }) => {
       config: getConfig,
       locale: getLocale,
       internal: getInternalConfig,
-      host: getHostConfig
+      host: getHostConfig,
+      theme: getThemeConfig
     };
 
     next();
@@ -144,10 +181,6 @@ const preinstall = ({ server }) => {
 }
 
 const install = ({ server, redoubt, start, next }) => {
-  server.get("/api/system/config/system", async (req, res) => {
-    const data = await req.system.config();
-    return res.result({ data });
-  });
 
   server.get("/api/system/ping", (req, res) => res
     .header("Access-Control-Allow-Origin", "*")
@@ -156,6 +189,16 @@ const install = ({ server, redoubt, start, next }) => {
     .type("text/plain")
     .send(req.system.id)
     .end());
+
+  server.get("/api/system/config/system", async (req, res) => {
+    const data = await req.system.config();
+    return res.result({ data });
+  });
+
+  server.get("/api/system/config/theme", async (req, res) => {
+    const data = await req.system.theme();
+    return res.result({ data });
+  });
 
   /*server.post("/api/system/restart", async (req, res) => {
     const { now } = req.body;
@@ -205,6 +248,24 @@ const install = ({ server, redoubt, start, next }) => {
     }
   });
 
+  server.put("/api/system/config/theme", async (req, res) => {
+    try {
+      // Only the admin can change theme settings.
+      const user = await req.user.getUser();
+      if (!user.hasPermission(permissions.admin)) {
+        return res.error.missingPermission(permissions.admin);
+      }
+      // Update the theme with the given data
+      let theme = await req.system.theme();
+      await theme.update(req.body).exec();
+      const newTheme = await req.system.theme();
+      // Done
+      return res.result({ data: newTheme });
+    } catch (error) {
+      res.result(error);
+    }
+  });
+
   server.get("/api/system/locale/intl", async (req, res) => {
     try {
       const config = await req.system.config();
@@ -230,4 +291,12 @@ const loadLocale = locale => {
   reactIntl.addLocaleData(locale);
 }
 
-module.exports = { preinstall, install, loadLocale, getConfig, getInternalConfig, getHostConfig, systemConfigReady, internalConfigReady, hostConfigReady }
+module.exports = {
+  // Install hooks
+  preinstall, install,
+  // Configs
+  getConfig, getInternalConfig, getHostConfig, getThemeConfig,
+  systemConfigReady, internalConfigReady, hostConfigReady, themeConfigReady,
+  // Other functions
+  loadLocale
+}

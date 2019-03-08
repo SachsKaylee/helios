@@ -3,6 +3,7 @@ import BookOpenPageVariantIcon from "mdi-react/BookOpenPageVariantIcon";
 import AccountsIcon from "mdi-react/AccountsIcon";
 import EmailIcon from "mdi-react/EmailIcon";
 import SettingsIcon from "mdi-react/SettingsIcon";
+import ThemeIcon from "mdi-react/ThemeIcon";
 import RssFeedIcon from "mdi-react/RssFeedIcon";
 import { FormattedMessage, FormattedNumber, injectIntl } from "react-intl";
 import Card from "../../components/layout/Card";
@@ -18,9 +19,9 @@ export default withStores(SessionStore, injectIntl(class Admin extends React.Com
     const opts = crossuser(req);
     return Promise
       .all([
-        get("/api/post-count", opts), 
-        get("/api/user-count", opts), 
-        get("/api/page-count", opts), 
+        get("/api/post-count", opts),
+        get("/api/user-count", opts),
+        get("/api/page-count", opts),
         get("/api/subscription/count", opts)
       ])
       .then(([post, user, page, subscription]) => ({
@@ -66,10 +67,18 @@ export default withStores(SessionStore, injectIntl(class Admin extends React.Com
                 <p className="title"><FormattedNumber value={subscriptionCount} /></p>
               </div>
             </div>)}
+          </nav>
+          <nav className="level">
             {sessionStore.hasPermission(permissions.admin) && (<div className="level-item has-text-centered">
               <div>
                 <p className="heading"><A href="/setup/settings"><SettingsIcon /> <FormattedMessage id="admin.config" /></A></p>
                 <p className="title"><FormattedNumber value={Object.keys(config).length} /></p>
+              </div>
+            </div>)}
+            {sessionStore.hasPermission(permissions.admin) && (<div className="level-item has-text-centered">
+              <div>
+                <p className="heading"><A href="/setup/theme"><ThemeIcon /> <FormattedMessage id="admin.theme" /></A></p>
+                <p className="title">{"Default"}</p>
               </div>
             </div>)}
           </nav>
