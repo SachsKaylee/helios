@@ -1,5 +1,6 @@
 import { FormattedMessage } from "react-intl";
 import Card from "./layout/Card";
+import A from "./system/A";
 
 export const FullError = ({ error }) => {
   return (<Card title={<p><FormattedMessage id="error" /></p>}>
@@ -18,7 +19,11 @@ export const SlimError = ({ error }) => {
 
 const byName = ({ name }) => {
   if (name === "NotLoggedInError") {
-    return (<FormattedMessage id="errorMessages.notLoggedIn" />);
+    return (<div>
+      <FormattedMessage id="errorMessages.notLoggedIn" />
+      <br/>
+      <A href="/admin/account" class="button is-link"><FormattedMessage id="navigation.admin.signIn" /></A>
+    </div>);
   }
 }
 
@@ -32,7 +37,11 @@ const byString = string => {
     }
     if (string === "no-data") return (<FormattedMessage id="errorMessages.noData" />);
     if (string === "authorization-failure") return (<FormattedMessage id="errorMessages.authorizationFailure" />);
-    if (string === "not-logged-in") return (<FormattedMessage id="errorMessages.notLoggedIn" />);
+    if (string === "not-logged-in") return (<div>
+      <FormattedMessage id="errorMessages.notLoggedIn" />
+      <br/>
+      <A href="/admin/account" class="button is-link"><FormattedMessage id="navigation.admin.signIn" /></A>
+    </div>);
     if (string === "already-logged-in") return (<FormattedMessage id="errorMessages.notLoggedIn" />);
     if (string === "already-exists") return (<FormattedMessage id="errorMessages.alreadyExists" />);
   }
