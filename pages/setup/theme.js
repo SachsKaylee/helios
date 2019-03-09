@@ -7,29 +7,38 @@ import Card from "../../components/layout/Card";
 import classnames from "classnames";
 import ContentSaveIcon from 'mdi-react/ContentSaveIcon';
 import EditorCode from "../../components/EditorCode";
+import crossuser from "../../utils/crossuser";
 
 /**
  * This page is used to select the bulmaswatch theme.
  */
 export default withStores(NotificationStore, injectIntl(class ThemePage extends React.PureComponent {
   static async getInitialProps(ctx) {
+    const opts = crossuser(ctx.req);
     let themes = [{
       name: "",
       version: "",
-      description: "No Theme / Write your own CSS",
-      css: ""
+      description: "system.setup.theme.type.none",
+      descriptionIsIntl: true,
+      css: "",
+      license: "UNLICENSE"
     }];
     try {
       // todo: Consider fully loading the on the client -> Server may not have internet access, but the user may
-      const { data: res } = await get("https://jenil.github.io/bulmaswatch/api/themes.json");
-      themes = themes.concat(res.themes.map(theme => ({ ...theme, version: res.version })));
+      const { data: res } = await get("https://jenil.github.io/bulmaswatch/api/themes.json", opts);
+      themes = themes.concat(res.themes.map(theme => ({ ...theme, version: res.version, license: "MIT" })));
     } catch (error) {
       console.error("Failed to load theme library", error);
     }
     let active = themes[0];
     try {
-      const { data: res } = await get("/api/system/config/theme");
-      active = res;
+      const { data: res } = await get("/api/system/config/theme", opts);
+      active = { ...res, license: res.name === "" ? "UNLICENSE" : "MIT", descriptionIsIntl: true, description: "system.setup.theme.type.active" };
+      const exists = themes.find(theme => theme.name === active.name && theme.version === active.version);
+      if (!exists) {
+        themes.splice(1, 0, active);
+      }
+      // todo: Add "active" to "themes" if missing (could be the case if bulmaswatch gets an update)
     } catch (error) {
       console.error("Failed to load active theme", error);
     }
@@ -39,7 +48,8 @@ export default withStores(NotificationStore, injectIntl(class ThemePage extends 
   constructor(p) {
     super(p);
     this.state = {
-      active: this.props.active
+      active: this.props.active,
+      saving: false
     }
     this.onChangeCSS = this.onChangeCSS.bind(this);
     this.onClickSave = this.onClickSave.bind(this);
@@ -71,10 +81,17 @@ export default withStores(NotificationStore, injectIntl(class ThemePage extends 
   /**
    * Called once the user clicks the save button.
    */
-  async onClickSave() {
-    const { data } = await put("/api/system/config/theme", this.state.active);
-    this.setState({ active: data });
-    window.location.href = window.location.href;
+  onClickSave() {
+    this.setState({ saving: true }, async () => {
+      try {
+        const { data } = await put("/api/system/config/theme", this.state.active);
+        this.setState({ active: data, saving: false });
+        window.location.href = window.location.href;
+      } catch (error) {
+        this.setState({ saving: false });
+        this.props.notificationStore.pushError(error);
+      }
+    })
   }
 
   /**
@@ -97,23 +114,23 @@ export default withStores(NotificationStore, injectIntl(class ThemePage extends 
     // todo: Credit link!!!! Check license????
   }
 
+  /**
+   * Renders the toolbar at the top. Contains the save button and optionally a CSS editor.
+   */
   renderToolbar() {
     return (<Card>
-      <p className="buttons">
-        <a className="button is-primary" onClick={this.onClickSave}>
+      <p className="buttons" style={{ float: "right" }}>
+        <a className={classnames("button", "is-primary", this.state.saving && "is-loading")} onClick={this.onClickSave}>
           <ContentSaveIcon />
           <FormattedMessage id="save" />
         </a>
-        {this.props.custom && this.props.custom.actions}
       </p>
-      {(this.state.active.name === "") && (<div style={{ height: 300 }}>
-        <EditorCode value={this.state.active.css} onChange={this.onChangeCSS} mode="css">
-
-        </EditorCode>
+      {(this.state.active.name !== "")
+        ? (<p><FormattedMessage id="system.setup.theme.license" values={{ name: this.state.active.name, license: this.state.active.license }} /></p>)
+        : (<p><FormattedMessage id="system.setup.theme.enterCss" /></p>)}
+      {(this.state.active.name === "") && (<div style={{ height: 300, clear: "both" }}>
+        <EditorCode value={this.state.active.css} onChange={this.onChangeCSS} mode="css" />
       </div>)}
-      {(this.state.active.name !== "") && (<p>
-        <strong>{this.state.active.name}</strong> is licensed under the <a href="https://github.com/jenil/bulmaswatch/blob/gh-pages/LICENSE">MIT License</a>.
-      </p>)}
     </Card>)
   }
 
@@ -122,9 +139,9 @@ export default withStores(NotificationStore, injectIntl(class ThemePage extends 
    */
   renderPanel() {
     return (<nav className="panel">
-      <p className="panel-heading">
+      <div className="panel-heading">
         <FormattedMessage id="system.setup.theme.picker" />
-      </p>
+      </div>
       {this.props.themes.map(theme => this.renderPanelItem(theme))}
     </nav>);
   }
@@ -133,14 +150,14 @@ export default withStores(NotificationStore, injectIntl(class ThemePage extends 
    * Reneders a single theme in the picker on the left.
    */
   renderPanelItem(theme) {
-    const { name, description, thumb, css } = theme;
+    const { name, description, descriptionIsIntl, version } = theme;
     const onClick = () => this.onSelect(theme);
-    return (<a key={name} onClick={onClick} className={classnames("panel-block", this.state.active.name === name && "is-active")}>
+    return (<a key={name + "@" + version} onClick={onClick} className={classnames("panel-block", this.isActive(theme) && "is-active")}>
       <span className="panel-icon">
         <i className="fas fa-book" aria-hidden="true"></i>
       </span>
       {name}&nbsp;
-      <span className="is-size-7">{description}</span>
+      <span className="is-size-7">{descriptionIsIntl ? (<FormattedMessage id={description} />) : description} {version && "(v" + version + ")"}</span>
     </a>);
   }
 
@@ -150,5 +167,13 @@ export default withStores(NotificationStore, injectIntl(class ThemePage extends 
   renderPreview() {
     const uri = this.state.active.name === "" ? "blob://" + this.state.active.css : this.state.active.css;
     return (<iframe src={`/?themeOverride=${encodeURIComponent(uri)}`} style={{ width: "100%", height: "100%", minHeight: 500 }} />);
+  }
+
+  /**
+   * Checks if the given theme is active.
+   * @param {{name: string, version: string}} theme The theme.
+   */
+  isActive({ name, version }) {
+    return this.state.active.name === name && this.state.active.version === version;
   }
 }));

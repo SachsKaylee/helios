@@ -22,13 +22,15 @@ export default withStores(SessionStore, injectIntl(class Admin extends React.Com
         get("/api/post-count", opts),
         get("/api/user-count", opts),
         get("/api/page-count", opts),
-        get("/api/subscription/count", opts)
+        get("/api/subscription/count", opts),
+        get("/api/system/config/theme", opts)
       ])
-      .then(([post, user, page, subscription]) => ({
+      .then(([post, user, page, subscription, theme]) => ({
         postCount: post.data.count,
         userCount: user.data.count,
         pageCount: page.data.count,
-        subscriptionCount: subscription.data.count
+        subscriptionCount: subscription.data.count,
+        themeName: theme.data.name
       }));
   }
 
@@ -38,7 +40,7 @@ export default withStores(SessionStore, injectIntl(class Admin extends React.Com
   }
 
   render() {
-    const { postCount, userCount, pageCount, subscriptionCount, sessionStore, config } = this.props;
+    const { postCount, userCount, pageCount, subscriptionCount, sessionStore, config, themeName } = this.props;
     return (
       <div className="container">
         <Card title={config.title} subtitle={config.description}>
@@ -78,7 +80,7 @@ export default withStores(SessionStore, injectIntl(class Admin extends React.Com
             {sessionStore.hasPermission(permissions.admin) && (<div className="level-item has-text-centered">
               <div>
                 <p className="heading"><A href="/setup/theme"><ThemeIcon /> <FormattedMessage id="admin.theme" /></A></p>
-                <p className="title">{"Default"}</p>
+                <p className="title">{themeName || (<FormattedMessage id="system.setup.theme.type.none" />)}</p>
               </div>
             </div>)}
           </nav>

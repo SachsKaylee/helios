@@ -76,7 +76,8 @@ module.exports = {
     users: "Users",
     pages: "Pages",
     subscribers: "Subscribers",
-    config: "Configuration"
+    config: "Configuration",
+    theme: "Theme"
   },
   // Admin accounts overview page
   users: {
@@ -305,6 +306,16 @@ module.exports = {
           title: "Settings saved",
           description: "Your settings have been saved - your website is now live and operational.",
           done: "Done"
+        }
+      },
+      theme: {
+        title: "Themes",
+        picker: "Available themes",
+        license: "{name} is licensed under the {license} License.",
+        enterCss: "Enter your own CSS code below. The changes are previewd live - once your are statisfied hit save to apply them to your website.",
+        type: {
+          none: "No Theme / Write your own CSS",
+          active: "Your current theme"
         }
       },
       alreadyInstalled: {

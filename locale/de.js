@@ -76,7 +76,8 @@ module.exports = {
     users: "Benutzer",
     pages: "Seiten",
     subscribers: "Abonnenten",
-    config: "Konfiguration"
+    config: "Konfiguration",
+    theme: "Themen"
   },
   // Admin accounts overview page
   users: {
@@ -305,6 +306,16 @@ module.exports = {
           title: "Einstellungen gespeichert",
           description: "Ihre Einstellungen wurde gespeichert - Ihre Webseite ist nun einsatzbereit.",
           done: "Fertig"
+        }
+      },
+      theme: {
+        title: "Themen",
+        picker: "Verfügbare Themen",
+        license: "{name} ist unter der {license} Lizenz verfügbar.",
+        enterCss: "Geben Sie Ihren eigenen CSS Code ein. Die Vorschau wird in Echtzeit aktualisiert - sobald Sie zufrieden sind, können Sie die Änderungen per Klick auf den Speichern-Button anwenden.",
+        type: {
+          none: "Kein Thema / Eigenes CSS",
+          active: "Ihr aktuelles Thema"
         }
       },
       alreadyInstalled: {
