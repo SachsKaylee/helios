@@ -25,7 +25,7 @@ export default withStores(NotificationStore, injectIntl(class ThemePage extends 
     }];
     try {
       // todo: Consider fully loading the on the client -> Server may not have internet access, but the user may
-      const { data: res } = await get("https://jenil.github.io/bulmaswatch/api/themes.json", opts);
+      const { data: res } = await get("https://jenil.github.io/bulmaswatch/api/themes.json");
       themes = themes.concat(res.themes.map(theme => ({ ...theme, version: res.version, license: "MIT" })));
     } catch (error) {
       console.error("Failed to load theme library", error);
