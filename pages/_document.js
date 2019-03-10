@@ -1,6 +1,5 @@
 import Document, { Head, Main, NextScript } from "next/document";
 import style from "../styles/style.sass";
-import userStyle from "../config/style.sass";
 
 export default class _Document extends Document {
   static async getInitialProps(ctx) {

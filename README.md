@@ -5,11 +5,11 @@
 A minimalistic CMS for the modern web.
 
 - **Mobile first** - Responsive by design
-- **Modern technologies** - Progressive web app, web push, automatic HTTPs
+- **Modern technologies** - Progressive web app, web push, automatic HTTPS, ...
 - **Small size** for emerging markets - Webpage size is ~250kb
 - Optimized for **privacy** - No user data is stored unless opted in
 
-Live Demo: [https://patrick-sachs.de/](https://patrick-sachs.de/)
+Live Demo: [https://patrick-sachs.dev/](https://patrick-sachs.dev/)
 
 Wiki/Guide: [https://github.com/PatrickSachs/helios/wiki](https://github.com/PatrickSachs/helios/wiki)
 
@@ -21,7 +21,7 @@ This is done by only including the features that are **actually required**, all 
 
 ## Live production websites using Helios
 
-| [<img src="https://patrick-sachs.de/static/content/system/logo.png" width="100px;"/><br /><sub><b>patrick-sachs.de</b></sub>](https://patrick-sachs.de) | [<img src="https://sahnee.de/static/content/system/logo.png" width="100px;"/><br /><sub><b>sahnee.de</b></sub>](https://sahnee.de) |
+| [<img src="https://patrick-sachs.dev/static/content/system/logo.png" width="100px;"/><br /><sub><b>patrick-sachs.dev</b></sub>](https://patrick-sachs.dev) | [<img src="https://sahnee.de/static/content/system/logo.png" width="100px;"/><br /><sub><b>sahnee.de</b></sub>](https://sahnee.de) |
 | :---: | :---: |
 
 ## Feature List
@@ -50,10 +50,6 @@ $ npm run dev
 ```
 
 ### Compile/Deploy
-
-**Important**: Make sure to adjust the config files(`/src/config`). These contain your private keys for passwords. If you leave them at their default values, it will be rather trivial to decrypt your senstive user data.
-
-They are named `client.example.js` and `server.example.js`. Make sure to give to omit the `.example` from the file names of the configured files. There is also a `style.example.sass`. You'll want to rename that one too.
 
 ```
 $ npm install
