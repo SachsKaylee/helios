@@ -182,7 +182,7 @@ const startCms = async () => {
     server.get("/service-worker.js", (req, res) => res.sendFile("./.helios/next/service-worker.js", { root: rootPath }))
     server.get("*", routes.getRequestHandler(next));
 
-    await redoubt.listen(hostCfg.ports.https, hostCfg.ports.http === -1 ? null : hostCfg.ports.http);
+    await redoubt.listen(hostCfg.ports.https, hostCfg.ports.http === -1 ? null : hostCfg.ports.http, hostCfg.bindIp);
     log.info("Helios is listening", { ports: hostCfg.ports, domains: hostCfg.bindDomains });
   } catch (error) {
     log.error("Error while starting helios!", error);
