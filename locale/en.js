@@ -165,6 +165,7 @@ module.exports = {
     noneFound: "No posts could be found. Please try again later.",
     tags: "Tags for categorization…",
     adminArea: "Post admin area",
+    readmore: "Read more…",
     notes: {
       field: "Notes",
       placeholder: "Take some quick notes about your post. They are only visible to other authors."

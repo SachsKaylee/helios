@@ -7,11 +7,11 @@ import crossuser from "../utils/crossuser";
 import { permissions } from "../common/permissions";
 
 export default class PostPage extends React.PureComponent {
-  static async getInitialProps({ query, req}) {
-    const { data } = await axios.get("/api/post/" + query.id, crossuser(req));
+  static async getInitialProps({ query, req }) {
+    const { data } = await axios.get("/api/post/" + query.id, crossuser(req, { params: { readMore: true } }));
     return { post: data };
   }
-  
+
   componentDidMount() {
     this.props.setPageTitle(this.props.post.title);
   }
