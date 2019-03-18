@@ -2,14 +2,13 @@
 import Posts from "../components/post/PostList";
 import React from "react";
 import axios from "axios";
-import config from "../config/client";
 import Head from "next/head";
 import Pagination from "../components/layout/Pagination";
 import { injectIntl } from "react-intl";
 import crossuser from "../utils/crossuser";
 
 export default injectIntl(class TagPage extends React.PureComponent {
-  static async getInitialProps({ query, req }) {
+  static async getInitialProps({ query, req, config }) {
     const tag = query.tag || config.defaultTags[0];
     const [posts, postCount] = await Promise.all([
       axios.get(`/api/tag/posts/${encodeURIComponent(tag)}`, crossuser(req, {
@@ -39,10 +38,10 @@ export default injectIntl(class TagPage extends React.PureComponent {
   }
 
   render() {
-    const { posts, count, page, tag } = this.props;
+    const { posts, count, page, tag, config } = this.props;
     return (<>
       <Head>
-        <link key="canonical" rel="canonical" href={`https://${config.domains[0]}:${config.port.https}/tag/${encodeURIComponent(tag)}`} />
+        <link key="canonical" rel="canonical" href={`/tag/${encodeURIComponent(tag)}`} />
       </Head>
       <Pagination perPage={config.postsPerPage} count={count} page={page}>
         <Posts posts={posts.map(p => ({

@@ -1,4 +1,3 @@
-const config = require("../../config/server");
 const niceUri = require("../../utils/nice-uri");
 const mongoose = require('mongoose');
 const striptags = require('striptags');
@@ -50,32 +49,29 @@ const install = ({ server }) => {
     .then(posts => res.sendPost(posts))
     .catch(error => res.error.server(error)));
 
-  server.post("/api/post", (req, res) =>
-    req.user.getUser()
-      .then(user => {
-        if (!user.hasPermission(permissions.post)) {
-          return res.error.missingPermission(permissions.post);
-        }
-        const { title } = req.body;
-        const post = new Post({ ...req.body, date: new Date(), _id: niceUri(title) });
-        post.isNew = true;
-        return post.save().then(post => {
-          res.sendData({ data: post });
-          sendPush({ 
-            _id: "post-" + post._id, 
-            title: post.title,
-            body: striptags(post.content, []).substring(0, 250),
-            url: `https://${config.client.domains[0]}:${config.client.port.https}/post/${post._id}`
-          })
-        });
-      })
-      .catch(error => {
-        if (error === "not-logged-in") {
-          res.error.notLoggedIn();
-        } else {
-          res.error.server(error);
-        }
-      }));
+  server.post("/api/post", async (req, res) => {
+    try {
+      const config = await req.system.config();
+      const user = await req.user.getUser();
+      if (!user.hasPermission(permissions.post)) {
+        return res.error.missingPermission(permissions.post);
+      }
+      const { title } = req.body;
+      let post = new Post({ ...req.body, date: new Date(), _id: niceUri(title) });
+      post.isNew = true;
+      post = await post.save();
+      res.result({ data: post });
+      sendPush({
+        _id: "post-" + post._id,
+        title: post.title,
+        body: striptags(post.content, []).substring(0, 250),
+        // TODO: NAT, SSL = none
+        url: `https://${config.bindDomains[0]}:${config.port.https}/post/${post._id}`
+      });
+    } catch (error) {
+      res.result(error);
+    }
+  });
 
   server.get("/api/post/:id", (req, res) => {
     // We use a reg exp to find the post to allow users to potentially omit the UUID from the URL.
@@ -127,16 +123,6 @@ const install = ({ server }) => {
       .estimatedDocumentCount()
       .exec()
       .then(count => res.sendData({ data: { count } }))
-      .catch(error => res.error.server(error)));
-
-  server.get("/api/posts-of", (req, res) =>
-    Post
-      .find({ author: config.defaultUser.id })
-      .sort({ date: "descending" })
-      .skip(intOr(parseInt(req.query.skip), 0)) // todo: skip has poor performance on large collection
-      .limit(intOr(parseInt(req.query.limit), undefined))
-      .exec()
-      .then(posts => res.sendData({ data: posts }))
       .catch(error => res.error.server(error)));
 
   server.get("/api/posts-of/:id", (req, res) =>

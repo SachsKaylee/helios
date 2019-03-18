@@ -1,18 +1,15 @@
 import * as React from "react";
 import Form from "@react-formilicious/bulma";
 import TextField from "@react-formilicious/bulma/TextField";
-/*import Checkbox from "react-formilicious/fields/Checkbox";
-import required from "react-formilicious/validators/required";*/
 import { FormattedMessage, injectIntl } from "react-intl";
 import FileField from "../fields/FileField";
 import RichTextField from "../fields/RichTextField";
 import ContentSaveIcon from "mdi-react/ContentSaveIcon";
 import ErrorOutlineIcon from "mdi-react/ErrorOutlineIcon";
-import config from "../../config/client";
 import { formatBytes } from "../../utils/bytes";
 import pwned from "../../utils/validator/pwned";
 
-export default injectIntl(class LogInForm extends React.PureComponent {
+export default injectIntl(class EditProfileForm extends React.PureComponent {
   render() {
     return (<Form
       data={this.props.data}
@@ -36,10 +33,10 @@ export default injectIntl(class LogInForm extends React.PureComponent {
           type: FileField,
           name: (<FormattedMessage id="account.avatar.field" />),
           validator: avatar => ({
-            error: avatar.size > config.maxAvatarSize,
+            error: avatar.size > this.props.maxAvatarSize,
             message: (<FormattedMessage id="account.avatar.errorTooLarge" values={{
               isSize: formatBytes(avatar.size),
-              maxSize: formatBytes(config.maxAvatarSize)
+              maxSize: formatBytes(this.props.maxAvatarSize)
             }} />)
           })
         },

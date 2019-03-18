@@ -1,4 +1,3 @@
-const config = require("../../config/server");
 const webPush = require("web-push");
 const fs = require("fs");
 const path = require("path");
@@ -45,7 +44,7 @@ try {
   fs.writeFileSync(vapidFile, JSON.stringify(vapid));
 }
 
-webPush.setVapidDetails("mailto:" + config.webmasterMail, vapid.publicKey, vapid.privateKey);
+webPush.setVapidDetails("mailto:" + process.env.MAIL, vapid.publicKey, vapid.privateKey);
 
 const sendPush = async (payload) => {
   payload = JSON.stringify(payload);
@@ -129,8 +128,9 @@ const install = ({ server }) => {
    */
   server.post("/api/subscription/subscribe", async (req, res) => {
     try {
+      const internalConfig = req.system.internal();
       const { device, subscription } = req.body;
-      const _id = encrypt(subscription.endpoint, config.subscriptionSecret);
+      const _id = encrypt(subscription.endpoint, internalConfig.subscriptionSecret);
       let push = await Subscription.findById(_id);
       const agent = useragent.parse(device);
       if (!push) {

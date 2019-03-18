@@ -1,4 +1,3 @@
-const config = require("../../config/server");
 const mongoose = require('mongoose');
 const fs = require("fs-extra");
 const path = require("path");

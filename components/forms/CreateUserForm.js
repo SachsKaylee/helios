@@ -7,7 +7,6 @@ import FileField from "../fields/FileField";
 import RichTextField from "../fields/RichTextField";
 import ContentSaveIcon from "mdi-react/ContentSaveIcon";
 import CancelIcon from "mdi-react/CancelIcon";
-import config from "../../config/client";
 import required from "@react-formilicious/core/validators/required";
 import combined from "@react-formilicious/core/validators/combined";
 import pwned from "../../utils/validator/pwned";
@@ -15,7 +14,7 @@ import { permissions } from "../../common/permissions";
 
 export default injectIntl(class CreateUserForm extends Form {
   render() {
-    const { onSubmit, onCancel, isCreating, data } = this.props;
+    const { onSubmit, onCancel, isCreating, data, maxAvatarSize } = this.props;
     return <Form
       elements={isCreating ? this.newElements() : this.editElements()}
       submitText={(<span>
@@ -49,17 +48,17 @@ export default injectIntl(class CreateUserForm extends Form {
       data={data} />
   }
 
-  baseElements() {
+  baseElements(maxAvatarSize) {
     return [
       {
         key: "avatar",
         type: FileField,
         name: (<FormattedMessage id="account.avatar.field" />),
         validator: avatar => ({
-          error: avatar.size > config.maxAvatarSize,
+          error: avatar.size > maxAvatarSize,
           message: (<FormattedMessage id="account.avatar.errorTooLarge" values={{
             isSize: formatBytes(avatar.size),
-            maxSize: formatBytes(config.maxAvatarSize)
+            maxSize: formatBytes(maxAvatarSize)
           }} />)
         })
       },

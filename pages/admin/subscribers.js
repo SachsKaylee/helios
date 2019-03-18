@@ -4,7 +4,6 @@ import Card from "../../components/layout/Card";
 import MessageForm from "../../components/forms/MessageForm";
 import withStores from "../../store/withStores";
 import NotificationStore from "../../store/Notification";
-import config from "../../config/client";
 import { get, post } from "axios";
 import Media from "../../components/layout/Media";
 import Version from "../../components/Version";
@@ -63,7 +62,7 @@ export default withStores(NotificationStore, injectIntl(class PagesPage extends 
   renderComposer() {
     return (<div>
       <h2><FormattedMessage id="subscribers.newMessage" /></h2>
-      <MessageForm url={`https://${config.domains[0]}:${config.port.https}/`} onSend={this.sendNotification} />
+      <MessageForm url={window.location.origin} onSend={this.sendNotification} />
     </div>)
   }
 

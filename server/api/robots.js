@@ -1,13 +1,12 @@
-const config = require("../../config/server");
-
 const install = ({ server }) => {
-  server.get("/manifest.json", (req, res) => {
+  server.get("/manifest.json", async (req, res) => {
+    const config = req.system.config();
     res.sendData({
       data: {
-        "short_name": config.client.title,
-        "name": config.client.title,
-        "description": config.client.description,
-        "lang": config.client.locale.meta.id,
+        "short_name": config.title,
+        "name": config.title,
+        "description": config.description,
+        "lang": config.locale,
         "icons": [
           makeManifestIcon(192),
           makeManifestIcon(512)

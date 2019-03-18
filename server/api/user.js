@@ -1,11 +1,12 @@
 /*
  * Contains the user API operations for Helios like logging in
  */
-const config = require("../../config/server");
-const all = require("../../utils/all");
 const encryptWithSalt = require("../../utils/encrypt");
 const escapeRegExp = require("../../utils/escapeRegExp");
 const mongoose = require('mongoose');
+const NotLoggedInError = require("../errors/NotLoggedInError");
+const PermissionError = require("../errors/PermissionError");
+const InvalidRequestError = require("../errors/InvalidRequestError");
 const { error: DbError } = require("../db");
 const { mongoError } = require("../error-transformer");
 const { permissions, areValidPermissions } = require("../../common/permissions");
@@ -39,7 +40,7 @@ UserSchema.methods.hasPermission = function (permission, impliedByAdmin = true) 
 
 const User = mongoose.model("user", UserSchema);
 
-const install = ({ server }) => {
+const preinstall = ({ server }) => {
   // API specific middlemare
   server.use((req, res, next) => {
     // Get User & Session data
@@ -47,7 +48,7 @@ const install = ({ server }) => {
     req.user.getSession = () => req.session.helios || {};
     req.user.putSession = (values) => req.session.helios = { ...req.user.getSession(), ...values };
     req.user.maybeGetUser = () => req.user.getSession().userId ? User.findOne({ _id: req.user.getSession().userId }) : Promise.resolve(null);
-    req.user.getUser = () => req.user.maybeGetUser().then(user => { if (user) return user; throw "not-logged-in"; });
+    req.user.getUser = () => req.user.maybeGetUser().then(user => { if (user) return user; throw new NotLoggedInError(); });
 
     // Senders
     res.sendUser = (user) => Array.isArray(user)
@@ -56,12 +57,15 @@ const install = ({ server }) => {
 
     next();
   });
+}
+
+const install = ({ server }) => {
 
   // todo: handle if no default user exists (is that even reasonable?)
-  server.get("/api/user", (req, res) =>
+  /*server.get("/api/user", (req, res) =>
     User.findOne({ _id: config.defaultUser.id })
       .then(user => res.sendUser(user))
-      .catch(error => res.error.server(error)));
+      .catch(error => res.error.server(error)));*/
 
   server.get("/api/user/:id", (req, res) =>
     User.findOne({ _id: new RegExp("^" + escapeRegExp(req.params.id) + "$", "i") })
@@ -73,39 +77,67 @@ const install = ({ server }) => {
       .then(users => res.sendUser(users))
       .catch(error => res.error.server(error)))
 
-  server.post("/api/user", (req, res) =>
-    req.user.getUser()
-      .then(session => {
+  server.post("/api/user", async (req, res) => {
+    try {
+      const newUser = req.body;
+      let logIn = false;
+      // Check if we are creating the initial user.
+      if (newUser.initialUser) {
+        // The initial user can only be created if there are no other users.
+        const count = await User.countDocuments().exec();
+        if (count !== 0) {
+          throw new PermissionError();
+        }
+        // Check if the given permissions are valid. The user may be an admin. And probably should be.
+        if (!areValidPermissions(newUser.permissions, true)) {
+          throw new InvalidRequestError({ permissions: newUser.permissions });
+        }
+        const session = await req.user.maybeGetUser();
+        if (!session) {
+          logIn = true;
+        }
+      } else {
+        const session = await req.user.getUser();
         // Only the admin can create new users.
         if (!session.hasPermission(permissions.admin)) {
-          return res.error.missingPermission(permissions.admin);
+          throw new PermissionError(permissions.admin);
         }
         // Check if the given permissions are valid & that the created user is not an admin.
-        const newUser = req.body;
         if (!areValidPermissions(newUser.permissions, false)) {
-          return res.error.invalidRequest();
+          throw new InvalidRequestError({ permissions: newUser.permissions });
         }
-        // Check if we have a password.
-        if (!newUser.password) {
-          return res.error.invalidRequest();
-        }
-        // Create the user.
-        const user = new User({
-          _id: newUser.id,
-          password: encrypt(newUser.password),
-          permissions: newUser.permissions,
-          bio: newUser.bio,
-          avatar: newUser.avatar
-        });
-        /*user.isNew = true;*/
-        return user.save().then(user => res.sendUser(user));
-      })
-      .catch(error => res.sendData({ error })));
+      }
+      // Check if we have an id.
+      if (typeof newUser.id !== "string" || newUser.id.length === 0) {
+        throw new InvalidRequestError({ id: newUser.id });
+      }
+      // Check if we have a password.
+      if (typeof newUser.password !== "string" || newUser.password.length === 0) {
+        throw new InvalidRequestError({ password: newUser.password });
+      }
+      const internal = await req.system.internal();
+      // Create the user.
+      let user = new User({
+        _id: newUser.id,
+        password: encryptWithSalt(newUser.password, internal.passwordSecret),
+        permissions: newUser.permissions,
+        bio: newUser.bio,
+        avatar: newUser.avatar
+      });
+      user = await user.save();
+      if (logIn) {
+        req.user.putSession({ userId: user._id });
+      }
+      res.sendUser(user);
+    } catch (error) {
+      res.result(error);
+    }
+  });
 
   server.put("/api/user/:id", (req, res) =>
     Promise
       .all([req.user.getUser(), User.findOne({ _id: new RegExp("^" + escapeRegExp(req.params.id) + "$", "i") })])
-      .then(([session, user]) => {
+      .then(async ([session, user]) => {
         // Only the admin may update users.
         // Users update themselves through their session handler.
         if (!session.hasPermission(permissions.admin)) {
@@ -117,8 +149,9 @@ const install = ({ server }) => {
         if (!areValidPermissions(newUser.permissions, wasAdmin)) {
           return res.error.invalidRequest();
         }
+        const internal = await req.system.internal();
         // Update the user.
-        user.password = newUser.password ? encrypt(newUser.password) : user.password;
+        user.password = newUser.password ? encryptWithSalt(newUser.password, internal.passwordSecret) : user.password;
         user.permissions = newUser.permissions;
         user.bio = newUser.bio;
         user.avatar = newUser.avatar;
@@ -139,8 +172,9 @@ const install = ({ server }) => {
     }
     const { id, password } = req.body;
     User.findOne({ _id: new RegExp("^" + escapeRegExp(id) + "$", "i") })
-      .then(user => {
-        if (!user || user.password !== encrypt(password)) {
+      .then(async user => {
+        const internal = await req.system.internal();
+        if (!user || user.password !== encryptWithSalt(password, internal.passwordSecret)) {
           return res.error.authorizationFailure();
         }
         req.user.putSession({ userId: id })
@@ -165,24 +199,21 @@ const install = ({ server }) => {
     req.user.getUser()
       .then(user => res.sendUser(user))
       .catch(error => {
-        if (error === "not-logged-in") {
-          res.error.notLoggedIn();
-        } else {
-          res.error.server(error);
-        }
+        res.result(error);
       }));
 
   server.put("/api/session", (req, res) =>
     req.user.getUser()
-      .then(user => {
+      .then(async user => {
         // Check if the user confirmed the password
         const newUser = req.body;
-        if (user.password !== encrypt(newUser.password)) {
+        const internal = await req.system.internal();
+        if (user.password !== encryptWithSalt(newUser.password, internal.passwordSecret)) {
           return res.error.authorizationFailure();
         }
         // Update the user.
         if (newUser.passwordNew) {
-          user.password = encrypt(newUser.passwordNew);
+          user.password = encryptWithSalt(newUser.passwordNew, internal.passwordSecret);
         }
         user.avatar = newUser.avatar;
         user.bio = newUser.bio;
@@ -209,14 +240,12 @@ const install = ({ server }) => {
         ? res.blob(user.avatar)
         : res.redirect("/static/content/system/default-avatar.png"))
       .catch(error => res.error.server(error)));
-
-  createFactoryContent();
 }
 
 // ===============================================
 // === INTERNAL FUNCTIONS
 // ===============================================
-
+/*
 // Create default content for the CMS if ot does not exist
 const createFactoryContent = () => {
   if (config.defaultUser) {
@@ -225,7 +254,7 @@ const createFactoryContent = () => {
       _id: id,
       bio: "",
       avatar: "",
-      password: encrypt(password),
+      password: e(password),
       permissions: [permissions.admin]
     });
     user.isNew = true;
@@ -238,15 +267,14 @@ const createFactoryContent = () => {
     });
   }
 }
-
+*/
 // Misc operations
 const filterUserData = ({ _id, avatar, bio, permissions }) => ({ id: _id, avatar, bio, permissions });
-const encrypt = password => encryptWithSalt(password, config.passwordSecret);
 
 // ===============================================
 // === EXPORTS
 // ===============================================
 
 module.exports = {
-  install
+  install, preinstall
 }
