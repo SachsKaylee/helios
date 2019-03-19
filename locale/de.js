@@ -165,6 +165,7 @@ module.exports = {
     noneFound: "Es konnten keine Posts gefunden werden. Bitte versuchen Sie es später erneut.",
     tags: "Tags zum kategorisieren…",
     adminArea: "Post Administrationsbereich",
+    readmore: "Weiterlesen…",
     notes: {
       field: "Notizen",
       placeholder: "Hier können Sie Notizen zu diesem Post festhalten. Diese sind nur von anderen Authoren sichtbar."
@@ -300,7 +301,7 @@ module.exports = {
       },
       settings: {
         title: "Bringen wir alles ins Rollen",
-        slug: "Nur noch ein paar Einstellungen...",
+        slug: "Nur noch ein paar Einstellungen…",
         text: "Helios benötigt noch ein paar Informationen über Ihre Webseite um voll funktionsfähig zu sein.",
         saved: {
           title: "Einstellungen gespeichert",
@@ -363,7 +364,10 @@ module.exports = {
           name: "\"Diese Website verwendet Helios.\" Branding in der Fußzeile anzeigen?"
         },
         maxPayloadSize: {
-          name: "Die maximale Größe einer Datenübertragung in Bytes (Wird verwendet für z.B. Profilbilder, ...)"
+          name: "Die maximale Größe einer Datenübertragung in Bytes (Wird verwendet für z.B. Profilbilder, …)"
+        },
+        readMore: {
+          name: "\"Weiterlesen…\" einfügen nach wie vielen Zeichen?"
         }
       }
     }

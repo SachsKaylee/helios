@@ -13,7 +13,7 @@ export default injectIntl(class AboutPage extends React.Component {
   static getInitialProps({ query: { id }, req, config }) {
     return Promise.all([
       axios.get(id ? `/api/user/${id}` : "/api/user", crossuser(req)),
-      axios.get(id ? `/api/posts-of/${id}` : "/api/posts-of", crossuser(req, { params: { limit: config.postsPerAboutPage } }))
+      axios.get(id ? `/api/posts-of/${id}` : "/api/posts-of", crossuser(req, { params: { limit: config.postsPerAboutPage, readLess: true } }))
     ]).then(([userData, postData]) => ({ user: userData.data, latestPosts: postData.data }))
       .catch(error => ({ error: error.response.data }));
   }

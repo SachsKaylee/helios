@@ -3,7 +3,7 @@ import Card from "../layout/Card";
 import { FormattedMessage } from "react-intl";
 import Media from "../layout/Media";
 
-const Post = ({ _id, author, date, title, content, tags, notes, admin }) => (
+const Post = ({ _id, author, date, title, content, tags, notes, admin, hasReadMore }) => (
   <>
     <Card
       image={`/api/avatar/${author}`}
@@ -22,6 +22,10 @@ const Post = ({ _id, author, date, title, content, tags, notes, admin }) => (
           </div>
         </Media>)}
         <div className="user-content" dangerouslySetInnerHTML={{ __html: content }} />
+        {hasReadMore && (<div>
+          <hr />
+          <p><A href={`/post/${_id}`}><FormattedMessage id="post.readmore" /></A></p>
+          </div>)}
         {tags && tags.length ? (<div className="tags">{tags.map(tag => (<span className="tag" key={tag}>
           <A href={`/tag/${encodeURIComponent(tag)}`}>{tag}</A>
         </span>))}</div>) : null}

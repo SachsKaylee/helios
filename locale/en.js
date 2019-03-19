@@ -165,6 +165,7 @@ module.exports = {
     noneFound: "No posts could be found. Please try again later.",
     tags: "Tags for categorization…",
     adminArea: "Post admin area",
+    readmore: "Read more…",
     notes: {
       field: "Notes",
       placeholder: "Take some quick notes about your post. They are only visible to other authors."
@@ -363,7 +364,10 @@ module.exports = {
           name: "Show a \"Proudly powered by Helios.\" branding in your footer?"
         },
         maxPayloadSize: {
-          name: "The maximum user request size in bytes. (Used for e.g. profile pictures, ...)"
+          name: "The maximum user request size in bytes. (Used for e.g. profile pictures, …)"
+        },
+        readMore: {
+          readMore: "Insert \"Read more…\" after how many characters?"
         }
       }
     }

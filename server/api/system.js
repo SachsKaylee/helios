@@ -29,7 +29,8 @@ const System = mongoose.model(SYSTEM_ID, new mongoose.Schema({
   promptForNotificationsAfter: { type: Number, default: 10 * 1000 },
   promptForAddToHomeScreenAfter: { type: Number, default: 120 * 1000 },
   branding: { type: Boolean, default: true },
-  maxPayloadSize: { type: Number, default: 300 * 1024 }
+  maxPayloadSize: { type: Number, default: 300 * 1024 },
+  readMore: { type: Number, default: 1000 }
 }, { collection: "settings" }));
 
 /**
@@ -108,9 +109,8 @@ const getLocale = async () => {
 const systemConfigReady = getConfig().then(cfg => {
   if (!cfg) {
     cfg = new System();
-    return cfg.save().then(cfg => console.log("Created initial config", cfg));
   }
-  return cfg;
+  return cfg.save().then(cfg => console.log("System config ready...", cfg));
 }).catch(error => {
   console.error("Failed to get config", error);
   return error;
@@ -124,9 +124,8 @@ const internalConfigReady = getInternalConfig().then(async cfg => {
       cookieSecret: await cryptoString(random.integer(36, 48)),
       subscriptionSecret: await cryptoString(random.integer(36, 48))
     });
-    return cfg.save().then(() => console.log("Created initial internal config"));
   }
-  return cfg;
+  return cfg.save().then(() => console.log("Internal config ready..."));
 }).catch(error => {
   console.error("Failed to get internal config", error);
   return error;
@@ -144,7 +143,7 @@ const hostConfigReady = getHostConfig().then(async cfg => {
     https: parseInt(process.env.PORT_HTTPS)
   };
   cfg.mail = process.env.MAIL;
-  return cfg.save().then(cfg => console.log("Updated host config from .env file", cfg));
+  return cfg.save().then(cfg => console.log("Host config ready..."));
 }).catch(error => {
   console.error("Failed to get host config", error);
   return error;
@@ -153,9 +152,8 @@ const hostConfigReady = getHostConfig().then(async cfg => {
 const themeConfigReady = getThemeConfig().then(async cfg => {
   if (!cfg) {
     cfg = new Theme();
-    return cfg.save().then(() => console.log("Created initial theme config"));
   }
-  return cfg;
+  return cfg.save().then(() => console.log("Theme config ready..."));
 }).catch(error => {
   console.error("Failed to get theme config", error);
   return error;
