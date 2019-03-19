@@ -97,6 +97,12 @@ export default injectIntl(class SettingsForm extends React.PureComponent {
           key: "maxPayloadSize",
           name: (<FormattedMessage id="system.setup.fields.maxPayloadSize.name" />),
           mode: "number"
+        },
+        {
+          type: TextField,
+          key: "readMore",
+          name: (<FormattedMessage id="system.setup.fields.readMore.name" />),
+          mode: "number"
         }
       ]}
       buttons={[

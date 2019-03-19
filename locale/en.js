@@ -364,7 +364,10 @@ module.exports = {
           name: "Show a \"Proudly powered by Helios.\" branding in your footer?"
         },
         maxPayloadSize: {
-          name: "The maximum user request size in bytes. (Used for e.g. profile pictures, ...)"
+          name: "The maximum user request size in bytes. (Used for e.g. profile pictures, …)"
+        },
+        readMore: {
+          readMore: "Insert \"Read more…\" after how many characters?"
         }
       }
     }
