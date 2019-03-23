@@ -368,6 +368,9 @@ module.exports = {
         },
         readMore: {
           name: "\"Weiterlesen…\" einfügen nach wie vielen Zeichen?"
+        },
+        favicon: {
+          name: "Favicon der Webseite"
         }
       }
     }

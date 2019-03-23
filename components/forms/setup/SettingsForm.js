@@ -5,12 +5,11 @@ import TextArea from "@react-formilicious/bulma/TextArea";
 import ToggleField from "@react-formilicious/bulma/ToggleField";
 import TagList from "@react-formilicious/bulma/TagList";
 import required from "@react-formilicious/core/validators/required";
-import combined from "@react-formilicious/core/validators/combined";
 import { FormattedMessage, injectIntl } from "react-intl";
 import PublishIcon from "mdi-react/PublishIcon";
-import ArrowBackIcon from "mdi-react/ArrowBackIcon";
 import DropdownField from "../../fields/DropdownField";
 import FileDiscardIcon from "mdi-react/FileDiscardIcon";
+import FileBrowserField from "../../fields/FileBrowserField";
 
 export default injectIntl(class SettingsForm extends React.PureComponent {
   render() {
@@ -103,6 +102,11 @@ export default injectIntl(class SettingsForm extends React.PureComponent {
           key: "readMore",
           name: (<FormattedMessage id="system.setup.fields.readMore.name" />),
           mode: "number"
+        },
+        {
+          type: FileBrowserField,
+          key: "favicon",
+          name: (<FormattedMessage id="system.setup.fields.favicon.name" />)
         }
       ]}
       buttons={[
