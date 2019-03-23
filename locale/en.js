@@ -367,7 +367,7 @@ module.exports = {
           name: "The maximum user request size in bytes. (Used for e.g. profile pictures, …)"
         },
         readMore: {
-          readMore: "Insert \"Read more…\" after how many characters?"
+          name: "Insert \"Read more…\" after how many characters?"
         },
         logo: {
           name: "Logo",
