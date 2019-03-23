@@ -95,8 +95,22 @@ const FileBrowserField = withDynamic({
      */
     renderFileList(files) {
       if (!files || !files.length) return (<FormattedMessage id="form.noFilesSelected" />);
-      if (files.length !== 1) return (<FormattedMessage id="form.filesSelected" values={{ n: files.length }} />);
-      return files[0];
+      if (files.length !== 1) return (<span>
+        {this.props.onlyImages && files.map(file => this.renderImage(file))}
+        <FormattedMessage id="form.filesSelected" values={{ n: files.length }} />
+      </span>);
+      return (<span>
+        {this.props.onlyImages && this.renderImage(files[0])}
+        {files[0]}
+      </span>);
+    }
+
+    /**
+     * Renders a single image.
+     * @param {string} img The image path.
+     */
+    renderImage(img) {
+      return (<img key={img} src={img} align="top" style={{ maxHeight: 22, maxWidth: 22, marginRight: 3 }} />);
     }
   });
 
