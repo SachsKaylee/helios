@@ -170,12 +170,12 @@ const startCms = async () => {
     for (let key in api) {
       if (api[key].preinstall) {
         log.debug("Preinstalling API", { key });
-        api[key].preinstall({ server, redoubt, start, next });
+        await api[key].preinstall({ server, redoubt, start, next });
       }
     }
     for (let key in api) {
       log.debug("Installing API", { key });
-      api[key].install({ server, redoubt, start, next });
+      await api[key].install({ server, redoubt, start, next });
     }
     log.info("All APIs have been installed.");
     // Fallback

@@ -5,6 +5,8 @@ const niceUri = require("../../utils/nice-uri");
 const unqiue = require("../../utils/unqiue");
 const blobExtract = require("../../utils/blob-extract");
 const { permissions } = require("../../common/permissions");
+const readdirRecursive = require("../../utils/readdir-recursive");
+const mime = require("mime");
 
 /**
  * This is the permission required to upload/delete/etc. files.
@@ -33,6 +35,35 @@ const File = mongoose.model("file", new mongoose.Schema({
   });
   file.save();
 }*/
+
+const preinstall = () => {
+  const filesDir = path.resolve("./static/content/system");
+  const files = readdirRecursive(filesDir);
+  const promise = files.map(async filePath => {
+    const name = path.basename(filePath);
+    const id = niceUri(name, "system");
+    let file = await File.findById(id);
+    if (!file) {
+      const absolutePath = path.join(filesDir, filePath);
+      const fileBrowserPath = filePath.split("/");
+      const extension = path.extname(name);
+      fileBrowserPath.splice(0, 0, "system");
+      fileBrowserPath.pop();
+      let content = await fs.readFile(absolutePath, { encoding: "base64" });
+      content = "data:" + mime.getType(extension) + ";base64," + content;
+      file = new File({
+        _id: id,
+        name: name,
+        path: fileBrowserPath,
+        data: content,
+        date: new Date()
+      });
+      await file.save();
+    }
+    return file;
+  });
+  return Promise.all(promise);
+}
 
 const install = ({ server }) => {
   // API specific middlemare
@@ -409,4 +440,4 @@ const deleteTempFolder = path => {
  */
 const isImage = blob => blob.startsWith("data:image/");
 
-module.exports = { install }
+module.exports = { preinstall, install }
