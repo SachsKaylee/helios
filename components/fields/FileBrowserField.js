@@ -57,8 +57,8 @@ const FileBrowserField = withDynamic({
      * @param {{baseurl: string, files: string[]}} e The event.
      */
     selectedFile(e) {
-      const { onChange } = this.props;
-      onChange(e.files);
+      const { onChange, multiple } = this.props;
+      onChange(multiple ? e.files : (e.files[0] || ""));
     }
 
     render() {
