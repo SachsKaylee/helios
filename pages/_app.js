@@ -98,7 +98,7 @@ export default class _App extends App {
               {session => (
                 <Navbar
                   title={(<span>{config && config.title}{title && " - " + title}</span>)}
-                  logo="/static/content/system/logo.png">
+                  logo={config.logo}>
                   {[
                     {
                       title: (<FormattedMessage id="navigation.home" />),

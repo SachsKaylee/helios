@@ -369,6 +369,9 @@ module.exports = {
         readMore: {
           name: "\"Weiterlesen…\" einfügen nach wie vielen Zeichen?"
         },
+        logo: {
+          name: "Logo"
+        },
         favicon: {
           name: "Favicon der Webseite"
         },

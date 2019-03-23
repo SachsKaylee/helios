@@ -105,6 +105,12 @@ export default injectIntl(class SettingsForm extends React.PureComponent {
         },
         {
           type: FileBrowserField,
+          key: "logo",
+          name: (<FormattedMessage id="system.setup.fields.logo.name" />),
+          onlyImages: true
+        },
+        {
+          type: FileBrowserField,
           key: "favicon",
           name: (<FormattedMessage id="system.setup.fields.favicon.name" />),
           onlyImages: true

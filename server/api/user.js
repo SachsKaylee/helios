@@ -221,9 +221,9 @@ const install = ({ server }) => {
       })
       .catch(error => {
         if (error === "not-logged-in") {
-          res.error.authorizationFailure();
+          return res.error.authorizationFailure();
         } else {
-          res.error.server(error);
+          return res.error.server(error);
         }
       }));
 
@@ -231,13 +231,13 @@ const install = ({ server }) => {
     try {
       const user = await req.user.getUser();
       if (user.avatar) {
-        res.blob(user.avatar);
+        return res.blob(user.avatar);
       } else {
         const settings = await req.system.config();
-        res.redirect(settings.defaultAvatar);
+        return res.redirect(settings.defaultAvatar);
       }
     } catch (error) {
-      res.result(error);
+      return res.result(error);
     }
   });
 
@@ -248,13 +248,13 @@ const install = ({ server }) => {
         return res.error.notFound();
       }
       if (user.avatar) {
-        res.blob(user.avatar);
+        return res.blob(user.avatar);
       } else {
         const settings = await req.system.config();
-        res.redirect(settings.defaultAvatar);
+        return res.redirect(settings.defaultAvatar);
       }
     } catch (error) {
-      res.result(error);
+      return res.result(error);
     }
   });
 }

@@ -31,6 +31,7 @@ const System = mongoose.model(SYSTEM_ID, new mongoose.Schema({
   branding: { type: Boolean, default: true },
   maxPayloadSize: { type: Number, default: 300 * 1024 },
   readMore: { type: Number, default: 1000 },
+  logo: { type: String, default: "/api/files/serve/logo-png-system" },
   favicon: { type: String, default: "/api/files/serve/favicon-ico-system" },
   defaultAvatar: { type: String, default: "/api/files/serve/default-avatar-png-system" }
 }, { collection: "settings" }));
