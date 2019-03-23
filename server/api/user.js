@@ -221,25 +221,42 @@ const install = ({ server }) => {
       })
       .catch(error => {
         if (error === "not-logged-in") {
-          res.error.authorizationFailure();
+          return res.error.authorizationFailure();
         } else {
-          res.error.server(error);
+          return res.error.server(error);
         }
       }));
 
-  server.get("/api/avatar/", (req, res) =>
-    req.user.getUser()
-      .then(user => user && user.avatar
-        ? res.blob(user.avatar)
-        : res.redirect("/static/content/system/default-avatar.png"))
-      .catch(error => res.error.server(error)));
+  server.get("/api/avatar/", async (req, res) => {
+    try {
+      const user = await req.user.getUser();
+      if (user.avatar) {
+        return res.blob(user.avatar);
+      } else {
+        const settings = await req.system.config();
+        return res.redirect(settings.defaultAvatar);
+      }
+    } catch (error) {
+      return res.result(error);
+    }
+  });
 
-  server.get("/api/avatar/:id", (req, res) =>
-    User.findOne({ _id: new RegExp("^" + escapeRegExp(req.params.id) + "$", "i") })
-      .then(user => user && user.avatar
-        ? res.blob(user.avatar)
-        : res.redirect("/static/content/system/default-avatar.png"))
-      .catch(error => res.error.server(error)));
+  server.get("/api/avatar/:id", async (req, res) => {
+    try {
+      const user = await User.findOne({ _id: new RegExp("^" + escapeRegExp(req.params.id) + "$", "i") }).exec();
+      if (!user) {
+        return res.error.notFound();
+      }
+      if (user.avatar) {
+        return res.blob(user.avatar);
+      } else {
+        const settings = await req.system.config();
+        return res.redirect(settings.defaultAvatar);
+      }
+    } catch (error) {
+      return res.result(error);
+    }
+  });
 }
 
 // ===============================================

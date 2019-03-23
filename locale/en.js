@@ -368,6 +368,17 @@ module.exports = {
         },
         readMore: {
           readMore: "Insert \"Read more…\" after how many characters?"
+        },
+        logo: {
+          name: "Logo",
+          name192: "Logo (192x192 resolution)",
+          name512: "Logo (512x512 resolution)"
+        },
+        favicon: {
+          name: "Favicon of your website"
+        },
+        defaultAvatar: {
+          name: "Default user avatar"
         }
       }
     }

@@ -30,7 +30,14 @@ const System = mongoose.model(SYSTEM_ID, new mongoose.Schema({
   promptForAddToHomeScreenAfter: { type: Number, default: 120 * 1000 },
   branding: { type: Boolean, default: true },
   maxPayloadSize: { type: Number, default: 300 * 1024 },
-  readMore: { type: Number, default: 1000 }
+  readMore: { type: Number, default: 1000 },
+  logo: {
+    full: { type: String, default: "/api/files/serve/logo-png-system" },
+    "192": { type: String, default: "/api/files/serve/logo-192x192-png-system" },
+    "512": { type: String, default: "/api/files/serve/logo-512x512-png-system" }
+  },
+  favicon: { type: String, default: "/api/files/serve/favicon-ico-system" },
+  defaultAvatar: { type: String, default: "/api/files/serve/default-avatar-png-system" }
 }, { collection: "settings" }));
 
 /**

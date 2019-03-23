@@ -24,7 +24,7 @@ export default class _Document extends Document {
           <meta key="description" name="description" content={config ? config.description : "Helios Setup"} />
           {config && <meta key="keywords" name="keywords" content={config.topics.join(", ")} />}
           <link key="manifest" rel="manifest" href="/manifest.json" />
-          <link rel="icon" type="image/x-icon" href="/static/content/system/favicon.ico" sizes="any" />
+          <link rel="icon" type="image/x-icon" href={config.favicon} sizes="any" />
           <style key="style" dangerouslySetInnerHTML={{ __html: style }} />
           {this.isThemeFile && (<link id="theme" key="theme" rel="stylesheet" type="text/css" data-version={theme.version} href={this.css} />)}
           {!this.isThemeFile && (<style id="theme" key="theme" data-version={theme.version}>{this.css}</style>)}
