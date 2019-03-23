@@ -39,7 +39,7 @@
     "immutable": "^3.8.2",
     "intl": "^1.2.5",
     "intl-locales-supported": "^1.0.0",
-    "jodit": "github:PatrickSachs/jodit#feature/relative-paths-2",
+    "jodit": "^3.2.44",
     "js-beautify": "^1.9.0",
     "js-sha1": "^0.6.0",
     "mdi-react": "^5.2.0",
