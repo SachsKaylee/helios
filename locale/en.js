@@ -371,6 +371,9 @@ module.exports = {
         },
         favicon: {
           name: "Favicon of your website"
+        },
+        defaultAvatar: {
+          name: "Default user avatar"
         }
       }
     }
