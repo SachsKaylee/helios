@@ -49,7 +49,7 @@ const FileBrowserField = withDynamic({
      */
     selectFile(e) {
       e.preventDefault();
-      this.fileBrowser.open(this.selectedFile);
+      this.fileBrowser.open(this.selectedFile, !!this.props.onlyImages);
     }
 
     /**

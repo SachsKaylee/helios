@@ -106,7 +106,8 @@ export default injectIntl(class SettingsForm extends React.PureComponent {
         {
           type: FileBrowserField,
           key: "favicon",
-          name: (<FormattedMessage id="system.setup.fields.favicon.name" />)
+          name: (<FormattedMessage id="system.setup.fields.favicon.name" />),
+          onlyImages: true
         }
       ]}
       buttons={[
