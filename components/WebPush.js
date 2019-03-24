@@ -27,14 +27,18 @@ export default withStores(NotificationStore, class WebPush extends React.PureCom
 
   async subscribeToNotifications(key) {
     const sw = await navigator.serviceWorker.getRegistration();
-    const subscription = await sw.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(key)
-    });
-    post("/api/subscription/subscribe", {
-      subscription,
-      device: navigator.userAgent
-    });
+    if (sw) {
+      const subscription = await sw.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(key)
+      });
+      post("/api/subscription/subscribe", {
+        subscription,
+        device: navigator.userAgent
+      });
+    } else {
+      console.error("No Service Worker found.");
+    }
   }
 
   /**
