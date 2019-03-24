@@ -147,12 +147,33 @@ const startCms = async () => {
   try {
     log.info("Starting helios in CMS mode");
 
+    const redoubtDevelopment = process.env.FORCE_REDOUBT_PRODUCTION ? false : isDevelopment;
+    let ssl = "none";
+    switch (hostCfg.ssl) {
+      case "none": {
+        ssl = "none";
+        break;
+      }
+      case "letsEncrypt": {
+        ssl = "letsEncrypt";
+        break;
+      }
+      case "certificate": {
+        ssl = {
+          key: hostCfg.certs.privateKey,
+          cert: hostCfg.certs.publicKey,
+          allowUnsigned: redoubtDevelopment
+        };
+        break;
+      }
+    }
+
     const redoubt = new Redoubt({
       agreeGreenlockTos: process.env.AGREE_GREENLOCK_TOS == "true",
-      ssl: hostCfg.ssl, // TODO: MANUAL CERTS
+      ssl: ssl,
       cookieSecret: internalCfg.cookieSecret,
       domains: hostCfg.bindDomains,
-      isDevelopment: process.env.FORCE_REDOUBT_PRODUCTION ? false : isDevelopment,
+      isDevelopment: redoubtDevelopment,
       letsEncryptCertDirectory: "./.helios/certs",
       maxPayloadSize: cfg.maxPayloadSize,
       name: "helios",
