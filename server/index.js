@@ -141,8 +141,8 @@ const startCms = async () => {
   // We use the domain in the request and not localhost since our certificate is not signed against localhost, 
   // and we don't accept unsigned certs in production.
   axios.defaults.baseURL = hostCfg.ssl === "none"
-    ? `http://${hostCfg.bindDomains[0]}:${hostCfg.ports.http}`
-    : `https://${hostCfg.bindDomains[0]}:${hostCfg.ports.https}`;
+    ? `http://${hostCfg.bindDomains[0]}:${process.env.EXPOSED_PORT ? process.env.EXPOSED_PORT : hostCfg.ports.http}`
+    : `https://${hostCfg.bindDomains[0]}:${process.env.EXPOSED_PORT ? process.env.EXPOSED_PORT : hostCfg.ports.https}`;
 
   try {
     log.info("Starting helios in CMS mode");
