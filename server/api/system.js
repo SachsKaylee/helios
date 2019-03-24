@@ -7,6 +7,7 @@ const reactIntl = require("react-intl");
 const areIntlLocalesSupported = require("intl-locales-supported");
 const { permissions } = require("../../common/permissions");
 const path = require("path");
+const fs = require("fs-extra");
 
 const SYSTEM_ID = "system";
 const INTERNAL_ID = "internal";
@@ -58,6 +59,10 @@ const Host = mongoose.model(HOST_ID, new mongoose.Schema({
   bindIp: { type: String, default: "0.0.0.0" },
   bindDomains: { type: [String], default: ["localhost"] },
   ssl: { type: String, enum: ["letsEncrypt", "certificate", "none"], default: "none" },
+  certs: {
+    publicKey: { type: String, default: "" },
+    privateKey: { type: String, default: "" }
+  },
   ports: {
     http: { type: Number, default: 80 },
     https: { type: Number, default: 443 }
@@ -149,8 +154,12 @@ const hostConfigReady = getHostConfig().then(async cfg => {
     http: parseInt(process.env.PORT_HTTP),
     https: parseInt(process.env.PORT_HTTPS)
   };
+  cfg.certs = {
+    publicKey: (process.env.SSL_CERT ? await fs.readFile(process.env.SSL_CERT) : "").toString(),
+    privateKey: (process.env.SSL_KEY ? await fs.readFile(process.env.SSL_KEY) : "").toString()
+  };
   cfg.mail = process.env.MAIL;
-  return cfg.save().then(cfg => console.log("Host config ready..."));
+  return cfg.save().then(() => console.log("Host config ready..."));
 }).catch(error => {
   console.error("Failed to get host config", error);
   return error;
