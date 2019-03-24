@@ -1,10 +1,10 @@
-require('dotenv').config();
+const config = require("./config");
 const path = require('path');
 const glob = require('glob');
 const nextOffline = require('next-offline');
 
 const isDevelopment = process.env.NODE_ENV !== "production";
-console.log("NODE_ENV", process.env.NODE_ENV, isDevelopment);
+console.log("Creating next.js config", { env: process.env.NODE_ENV, isDevelopment });
 
 module.exports = nextOffline({
 

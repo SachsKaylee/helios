@@ -1,5 +1,4 @@
 import React from "react";
-import config from "../config/client";
 import withStores from "../store/withStores";
 import NotificationStore from "../store/Notification";
 import AppsIcon from "mdi-react/AppsIcon";
@@ -17,7 +16,7 @@ export default withStores(NotificationStore, class PWA extends React.PureCompone
   }
 
   componentDidMount() {
-    if (config.promptForAddToHomeScreenAfter) {
+    if (this.props.promptForAddToHomeScreenAfter) {
       window.addEventListener('beforeinstallprompt', (e) => {
         // Prevent Chrome 67 and earlier from automatically showing the prompt
         e.preventDefault();
@@ -26,7 +25,7 @@ export default withStores(NotificationStore, class PWA extends React.PureCompone
         const didSelect = localStorage.getItem(STORAGE_DID_SELECT);
         if (!didSelect) {
           this.setState({ promptEvent: e });
-          window.setTimeout(this.promptForPwa, config.promptForAddToHomeScreenAfter);
+          window.setTimeout(this.promptForPwa, this.props.promptForAddToHomeScreenAfter);
         }
       });
     }

@@ -1,5 +1,4 @@
 import * as React from "react";
-import Head from "next/head";
 
 export default class EditorCode extends React.Component {
   constructor(p) {
@@ -15,12 +14,15 @@ export default class EditorCode extends React.Component {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(next) {
-    if (next.mode !== this.props.mode) {
+  componentDidUpdate(old) {
+    if (old.mode !== this.props.mode) {
       this.setMode(next.mode);
     }
-    if (next.readOnly !== this.props.readOnly) {
-      this.setMode(next.readOnly);
+    if (old.readOnly !== this.props.readOnly) {
+      this.setMode(this.props.readOnly);
+    }
+    if (old.value !== this.props.value) {
+      this.setValue(this.props.value);
     }
   }
 
@@ -59,6 +61,14 @@ export default class EditorCode extends React.Component {
     if (this.ace) {
       this.ace.destroy();
       this.ace = null;
+    }
+  }
+
+  setValue(value) {
+    if (this.ace) {
+      const pos = this.ace.session.selection.toJSON();
+      this.ace.setValue(value);
+      this.ace.session.selection.fromJSON(pos);
     }
   }
 

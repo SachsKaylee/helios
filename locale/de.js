@@ -2,7 +2,7 @@ module.exports = {
   meta: {
     id: "de",
     name: "Deutsch",
-    intl: require("react-intl/locale-data/de")
+    //intl: require("react-intl/locale-data/de")
   },
   branding: "Diese Website verwendet Helios.",
   loading: "Lädt…",
@@ -41,10 +41,12 @@ module.exports = {
   hidden: "Versteckt",
   root: "Basisebene",
   apply: "Anwenden",
+  back: "Zurück",
   formValueRequired: "\"{field}\" muss angegeben werden!",
   form: {
     submit: "Senden",
     chooseFile: "Datei auswählen…",
+    select: "Auswählen…",
     noFilesSelected: "Keine Dateien ausgewählt…",
     filesSelected: "{n} Dateien ausgewählt."
   },
@@ -73,7 +75,9 @@ module.exports = {
     posts: "Posts",
     users: "Benutzer",
     pages: "Seiten",
-    subscribers: "Abonnenten"
+    subscribers: "Abonnenten",
+    config: "Konfiguration",
+    theme: "Themen"
   },
   // Admin accounts overview page
   users: {
@@ -161,6 +165,7 @@ module.exports = {
     noneFound: "Es konnten keine Posts gefunden werden. Bitte versuchen Sie es später erneut.",
     tags: "Tags zum kategorisieren…",
     adminArea: "Post Administrationsbereich",
+    readmore: "Weiterlesen…",
     notes: {
       field: "Notizen",
       placeholder: "Hier können Sie Notizen zu diesem Post festhalten. Diese sind nur von anderen Authoren sichtbar."
@@ -211,6 +216,7 @@ module.exports = {
   },
   about: {
     title: "Über {id}…",
+    permissions: "Berechtigungen:",
     recentPosts: "Neueste Posts"
   },
   account: {
@@ -236,6 +242,7 @@ module.exports = {
       field: "Avatar ändern",
       errorTooLarge: "Der Avatar darf nicht größer als {maxSize} sein. (Gewählte Größe: {isSize})",
     },
+    permissions: "Berechtigungen:",
     welcome: "Willkommen, {id}!",
     viewPublic: "Öffentliches Profil ansehen",
     updateProfile: "Benutzerprofil aktualisieren",
@@ -283,6 +290,97 @@ module.exports = {
   pages: {
     blog: {
       title: "Blog"
+    }
+  },
+  system: {
+    setup: {
+      welcome: {
+        title: "Willkommen zu Helios!",
+        slug: "Gut Sie an Bord zu haben.",
+        text: "Beginnen wir mit der wichtigsten Auswahl, der Wahl der Sprache. Bitte wählen Sie eine Sprache aus welche sowohl während des Setups als auch für die fertige Webseite verwendet werden soll.",
+      },
+      settings: {
+        title: "Bringen wir alles ins Rollen",
+        slug: "Nur noch ein paar Einstellungen…",
+        text: "Helios benötigt noch ein paar Informationen über Ihre Webseite um voll funktionsfähig zu sein.",
+        saved: {
+          title: "Einstellungen gespeichert",
+          description: "Ihre Einstellungen wurde gespeichert - Ihre Webseite ist nun einsatzbereit.",
+          done: "Fertig"
+        }
+      },
+      theme: {
+        title: "Themen",
+        picker: "Verfügbare Themen",
+        license: "{name} ist unter der {license} Lizenz verfügbar.",
+        enterCss: "Geben Sie Ihren eigenen CSS Code ein. Die Vorschau wird in Echtzeit aktualisiert - sobald Sie zufrieden sind, können Sie die Änderungen per Klick auf den Speichern-Button anwenden.",
+        type: {
+          none: "Kein Thema / Eigenes CSS",
+          active: "Ihr aktuelles Thema"
+        }
+      },
+      alreadyInstalled: {
+        warning: "Warnung: Auf diesem System wurden bereits Einstellungen für Helios gefunden.",
+        effect: "Eine Neuinstallation von Helios wird diese Einstellungen überschreiben. Sämtliche Daten wie Posts, Seiten, etc. bleiben dabei selbstverständlich erhalten."
+      },
+      fields: {
+        locale: {
+          name: "Sprache"
+        },
+        name: {
+          name: "Geben Sie den gewünschten Administrator Nutzernamen ein"
+        },
+        password: {
+          name: "Geben Sie das gewünschten Administrator Passwort ein"
+        },
+        title: {
+          name: "Name der Webseite"
+        },
+        description: {
+          name: "Beschreibung der Webseite"
+        },
+        topics: {
+          name: "Die Webseite beschreibende Schlagworte"
+        },
+        postsPerPage: {
+          name: "Wie viele Posts sollen auf der Startseite angezeigt werden?"
+        },
+        postsPerAboutPage: {
+          name: "Wie viele Posts sollen auf den Nutzerseiten angezeigt werden?"
+        },
+        hideLogInButton: {
+          name: "Anmeldebutton verstecken?"
+        },
+        defaultTags: {
+          name: "Standard Tags für neue Posts"
+        },
+        promptForNotificationsAfter: {
+          name: "Nach wie vielen Sekunden wird dem Besucher Push-Nachrichten angeboten?"
+        },
+        promptForAddToHomeScreenAfter: {
+          name: "Nach wie vielen Sekunden wird dem Besucher eine App zu Ihrer Webseite angeboten?"
+        },
+        branding: {
+          name: "\"Diese Website verwendet Helios.\" Branding in der Fußzeile anzeigen?"
+        },
+        maxPayloadSize: {
+          name: "Die maximale Größe einer Datenübertragung in Bytes (Wird verwendet für z.B. Profilbilder, …)"
+        },
+        readMore: {
+          name: "\"Weiterlesen…\" einfügen nach wie vielen Zeichen?"
+        },
+        logo: {
+          name: "Logo",
+          name192: "Logo (192x192 Auflösung)",
+          name512: "Logo (512x512 Auflösung)"
+        },
+        favicon: {
+          name: "Favicon der Webseite"
+        },
+        defaultAvatar: {
+          name: "Standard Profilbild der Benutzer"
+        }
+      }
     }
   }
 }

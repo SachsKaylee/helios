@@ -59,6 +59,7 @@ export default withStores(NotificationStore, injectIntl(class Account extends Re
 
   renderUpdateForm(session) {
     return <EditProfileForm
+      maxAvatarSize={Math.floor(this.props.maxPayloadSize / 2)}
       data={{ ...session.user, avatar: undefined }}
       buttons={[
         {

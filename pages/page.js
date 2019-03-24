@@ -1,7 +1,6 @@
 import React from "react"
 import axios from "axios"
 import Head from "next/head";
-import config from "../config/client";
 import Session from "../store/Session";
 import Page from "../components/page/Page";
 import A from "../components/system/A";
@@ -33,7 +32,7 @@ export default injectIntl(class PagePage extends React.PureComponent {
     const { page } = this.props;
     return (<>
       <Head>
-        <link key="canonical" rel="canonical" href={`https://${config.domains[0]}:${config.port.https}/page/${page._id}`} />
+        <link key="canonical" rel="canonical" href={`/page/${page._id}`} />
         <meta key="description" name="description" content={page.title} />
       </Head>
       <div className="container">

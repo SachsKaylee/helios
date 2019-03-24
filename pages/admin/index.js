@@ -2,10 +2,11 @@ import React from "react";
 import BookOpenPageVariantIcon from "mdi-react/BookOpenPageVariantIcon";
 import AccountsIcon from "mdi-react/AccountsIcon";
 import EmailIcon from "mdi-react/EmailIcon";
+import SettingsIcon from "mdi-react/SettingsIcon";
+import ThemeIcon from "mdi-react/ThemeIcon";
 import RssFeedIcon from "mdi-react/RssFeedIcon";
 import { FormattedMessage, FormattedNumber, injectIntl } from "react-intl";
 import Card from "../../components/layout/Card";
-import config from "../../config/client";
 import A from "../../components/system/A";
 import { get } from "axios";
 import crossuser from "../../utils/crossuser";
@@ -18,16 +19,18 @@ export default withStores(SessionStore, injectIntl(class Admin extends React.Com
     const opts = crossuser(req);
     return Promise
       .all([
-        get("/api/post-count", opts), 
-        get("/api/user-count", opts), 
-        get("/api/page-count", opts), 
-        get("/api/subscription/count", opts)
+        get("/api/post-count", opts),
+        get("/api/user-count", opts),
+        get("/api/page-count", opts),
+        get("/api/subscription/count", opts),
+        get("/api/system/config/theme", opts)
       ])
-      .then(([post, user, page, subscription]) => ({
+      .then(([post, user, page, subscription, theme]) => ({
         postCount: post.data.count,
         userCount: user.data.count,
         pageCount: page.data.count,
-        subscriptionCount: subscription.data.count
+        subscriptionCount: subscription.data.count,
+        themeName: theme.data.name
       }));
   }
 
@@ -37,7 +40,7 @@ export default withStores(SessionStore, injectIntl(class Admin extends React.Com
   }
 
   render() {
-    const { postCount, userCount, pageCount, subscriptionCount, sessionStore } = this.props;
+    const { postCount, userCount, pageCount, subscriptionCount, sessionStore, config, themeName } = this.props;
     return (
       <div className="container">
         <Card title={config.title} subtitle={config.description}>
@@ -64,6 +67,20 @@ export default withStores(SessionStore, injectIntl(class Admin extends React.Com
               <div>
                 <p className="heading"><A href="/admin/subscribers"><RssFeedIcon /> <FormattedMessage id="admin.subscribers" /></A></p>
                 <p className="title"><FormattedNumber value={subscriptionCount} /></p>
+              </div>
+            </div>)}
+          </nav>
+          <nav className="level">
+            {sessionStore.hasPermission(permissions.admin) && (<div className="level-item has-text-centered">
+              <div>
+                <p className="heading"><A href="/setup/settings"><SettingsIcon /> <FormattedMessage id="admin.config" /></A></p>
+                <p className="title"><FormattedNumber value={Object.keys(config).length} /></p>
+              </div>
+            </div>)}
+            {sessionStore.hasPermission(permissions.admin) && (<div className="level-item has-text-centered">
+              <div>
+                <p className="heading"><A href="/setup/theme"><ThemeIcon /> <FormattedMessage id="admin.theme" /></A></p>
+                <p className="title">{themeName || (<FormattedMessage id="system.setup.theme.type.none" />)}</p>
               </div>
             </div>)}
           </nav>

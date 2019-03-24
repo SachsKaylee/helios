@@ -2,8 +2,7 @@
 node_modules
 # Ignore compiled Next App
 .helios
-# Ignore certs
+# Ignore config files, certs, ...
 config/**/
 config/style.sass
-config/client.js
-config/server.js
+.env.local

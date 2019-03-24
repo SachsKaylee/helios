@@ -74,6 +74,7 @@ export default injectIntl(class User extends React.Component {
           title={isNew ? (<FormattedMessage id="users.createUser" />) : (<FormattedMessage id="users.updateUser" />)}
           subtitle={!isNew && user && (<FormattedMessage id="users.updateUserSubtitle" values={{ id: user.id }} />)}>
           <CreateUserForm
+            maxAvatarSize={Math.floor(this.props.config.maxPayloadSize / 2)}
             onSubmit={isNew ? this.submitCreate : this.submitUpdate}
             onCancel={this.goBack}
             isCreating={isNew}

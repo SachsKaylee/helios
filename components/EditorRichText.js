@@ -27,8 +27,8 @@ export default withDynamic({
       style.innerHTML = this.props.style;
       document.head.appendChild(style);
     }
-
-    this.jodit = new this.props.jodit.Jodit(this.dom.current, {
+    // Create the jodit editor
+    this.jodit = new this.props.jodit(this.dom.current, {
       sourceEditorCDNUrlsJS: [
         '/node_modules/ace-builds/src-min/ace.js'
       ],

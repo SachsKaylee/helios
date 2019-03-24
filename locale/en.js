@@ -2,7 +2,7 @@ module.exports = {
   meta: {
     id: "en",
     name: "English",
-    intl: require("react-intl/locale-data/en")
+    //intl: require("react-intl/locale-data/en")
   },
   branding: "Proudly powered by Helios.",
   loading: "Loading…",
@@ -41,10 +41,12 @@ module.exports = {
   hidden: "Hidden",
   root: "Root",
   apply: "Apply",
+  back: "Back",
   formValueRequired: "\"{field}\" is required!",
   form: {
     submit: "Submit",
     chooseFile: "Choose a file…",
+    select: "Select…",
     noFilesSelected: "No files selected…",
     filesSelected: "{n} files selected."
   },
@@ -73,7 +75,9 @@ module.exports = {
     posts: "Posts",
     users: "Users",
     pages: "Pages",
-    subscribers: "Subscribers"
+    subscribers: "Subscribers",
+    config: "Configuration",
+    theme: "Theme"
   },
   // Admin accounts overview page
   users: {
@@ -85,7 +89,7 @@ module.exports = {
       placeholder: "User password",
       confirm: "Confirm user password"
     }
-  },  
+  },
   page: {
     editor: {
       stash: {
@@ -161,8 +165,9 @@ module.exports = {
     noneFound: "No posts could be found. Please try again later.",
     tags: "Tags for categorization…",
     adminArea: "Post admin area",
+    readmore: "Read more…",
     notes: {
-      field: "Notes", 
+      field: "Notes",
       placeholder: "Take some quick notes about your post. They are only visible to other authors."
     },
     editor: {
@@ -285,6 +290,97 @@ module.exports = {
   pages: {
     blog: {
       title: "Blog"
+    }
+  },
+  system: {
+    setup: {
+      welcome: {
+        title: "Welcome to Helios!",
+        slug: "We're glad to have you aboard.",
+        text: "Let's get started with with most important choice, setting a language you are comfortable with. This is the language that will be used during setup, aswell as the one seen by the visitors of your website."
+      },
+      settings: {
+        title: "Let's get your website up and running",
+        slug: "We need to tweak some essential settings",
+        text: "Helios needs some information about the environment it is running in in order to be fully operational.",
+        saved: {
+          title: "Settings saved",
+          description: "Your settings have been saved - your website is now live and operational.",
+          done: "Done"
+        }
+      },
+      theme: {
+        title: "Themes",
+        picker: "Available themes",
+        license: "{name} is licensed under the {license} License.",
+        enterCss: "Enter your own CSS code below. The changes are previewd live - once your are statisfied hit save to apply them to your website.",
+        type: {
+          none: "No Theme / Write your own CSS",
+          active: "Your current theme"
+        }
+      },
+      alreadyInstalled: {
+        warning: "Warning: You are about to reinstall Helios. It has already been installed with the following settings:",
+        effect: "Reinstalling Helios will cause some system settings to change. However data such as your pages, posts, etc. will be unaffected."
+      },
+      fields: {
+        locale: {
+          name: "Locale"
+        },
+        name: {
+          name: "Enter your desired admin username"
+        },
+        password: {
+          name: "Enter your desired admin password"
+        },
+        title: {
+          name: "Website name"
+        },
+        description: {
+          name: "Website description"
+        },
+        topics: {
+          name: "Keywords describing your website"
+        },
+        postsPerPage: {
+          name: "How many posts should be displayed on the front page?"
+        },
+        postsPerAboutPage: {
+          name: "How many posts should be displayed on each profile page?"
+        },
+        hideLogInButton: {
+          name: "Hide the log in button?"
+        },
+        defaultTags: {
+          name: "Default tags for each post"
+        },
+        promptForNotificationsAfter: {
+          name: "Prompt the user about push notifications after how many seconds?"
+        },
+        promptForAddToHomeScreenAfter: {
+          name: "Prompt the user about adding your app to their homescreen after how many seconds?"
+        },
+        branding: {
+          name: "Show a \"Proudly powered by Helios.\" branding in your footer?"
+        },
+        maxPayloadSize: {
+          name: "The maximum user request size in bytes. (Used for e.g. profile pictures, …)"
+        },
+        readMore: {
+          name: "Insert \"Read more…\" after how many characters?"
+        },
+        logo: {
+          name: "Logo",
+          name192: "Logo (192x192 resolution)",
+          name512: "Logo (512x512 resolution)"
+        },
+        favicon: {
+          name: "Favicon of your website"
+        },
+        defaultAvatar: {
+          name: "Default user avatar"
+        }
+      }
     }
   }
 }

@@ -1,5 +1,4 @@
 import React from "react";
-import config from "../config/client";
 import { get, post } from "axios";
 import withStores from "../store/withStores";
 import NotificationStore from "../store/Notification";
@@ -16,11 +15,11 @@ export default withStores(NotificationStore, class WebPush extends React.PureCom
   }
 
   componentDidMount() {
-    if (config.promptForNotificationsAfter && "serviceWorker" in navigator) {
+    if (this.props.promptForNotificationsAfter && "serviceWorker" in navigator) {
       navigator.serviceWorker.ready.then(() => {
         const didSelect = localStorage.getItem(STORAGE_DID_SELECT);
         if (!didSelect) {
-          setTimeout(this.promptForNotifications, config.promptForNotificationsAfter);
+          setTimeout(this.promptForNotifications, this.props.promptForNotificationsAfter);
         }
       });
     }
@@ -28,14 +27,18 @@ export default withStores(NotificationStore, class WebPush extends React.PureCom
 
   async subscribeToNotifications(key) {
     const sw = await navigator.serviceWorker.getRegistration();
-    const subscription = await sw.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(key)
-    });
-    post("/api/subscription/subscribe", {
-      subscription,
-      device: navigator.userAgent
-    });
+    if (sw) {
+      const subscription = await sw.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(key)
+      });
+      post("/api/subscription/subscribe", {
+        subscription,
+        device: navigator.userAgent
+      });
+    } else {
+      console.error("No Service Worker found.");
+    }
   }
 
   /**
