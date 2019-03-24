@@ -152,7 +152,7 @@ const startCms = async () => {
       ssl: hostCfg.ssl, // TODO: MANUAL CERTS
       cookieSecret: internalCfg.cookieSecret,
       domains: hostCfg.bindDomains,
-      isDevelopment: isDevelopment,
+      isDevelopment: process.env.FORCE_REDOUBT_PRODUCTION ? false : isDevelopment,
       letsEncryptCertDirectory: "./.helios/certs",
       maxPayloadSize: cfg.maxPayloadSize,
       name: "helios",
