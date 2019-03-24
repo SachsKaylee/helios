@@ -19,7 +19,7 @@ export default withStores(NotificationStore, injectIntl(class PagesPage extends 
 
   static async getInitialProps({ req }) {
     const { data } = await get("/api/subscription", crossuser(req));
-    return { subscribers: data };
+    return { subscribers: data, url: req ? (req.protocol + '://' + req.get('host')) : window.location.origin };
   }
 
   async sendNotification(notification) {
@@ -62,7 +62,7 @@ export default withStores(NotificationStore, injectIntl(class PagesPage extends 
   renderComposer() {
     return (<div>
       <h2><FormattedMessage id="subscribers.newMessage" /></h2>
-      <MessageForm url={window.location.origin} onSend={this.sendNotification} />
+      <MessageForm url={this.props.url} onSend={this.sendNotification} />
     </div>)
   }
 
