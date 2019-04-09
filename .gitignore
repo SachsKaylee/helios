@@ -6,3 +6,5 @@ node_modules
 config/**/
 config/style.sass
 .env.local
+# VS Code
+.vscode
