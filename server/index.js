@@ -162,6 +162,7 @@ const startCms = async () => {
         ssl = {
           key: hostCfg.certs.privateKey,
           cert: hostCfg.certs.publicKey,
+          ca: hostCfg.certs.ca,
           allowUnsigned: redoubtDevelopment
         };
         break;
