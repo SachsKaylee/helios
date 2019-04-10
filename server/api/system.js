@@ -1,6 +1,5 @@
 const cryptoString = require("../../utils/crypto-string");
 const random = require("../../utils/random");
-//const timeout = require("../../utils/timeout");
 const { uuid } = require("../../utils/uuid");
 const mongoose = require("mongoose");
 const reactIntl = require("react-intl");
@@ -61,7 +60,8 @@ const Host = mongoose.model(HOST_ID, new mongoose.Schema({
   ssl: { type: String, enum: ["letsEncrypt", "certificate", "none"], default: "none" },
   certs: {
     publicKey: { type: String, default: "" },
-    privateKey: { type: String, default: "" }
+    privateKey: { type: String, default: "" },
+    ca: { type: [String], default: [] }
   },
   ports: {
     http: { type: Number, default: 80 },
@@ -156,7 +156,8 @@ const hostConfigReady = getHostConfig().then(async cfg => {
   };
   cfg.certs = {
     publicKey: (process.env.SSL_CERT ? await fs.readFile(process.env.SSL_CERT) : "").toString(),
-    privateKey: (process.env.SSL_KEY ? await fs.readFile(process.env.SSL_KEY) : "").toString()
+    privateKey: (process.env.SSL_KEY ? await fs.readFile(process.env.SSL_KEY) : "").toString(),
+    ca: (process.env.SSL_CA ? await Promise.all(process.env.SSL_CA.split(",").map(ca => fs.readFile(ca))) : []).map(file => file.toString()),
   };
   cfg.mail = process.env.MAIL;
   return cfg.save().then(() => console.log("Host config ready..."));
