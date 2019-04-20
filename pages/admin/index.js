@@ -70,21 +70,17 @@ export default withStores(SessionStore, injectIntl(class Admin extends React.Com
               </div>
             </div>)}
           </nav>
-          <nav className="level">
-            {sessionStore.hasPermission(permissions.admin) && (<div className="level-item has-text-centered">
-              <div>
-                <p className="heading"><A href="/setup/settings"><SettingsIcon /> <FormattedMessage id="admin.config" /></A></p>
-                <p className="title"><FormattedNumber value={Object.keys(config).length} /></p>
-              </div>
-            </div>)}
-            {sessionStore.hasPermission(permissions.admin) && (<div className="level-item has-text-centered">
-              <div>
-                <p className="heading"><A href="/setup/theme"><ThemeIcon /> <FormattedMessage id="admin.theme" /></A></p>
-                <p className="title">{themeName || (<FormattedMessage id="system.setup.theme.type.none" />)}</p>
-              </div>
-            </div>)}
-          </nav>
         </Card>
+        {sessionStore.hasPermission(permissions.admin) && <Card title={<FormattedMessage id="admin.advanced.title" />} subtitle={<FormattedMessage id="admin.advanced.subtitle" />}>
+          <p>
+            <span className="heading" style={{ display: "inline" }}><A href="/setup/settings"><SettingsIcon /> <FormattedMessage id="admin.config" /></A>:&nbsp;</span>
+            <span>{config.title} - {config.description}</span>
+          </p>
+           <p>
+            <span className="heading" style={{ display: "inline" }}><A href="/setup/theme"><ThemeIcon /> <FormattedMessage id="admin.theme" /></A>:&nbsp;</span>
+            <span>{themeName || (<FormattedMessage id="system.setup.theme.type.none" />)}</span>
+          </p>
+        </Card>}
       </div>);
   }
 }));

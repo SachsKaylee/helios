@@ -77,7 +77,11 @@ module.exports = {
     pages: "Seiten",
     subscribers: "Abonnenten",
     config: "Konfiguration",
-    theme: "Themen"
+    theme: "Themen",
+    advanced: {
+      title: "Erweiterte Optionen",
+      subtitle: "Passen Sie Ihre Systemeinstellungen an"
+    }
   },
   // Admin accounts overview page
   users: {
