@@ -8,7 +8,7 @@ const NotLoggedInError = require("../errors/NotLoggedInError");
 const PermissionError = require("../errors/PermissionError");
 const InvalidRequestError = require("../errors/InvalidRequestError");
 const { error: DbError } = require("../db");
-const { mongoError } = require("../error-transformer");
+const { uploadFile, deleteFile } = require("./files");
 const { permissions, areValidPermissions } = require("../../common/permissions");
 
 // ===============================================
@@ -124,6 +124,7 @@ const install = ({ server }) => {
         bio: newUser.bio,
         avatar: newUser.avatar
       });
+
       user = await user.save();
       if (logIn) {
         req.user.putSession({ userId: user._id });
@@ -202,36 +203,57 @@ const install = ({ server }) => {
         res.result(error);
       }));
 
-  server.put("/api/session", (req, res) =>
-    req.user.getUser()
-      .then(async user => {
-        // Check if the user confirmed the password
-        const newUser = req.body;
-        const internal = await req.system.internal();
-        if (user.password !== encryptWithSalt(newUser.password, internal.passwordSecret)) {
-          return res.error.authorizationFailure();
+  /**
+   * Updates the user we are currently logged into.
+   *
+   * Permissions: none, must be logged in
+   * Parameters: none
+   * Body: { password: string, passwordNew: string, bio: string, avatar: string }
+   */
+  server.put("/api/session", async (req, res) => {
+    try {
+      let user = await req.user.getUser();
+      // Check if the user confirmed the password
+      const newUser = req.body;
+      const internal = await req.system.internal();
+      if (typeof newUser.password !== "string") {
+        throw new InvalidRequestError({ password });
+      }
+      if (user.password !== encryptWithSalt(newUser.password, internal.passwordSecret)) {
+        throw new AuthorizationError({ error: "Invalid password" });
+      }
+      // Update the user.
+      if (newUser.passwordNew) {
+        if (typeof newUser.passwordNew !== "string") {
+          throw new InvalidRequestError({ passwordNew });
         }
-        // Update the user.
-        if (newUser.passwordNew) {
-          user.password = encryptWithSalt(newUser.passwordNew, internal.passwordSecret);
-        }
-        user.avatar = newUser.avatar;
-        user.bio = newUser.bio;
-        return user.save().then(user => res.sendUser(user))
-      })
-      .catch(error => {
-        if (error === "not-logged-in") {
-          return res.error.authorizationFailure();
-        } else {
-          return res.error.server(error);
-        }
-      }));
+        user.password = encryptWithSalt(newUser.passwordNew, internal.passwordSecret);
+      }
+      if (typeof newUser.avatar !== "string") {
+        throw new InvalidRequestError({ avatar });
+      }
+      if (typeof newUser.bio !== "string") {
+        throw new InvalidRequestError({ bio });
+      }
+      user.bio = newUser.bio;
+      user.avatar = newUser.avatar;
+      user = await user.save();
+      res.sendUser(user);
+    } catch (error) {
+      res.result(error);
+    }
+  });
 
   server.get("/api/avatar/", async (req, res) => {
     try {
       const user = await req.user.getUser();
       if (user.avatar) {
-        return res.blob(user.avatar);
+        if (user.avatar.startsWith("data:")) {
+          // Compatability for old avatars that were directly uploaded into the user doc.
+          return res.blob(user.avatar);
+        } else {
+          return res.redirect(user.avatar);
+        }
       } else {
         const settings = await req.system.config();
         return res.redirect(settings.defaultAvatar);
@@ -248,7 +270,12 @@ const install = ({ server }) => {
         return res.error.notFound();
       }
       if (user.avatar) {
-        return res.blob(user.avatar);
+        if (user.avatar.startsWith("data:")) {
+          // Compatability for old avatars that were directly uploaded into the user doc.
+          return res.blob(user.avatar);
+        } else {
+          return res.redirect(user.avatar);
+        }
       } else {
         const settings = await req.system.config();
         return res.redirect(settings.defaultAvatar);
@@ -285,8 +312,19 @@ const createFactoryContent = () => {
   }
 }
 */
+
 // Misc operations
 const filterUserData = ({ _id, avatar, bio, permissions }) => ({ id: _id, avatar, bio, permissions });
+
+/**
+ * Updates the avatat of the given user.
+ * @param {{id: string, avatar: string}} detail The user ID and avatar to update.
+ */
+const updateAvatar = async ({ id, avatar }) => {
+  await deleteFile(id + "-avatar");
+  const file = await uploadFile({ id: id + "-avatar", name: id, path: ["user"], data: avatar });
+  return file;
+}
 
 // ===============================================
 // === EXPORTS

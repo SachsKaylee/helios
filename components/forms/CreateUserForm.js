@@ -3,7 +3,7 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import { formatBytes } from "../../utils/bytes";
 import TagList from "@react-formilicious/bulma/TagList";
 import TextField from "@react-formilicious/bulma/TextField";
-import FileField from "../fields/FileField";
+import FileBrowserField from "../fields/FileBrowserField";
 import RichTextField from "../fields/RichTextField";
 import ContentSaveIcon from "mdi-react/ContentSaveIcon";
 import CancelIcon from "mdi-react/CancelIcon";
@@ -16,7 +16,7 @@ export default injectIntl(class CreateUserForm extends Form {
   render() {
     const { onSubmit, onCancel, isCreating, data, maxAvatarSize } = this.props;
     return <Form
-      elements={isCreating ? this.newElements() : this.editElements()}
+      elements={isCreating ? this.newElements(maxAvatarSize) : this.editElements(maxAvatarSize)}
       submitText={(<span>
         <ContentSaveIcon className="mdi-icon-spacer" />
         {isCreating
@@ -52,7 +52,8 @@ export default injectIntl(class CreateUserForm extends Form {
     return [
       {
         key: "avatar",
-        type: FileField,
+        type: FileBrowserField,
+        onlyImages: true,
         name: (<FormattedMessage id="account.avatar.field" />),
         validator: avatar => ({
           error: avatar.size > maxAvatarSize,
@@ -77,7 +78,7 @@ export default injectIntl(class CreateUserForm extends Form {
       }
     ];
   }
-  newElements() {
+  newElements(maxAvatarSize) {
     return [
       {
         key: "id",
@@ -85,7 +86,7 @@ export default injectIntl(class CreateUserForm extends Form {
         name: (<FormattedMessage id="username" />),
         placeholder: this.props.intl.formatMessage({ id: "username" })
       },
-      ...this.baseElements(),
+      ...this.baseElements(maxAvatarSize),
       {
         key: "password",
         type: TextField,
@@ -112,9 +113,9 @@ export default injectIntl(class CreateUserForm extends Form {
       }
     ]
   }
-  editElements() {
+  editElements(maxAvatarSize) {
     return [
-      ...this.baseElements(),
+      ...this.baseElements(maxAvatarSize),
       {
         key: "password",
         type: TextField,

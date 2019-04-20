@@ -7,6 +7,8 @@ const blobExtract = require("../../utils/blob-extract");
 const { permissions } = require("../../common/permissions");
 const readdirRecursive = require("../../utils/readdir-recursive");
 const mime = require("mime");
+const PermissionError = require("../errors/PermissionError");
+const InvalidRequestError = require("../errors/InvalidRequestError");
 
 /**
  * This is the permission required to upload/delete/etc. files.
@@ -79,13 +81,17 @@ const install = ({ server }) => {
    */
   server.post("/api/files/upload", async (req, res) => {
     // Check permissions
-    if (!await checkPermission(req, res)) {
-      return;
+    const { path } = req.body;
+    const split = path.split("/").filter(p => p);
+    const user = await req.user.getUser();
+    if (!isUserFolder(split, user.id) && !user.hasPermission(PERMISSION)) {
+      throw new PermissionError(PERMISSION);
     }
     // Handle upload
     try {
-      const { path, source, files } = req.body;
-      const split = path.split("/").filter(p => p);
+      const { source, files: filesRaw } = req.body;
+      // FIX: Files is sometimes an array, sometimes an object.
+      const files = Object.values(filesRaw);
       const data = await Promise.all(files.map(async data => {
         const content = await fs.readFile(data.path);
         const file = new File({
@@ -111,7 +117,10 @@ const install = ({ server }) => {
         }
       });
     } catch (error) {
-      return res.error.server(error);
+      // RangeError [ERR_BUFFER_OUT_OF_BOUNDS]: Attempt to write outside buffer bounds
+      // --> https://stackoverflow.com/questions/29918668/mongoerror-attempt-to-write-outside-buffer-bounds
+      //     https://docs.mongodb.com/manual/reference/limits/
+      return res.result(error);
     }
   });
 
@@ -127,7 +136,12 @@ const install = ({ server }) => {
         return handler(req, res, req.body);
       }
     } catch (error) {
-      return res.error.server(error);
+      if (error instanceof Error) {
+        res.result(error);
+      } else {
+        // TODO: Fully get rid of me by using Error Objects for errors.
+        return res.error.server(error);
+      }
     }
   });
 
@@ -138,7 +152,15 @@ const install = ({ server }) => {
     try {
       const file = await File.findById(req.params.id).select({ data: 1 }).exec();
       if (file) {
-        return res.blob(file.data);
+        const accept = req.header("accept");
+        switch (accept) {
+          case "text/plain": {
+            return res.status(200).contentType("text/plain").send(file.data);
+          }
+          default: {
+            return res.blob(file.data);
+          }
+        }
       } else {
         return res.error.notFound();
       }
@@ -174,37 +196,20 @@ const install = ({ server }) => {
   });
 }
 
-/**
- * Checks if the requesting user has the required permission. Also answers the request.
- * @returns {boolean} true it the user has the permission, false otherwise(or on error).
- */
-const checkPermission = async (req, res) => {
-  // Check permissions
-  try {
-    const user = await req.user.getUser();
-    if (!user.hasPermission(PERMISSION)) {
-      res && res.error.missingPermission(PERMISSION);
-      return false;
-    }
-  } catch (error) {
-    if (error === "not-logged-in") {
-      res && res.error.notLoggedIn();
-      return false;
-    }
-    res && res.error.server(error);
-    return false;
-  }
-  return true;
-}
-
 const handleAction = {
   /**
    * PERMISSIONS
    */
   async permissions(req, res, { path, source }) {
+    const split = path.split("/").filter(p => p);
     const user = await req.user.maybeGetUser();
+    // Are we just a normal user, or a file manager for all files.
     const isUser = !!user;
     const isFileManager = !!(user && user.hasPermission(PERMISSION));
+    // Get the permissions.
+    const basicPermission = isUser;
+    const advancedPermission = isUser && (isFileManager || isUserFolder(split, user && user.id));
+    // Reply.
     return res.sendData({
       data: {
         success: true,
@@ -214,17 +219,17 @@ const handleAction = {
           path: path,
           source: source,
           permissions: {
-            allowFiles: isUser,
-            allowFileMove: isFileManager,
-            allowFileUpload: isFileManager,
-            allowFileUploadRemote: isFileManager,
-            allowFileRemove: isFileManager,
-            allowFileRename: isFileManager,
-            allowFolders: isUser,
-            allowFolderMove: isFileManager,
-            allowFolderCreate: isFileManager,
-            allowFolderRemove: isFileManager,
-            allowFolderRename: isFileManager,
+            allowFiles: basicPermission,
+            allowFileMove: advancedPermission,
+            allowFileUpload: advancedPermission,
+            allowFileUploadRemote: advancedPermission,
+            allowFileRemove: advancedPermission,
+            allowFileRename: advancedPermission,
+            allowFolders: basicPermission,
+            allowFolderMove: advancedPermission,
+            allowFolderCreate: advancedPermission,
+            allowFolderRemove: advancedPermission,
+            allowFolderRename: advancedPermission,
             allowImageResize: false,
             allowImageCrop: false,
           }
@@ -236,9 +241,7 @@ const handleAction = {
    * FOLDERS
    */
   async folders(req, res, { path, source }) {
-    if (!await req.user.maybeGetUser()) {
-      return res.error.notLoggedIn();
-    }
+    const user = await req.user.getUser();
     // Create a query that will find all files in subfolders.
     const split = path.split("/").filter(p => p);
     const query = split.reduce((acc, ele, i) => ({ ...acc, ["path." + i]: ele }), {});
@@ -249,6 +252,14 @@ const handleAction = {
       set.add(file.path[split.length]);
       return set;
     }, new Set()));
+    // Get special fodlers
+    const specialFolders = [];
+    if (split.length !== 0) {
+      specialFolders.push("..")
+    }
+    if (split.length === 1 && split[0] === "user") {
+      specialFolders.push(user.id);
+    }
     // Reply
     return res.sendData({
       data: {
@@ -260,7 +271,7 @@ const handleAction = {
             [source]: {
               path: path,
               baseurl: "/api/files/serve/",
-              folders: unqiue(split.length ? ["..", ...dirs, ...readTempFolders(split)] : [...dirs, ...readTempFolders(split)])
+              folders: unqiue([...specialFolders, ...dirs, ...readTempFolders(split)])
             }
           }
         }
@@ -271,9 +282,7 @@ const handleAction = {
    * FILES
    */
   async files(req, res, { path, source }) {
-    if (!await req.user.maybeGetUser()) {
-      return res.error.notLoggedIn();
-    }
+    await req.user.getUser();
     const split = path.split("/").filter(p => p);
     const files = await File.find({ path: split }).exec();
     return res.sendData({
@@ -305,10 +314,11 @@ const handleAction = {
    * FILE REMOVE
    */
   async fileRemove(req, res, { path, source, name }) {
-    if (!await checkPermission(req, res)) {
-      return;
-    }
     const split = path.split("/").filter(p => p);
+    const user = await req.user.getUser();
+    if (!isUserFolder(split, user.id) && !user.hasPermission(PERMISSION)) {
+      throw new PermissionError(PERMISSION);
+    }
     await File.findByIdAndDelete(name).exec();
     deleteTempFolder(split);
     return res.sendData({
@@ -325,15 +335,13 @@ const handleAction = {
    * FOLDER REMOVE
    */
   async folderRemove(req, res, { path, source }) {
-    if (!await checkPermission(req, res)) {
-      return;
-    }
     const split = path.split("/").filter(p => p);
+    const user = await req.user.getUser();
+    if (!isUserFolder(split, user.id) && !user.hasPermission(PERMISSION)) {
+      throw new PermissionError(PERMISSION);
+    }
     if (split.length === 0) {
-      return res.sendData({
-        error: "root",
-        errorCode: 403
-      });
+      throw new InvalidRequestError("Cannot delete root folder");
     }
     // What was removed? & Get the folder old files will be moved to
     const newPath = split.slice(0, -1);
@@ -360,10 +368,11 @@ const handleAction = {
     });
   },
   async folderCreate(req, res, { path, source, name }) {
-    if (!await checkPermission(req, res)) {
-      return;
-    }
     const split = [...path.split("/").filter(p => p), name];
+    const user = await req.user.getUser();
+    if (!isUserFolder(split, user.id) && !user.hasPermission(PERMISSION)) {
+      throw new PermissionError(PERMISSION);
+    }
     createTempFolder(split);
     return res.sendData({
       data: {
@@ -375,6 +384,18 @@ const handleAction = {
       }
     });
   }
+}
+
+/**
+ * Checks if the given path is a user folder.
+ * @param {string[]} path The path.
+ * @param {string} userName The name of the user.
+ */
+const isUserFolder = (path, userName) => {
+  if (path.length < 2) return false;
+  if (path[0] !== "user") return false;
+  if (path[1] !== userName) return false;
+  return true;
 }
 
 /**
@@ -435,9 +456,30 @@ const deleteTempFolder = path => {
 }
 
 /**
+ * Deletes the file with the given ID.
+ * @param {string} id The file ID.
+ */
+const deleteFile = (id) => File.findByIdAndDelete(id);
+
+/**
+ * Uploads a file.
+ * @param {{id: string, name: string, path: string[], data: string}} file The file data.
+ */
+const uploadFile = ({ id, name, path, data }) => {
+  const file = new File({
+    _id: id,
+    name: name,
+    path: path,
+    data: data,
+    date: new Date()
+  });
+  return file.save();
+}
+
+/**
  * Checks if the given blob is an image blob.
  * @param {string} blob The blob.
  */
 const isImage = blob => blob.startsWith("data:image/");
 
-module.exports = { preinstall, install }
+module.exports = { preinstall, install, uploadFile, deleteFile }

@@ -78,7 +78,7 @@ export default injectIntl(class User extends React.Component {
             onSubmit={isNew ? this.submitCreate : this.submitUpdate}
             onCancel={this.goBack}
             isCreating={isNew}
-            data={isNew ? {} : { ...user, bio: user.bio, avatar: this.blobToFile(user.avatar) }} />
+            data={isNew ? {} : { ...user, bio: user.bio, avatar: user.avatar }} />
         </Card>
       </div>);
   }
