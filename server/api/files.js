@@ -321,12 +321,14 @@ const handleAction = {
    * FILE REMOVE
    */
   async fileRemove(req, res, { path, source, name }) {
-    const split = path.split("/").filter(p => p);
+    const id = name.split("/").filter(p => p).pop();
     const user = await req.user.getUser();
-    if (!isUserFolder(split, user.id) && !user.hasPermission(PERMISSION)) {
+    const file = await File.findById(id).exec();
+    if (!isUserFolder(file.path, user.id) && !user.hasPermission(PERMISSION)) {
       throw new PermissionError(PERMISSION);
     }
-    await File.findByIdAndDelete(name).exec();
+    await file.delete();
+    const split = path.split("/").filter(p => p);
     deleteTempFolder(split);
     return res.sendData({
       data: {

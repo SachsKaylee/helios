@@ -33,7 +33,7 @@ export default injectIntl(class User extends React.Component {
   }
 
   submitCreate = ({ id, password, bio, avatar, permissions }) => {
-    return post("/api/user", { id, password, bio, permissions, avatar: avatar ? avatar.data : "" })
+    return post("/api/user", { id, password, bio, permissions, avatar })
       .then(this.goBack)
       .catch(error => ({
         id: {
@@ -45,7 +45,7 @@ export default injectIntl(class User extends React.Component {
 
   submitUpdate = ({ password, bio, avatar, permissions }) => {
     const { id } = this.props.user;
-    return put(`/api/user/${id}`, { password, bio, permissions, avatar: avatar ? avatar.data : "" })
+    return put(`/api/user/${id}`, { password, bio, permissions, avatar: avatar })
       .then(this.goBack)
       .catch(error => ({
         id: {
