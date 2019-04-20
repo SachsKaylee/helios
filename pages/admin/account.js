@@ -41,13 +41,13 @@ export default withStores(NotificationStore, injectIntl(class Account extends Re
   }
 
   renderLogOut(session) {
-    const { id, permissions, avatar } = session.user;
+    const { id, permissions } = session.user;
     return (<Card
       title={<FormattedMessage id="account.welcome" values={{ id }} />}
       subtitle={<span><FormattedMessage id="permissions" />: {permissions.length
         ? permissions.map(p => (<span className="tag" style={{ marginRight: 2 }} key={p}>{p}</span>))
         : <FormattedMessage id="none" />}</span>}
-      image={avatar || `/api/avatar/${id}`}>
+      image={`/api/avatar/${id}`}>
       <div>
         <h2 className="subtitle">
           <FormattedMessage id="account.updateProfile" />
@@ -60,7 +60,7 @@ export default withStores(NotificationStore, injectIntl(class Account extends Re
   renderUpdateForm(session) {
     return <EditProfileForm
       maxAvatarSize={Math.floor(this.props.maxPayloadSize / 2)}
-      data={{ ...session.user, avatar: undefined }}
+      data={{ ...session.user, avatar: `/api/avatar/${session.user.id}` }}
       buttons={[
         {
           key: "signOut",
@@ -94,7 +94,7 @@ export default withStores(NotificationStore, injectIntl(class Account extends Re
         .updateProfile({
           password: values.password,
           passwordNew: values.passwordNew,
-          avatar: values.avatar.data,
+          avatar: values.avatar,
           bio: values.bio
         })
         .then(data => this.props.notificationStore.push({

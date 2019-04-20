@@ -3,6 +3,10 @@ module.exports = class HeliosError extends Error {
     super(message);
     this.name = this.constructor.name;
     this.status = status;
-    Error.captureStackTrace(this, this.constructor);
+    if (process.env.NODE_ENV === "development") {
+      Error.captureStackTrace(this, this.constructor);
+    } else if (!this.stack) {
+      this.stack = "no stack trace in production";
+    }
   }
 }

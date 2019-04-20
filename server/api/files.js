@@ -138,7 +138,15 @@ const install = ({ server }) => {
     try {
       const file = await File.findById(req.params.id).select({ data: 1 }).exec();
       if (file) {
-        return res.blob(file.data);
+        const accept = req.header("accept");
+        switch(accept) {
+          case "text/plain": {
+            return res.status(200).contentType("text/plain").send(file.data);
+          }
+          default: {
+            return res.blob(file.data);
+          }
+        }
       } else {
         return res.error.notFound();
       }
@@ -435,9 +443,30 @@ const deleteTempFolder = path => {
 }
 
 /**
+ * Deletes the file with the given ID.
+ * @param {string} id The file ID.
+ */
+const deleteFile = (id) => File.findByIdAndDelete(id);
+
+/**
+ * Uploads a file.
+ * @param {{id: string, name: string, path: string[], data: string}} file The file data.
+ */
+const uploadFile = ({ id, name, path, data }) => {
+  const file = new File({
+    _id: id,
+    name: name,
+    path: path,
+    data: data,
+    date: new Date()
+  });
+  return file.save();
+}
+
+/**
  * Checks if the given blob is an image blob.
  * @param {string} blob The blob.
  */
 const isImage = blob => blob.startsWith("data:image/");
 
-module.exports = { preinstall, install }
+module.exports = { preinstall, install, uploadFile, deleteFile }

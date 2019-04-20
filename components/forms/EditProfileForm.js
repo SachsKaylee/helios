@@ -2,7 +2,7 @@ import * as React from "react";
 import Form from "@react-formilicious/bulma";
 import TextField from "@react-formilicious/bulma/TextField";
 import { FormattedMessage, injectIntl } from "react-intl";
-import FileField from "../fields/FileField";
+import FileBrowserField from "../fields/FileBrowserField";
 import RichTextField from "../fields/RichTextField";
 import ContentSaveIcon from "mdi-react/ContentSaveIcon";
 import ErrorOutlineIcon from "mdi-react/ErrorOutlineIcon";
@@ -30,7 +30,8 @@ export default injectIntl(class EditProfileForm extends React.PureComponent {
       elements={[
         {
           key: "avatar",
-          type: FileField,
+          type: FileBrowserField,
+          onlyImages: true,
           name: (<FormattedMessage id="account.avatar.field" />),
           validator: avatar => ({
             error: avatar.size > this.props.maxAvatarSize,

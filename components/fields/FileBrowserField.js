@@ -33,7 +33,10 @@ const FileBrowserField = withDynamic({
         },
         uploader: {
           url: "/api/files/upload"
-        }
+        },
+        /*permissions: {
+          url: "/api/files/browser"
+        }*/
       });
     }
 
