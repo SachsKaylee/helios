@@ -5,6 +5,7 @@ import EmailIcon from "mdi-react/EmailIcon";
 import SettingsIcon from "mdi-react/SettingsIcon";
 import ThemeIcon from "mdi-react/ThemeIcon";
 import RssFeedIcon from "mdi-react/RssFeedIcon";
+import FilesIcon from "mdi-react/FilesIcon";
 import { FormattedMessage, FormattedNumber, injectIntl } from "react-intl";
 import Card from "../../components/layout/Card";
 import A from "../../components/system/A";
@@ -13,6 +14,7 @@ import crossuser from "../../utils/crossuser";
 import withStores from "../../store/withStores";
 import SessionStore from "../../store/Session";
 import { permissions } from "../../common/permissions";
+import { FileBrowser } from "../../components/fields/FileBrowserField";
 
 export default withStores(SessionStore, injectIntl(class Admin extends React.Component {
   static getInitialProps({ req }) {
@@ -22,16 +24,23 @@ export default withStores(SessionStore, injectIntl(class Admin extends React.Com
         get("/api/post-count", opts),
         get("/api/user-count", opts),
         get("/api/page-count", opts),
+        get("/api/files/count", opts),
         get("/api/subscription/count", opts),
         get("/api/system/config/theme", opts)
       ])
-      .then(([post, user, page, subscription, theme]) => ({
+      .then(([post, user, page, file, subscription, theme]) => ({
         postCount: post.data.count,
         userCount: user.data.count,
         pageCount: page.data.count,
+        fileCount: file.data.count,
         subscriptionCount: subscription.data.count,
         themeName: theme.data.name
       }));
+  }
+
+  constructor(p) {
+    super(p);
+    this.onClickFiles = this.onClickFiles.bind(this);
   }
 
   componentDidMount() {
@@ -40,7 +49,7 @@ export default withStores(SessionStore, injectIntl(class Admin extends React.Com
   }
 
   render() {
-    const { postCount, userCount, pageCount, subscriptionCount, sessionStore, config, themeName } = this.props;
+    const { postCount, userCount, pageCount, subscriptionCount, sessionStore, fileCount, config, themeName } = this.props;
     return (
       <div className="container">
         <Card title={config.title} subtitle={config.description}>
@@ -69,6 +78,12 @@ export default withStores(SessionStore, injectIntl(class Admin extends React.Com
                 <p className="title"><FormattedNumber value={subscriptionCount} /></p>
               </div>
             </div>)}
+            <div className="level-item has-text-centered">
+              <div>
+                <p className="heading"><A onClick={this.onClickFiles}><FilesIcon /> <FormattedMessage id="admin.files" /></A></p>
+                <p className="title"><FormattedNumber value={fileCount} /></p>
+              </div>
+            </div>
           </nav>
         </Card>
         {sessionStore.hasPermission(permissions.admin) && <Card title={<FormattedMessage id="admin.advanced.title" />} subtitle={<FormattedMessage id="admin.advanced.subtitle" />}>
@@ -76,11 +91,24 @@ export default withStores(SessionStore, injectIntl(class Admin extends React.Com
             <span className="heading" style={{ display: "inline" }}><A href="/setup/settings"><SettingsIcon /> <FormattedMessage id="admin.config" /></A>:&nbsp;</span>
             <span>{config.title} - {config.description}</span>
           </p>
-           <p>
+          <p>
             <span className="heading" style={{ display: "inline" }}><A href="/setup/theme"><ThemeIcon /> <FormattedMessage id="admin.theme" /></A>:&nbsp;</span>
             <span>{themeName || (<FormattedMessage id="system.setup.theme.type.none" />)}</span>
           </p>
         </Card>}
       </div>);
+  }
+
+  async onClickFiles() {
+    const fb = new FileBrowser({
+      ajax: {
+        url: "/api/files/browser"
+      },
+      uploader: {
+        url: "/api/files/upload"
+      }
+    });
+    await fb.create();
+    fb.native.open();
   }
 }));

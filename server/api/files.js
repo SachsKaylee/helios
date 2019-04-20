@@ -76,6 +76,13 @@ const install = ({ server }) => {
     next();
   });
 
+  server.get("/api/files/count", (req, res) =>
+    File
+      .estimatedDocumentCount()
+      .exec()
+      .then(count => res.sendData({ data: { count } }))
+      .catch(error => res.error.server(error)));
+
   /**
    * Uploads the given file.
    */

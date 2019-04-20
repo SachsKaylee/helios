@@ -78,6 +78,7 @@ module.exports = {
     subscribers: "Subscribers",
     config: "Configuration",
     theme: "Theme",
+    files: "Files",
     advanced: {
       title: "Advanced options",
       subtitle: "Adjust your system settings"
