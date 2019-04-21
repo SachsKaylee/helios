@@ -85,7 +85,7 @@ export default injectIntl(class CreateUserForm extends Form {
         type: TextField,
         name: (<FormattedMessage id="username" />),
         placeholder: this.props.intl.formatMessage({ id: "username" }),
-        autocomplete: "username"
+        autoComplete: "username"
       },
       ...this.baseElements(maxAvatarSize),
       {
@@ -99,7 +99,7 @@ export default injectIntl(class CreateUserForm extends Form {
           required(<FormattedMessage id="formValueRequired" values={{ field: <FormattedMessage id="password" /> }} />),
           pwned()
         ]),
-        autocomplete: "new-password"
+        autoComplete: "new-password"
       },
       {
         key: "passwordConfirm",
@@ -112,7 +112,7 @@ export default injectIntl(class CreateUserForm extends Form {
           error: passwordConfirm !== password,
           message: (<FormattedMessage id="account.changePassword.mismatchError" />)
         }),
-        autocomplete: "new-password"
+        autoComplete: "new-password"
       }
     ]
   }
@@ -126,7 +126,7 @@ export default injectIntl(class CreateUserForm extends Form {
         mode: "password",
         ignoreData: true,
         placeholder: this.props.intl.formatMessage({ id: "users.password.placeholder" }),
-        autocomplete: "new-password"
+        autoComplete: "new-password"
       },
       {
         key: "passwordConfirm",
@@ -139,7 +139,7 @@ export default injectIntl(class CreateUserForm extends Form {
           error: passwordConfirm !== password,
           message: (<FormattedMessage id="account.changePassword.mismatchError" />)
         }),
-        autocomplete: "new.password"
+        autoComplete: "new.password"
       }
     ];
   }
