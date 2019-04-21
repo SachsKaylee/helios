@@ -25,7 +25,8 @@ export default injectIntl(class LogInForm extends React.PureComponent {
           type: TextField,
           name: <FormattedMessage id="username" />,
           validator: required(<FormattedMessage id="formValueRequired" values={{ field: <FormattedMessage id="username" /> }} />),
-          placeholder: this.props.intl.formatMessage({ id: "account.usernamePlaceholder" })
+          placeholder: this.props.intl.formatMessage({ id: "account.usernamePlaceholder" }),
+          autocomplete: "username"
         },
         {
           key: "password",
@@ -34,7 +35,8 @@ export default injectIntl(class LogInForm extends React.PureComponent {
           mode: "password",
           ignoreData: true,
           validator: required(<FormattedMessage id="formValueRequired" values={{ field: <FormattedMessage id="password" /> }} />),
-          placeholder: this.props.intl.formatMessage({ id: "account.passwordPlaceholder" })
+          placeholder: this.props.intl.formatMessage({ id: "account.passwordPlaceholder" }),
+          autocomplete: "current-password"
         },
         {
           key: "cookie",

@@ -84,7 +84,8 @@ export default injectIntl(class CreateUserForm extends Form {
         key: "id",
         type: TextField,
         name: (<FormattedMessage id="username" />),
-        placeholder: this.props.intl.formatMessage({ id: "username" })
+        placeholder: this.props.intl.formatMessage({ id: "username" }),
+        autocomplete: "username"
       },
       ...this.baseElements(maxAvatarSize),
       {
@@ -97,7 +98,8 @@ export default injectIntl(class CreateUserForm extends Form {
         validator: combined([
           required(<FormattedMessage id="formValueRequired" values={{ field: <FormattedMessage id="password" /> }} />),
           pwned()
-        ])
+        ]),
+        autocomplete: "new-password"
       },
       {
         key: "passwordConfirm",
@@ -109,7 +111,8 @@ export default injectIntl(class CreateUserForm extends Form {
         validator: (passwordConfirm, { password }) => ({
           error: passwordConfirm !== password,
           message: (<FormattedMessage id="account.changePassword.mismatchError" />)
-        })
+        }),
+        autocomplete: "new-password"
       }
     ]
   }
@@ -122,7 +125,8 @@ export default injectIntl(class CreateUserForm extends Form {
         name: (<FormattedMessage id="account.changePassword.field1" />),
         mode: "password",
         ignoreData: true,
-        placeholder: this.props.intl.formatMessage({ id: "users.password.placeholder" })
+        placeholder: this.props.intl.formatMessage({ id: "users.password.placeholder" }),
+        autocomplete: "new-password"
       },
       {
         key: "passwordConfirm",
@@ -134,7 +138,8 @@ export default injectIntl(class CreateUserForm extends Form {
         validator: (passwordConfirm, { password }) => ({
           error: passwordConfirm !== password,
           message: (<FormattedMessage id="account.changePassword.mismatchError" />)
-        })
+        }),
+        autocomplete: "new.password"
       }
     ];
   }

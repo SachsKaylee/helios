@@ -36,6 +36,7 @@ export default injectIntl(class SetupLanguageForm extends React.PureComponent {
           name: (<FormattedMessage id="system.setup.fields.name.name" />),
           placeholder: this.props.intl.formatMessage({ id: "account.usernamePlaceholder" }),
           validator: required(),
+          autocomplete: "username"
         },
         {
           type: TextField,
@@ -44,6 +45,7 @@ export default injectIntl(class SetupLanguageForm extends React.PureComponent {
           name: (<FormattedMessage id="system.setup.fields.password.name" />),
           placeholder: this.props.intl.formatMessage({ id: "account.passwordPlaceholder" }),
           validator: combined(required(), pwned()),
+          autocomplete: "new-password"
         }
       ]}
       buttons={[
