@@ -54,7 +54,8 @@ export default injectIntl(class EditProfileForm extends React.PureComponent {
           mode: "password",
           ignoreData: true,
           placeholder: this.props.intl.formatMessage({ id: "account.changePassword.field1Placeholder" }),
-          validator: pwned()
+          validator: pwned(),
+          autoComplete: "new-password"
         },
         {
           key: "passwordNewConfirm",
@@ -66,7 +67,8 @@ export default injectIntl(class EditProfileForm extends React.PureComponent {
           validator: (v, d) => ({ // todo: add high level validator
             error: v !== d.passwordNew,
             message: (<FormattedMessage id="account.changePassword.mismatchError" />)
-          })
+          }),
+          autoComplete: "new-password"
         },
         {
           key: "password",
@@ -83,7 +85,8 @@ export default injectIntl(class EditProfileForm extends React.PureComponent {
             message: <FormattedMessage id="formValueRequired" values={{
               field: <FormattedMessage id="account.confirmPassword.field" />
             }} />
-          })
+          }),
+          autoComplete: "current-password"
         }
       ]} />);
   }
