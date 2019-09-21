@@ -21,8 +21,8 @@ This is done by only including the features that are **actually required**, all 
 
 ## Live production websites using Helios
 
-| [<img src="https://patrick-sachs.dev/static/content/system/logo.png" width="100px;"/><br /><sub><b>patrick-sachs.dev</b></sub>](https://patrick-sachs.dev) | [<img src="https://sahnee.de/static/content/system/logo.png" width="100px;"/><br /><sub><b>sahnee.de</b></sub>](https://sahnee.de) |
-| :---: | :---: |
+| [<img src="https://patrick-sachs.dev/static/content/system/logo.png" width="100px;"/><br /><sub><b>patrick-sachs.dev</b></sub>](https://patrick-sachs.dev) |
+| :---: |
 
 ## Feature List
 
