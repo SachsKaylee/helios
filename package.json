@@ -45,7 +45,7 @@
     "mdi-react": "^5.2.0",
     "mime": "^2.4.0",
     "mongoose": "^5.4.16",
-    "next": "^8.0.3",
+    "next": "^9.3.2",
     "next-offline": "^3.3.6",
     "next-routes": "^1.4.2",
     "node-sass": "^4.11.0",
